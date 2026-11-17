@@ -1,0 +1,23 @@
+# Mises à jour proposées par Dependabot.
+# Une demande de fusion groupée par semaine, vers preprod.
+# Les failles de sécurité arrivent tout de suite, à part, et visent toujours main : les rediriger vers preprod.
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    target-branch: "preprod"
+    schedule:
+      interval: "weekly"
+    groups:
+      bibliotheques:
+        patterns:
+          - "*"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    target-branch: "preprod"
+    schedule:
+      interval: "weekly"
+    groups:
+      actions:
+        patterns:
+          - "*"

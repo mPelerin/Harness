@@ -1,0 +1,32 @@
+# Cherche des secrets et des adresses privées dans tout l'historique, à chaque push et demande de fusion.
+# Gitleaks est téléchargé depuis sa page de version officielle, et son empreinte est contrôlée.
+name: Gitleaks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  gitleaks:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      VERSION: 8.30.1
+      EMPREINTE: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Installer gitleaks ${{ env.VERSION }}
+        run: |
+          archive="gitleaks_${VERSION}_linux_x64.tar.gz"
+          curl -fsSLO "https://github.com/gitleaks/gitleaks/releases/download/v${VERSION}/${archive}"
+          echo "${EMPREINTE}  ${archive}" | sha256sum -c -
+          tar -xzf "$archive" gitleaks
+
+      - name: Scanner tout l'historique
+        run: ./gitleaks git --redact --no-banner --verbose .

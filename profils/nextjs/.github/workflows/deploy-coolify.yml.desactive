@@ -1,0 +1,59 @@
+# NON VÉRIFIÉ. Ce workflow n'a jamais tourné en vrai.
+# Il est désactivé : GitHub ignore ce fichier tant qu'il finit par ".desactive".
+#
+# Pour l'activer, après le plan de déploiement validé :
+#   1. Renommer le fichier en deploy-coolify.yml
+#   2. Créer les secrets du dépôt : TS_OAUTH_CLIENT_ID, TS_AUDIENCE,
+#      COOLIFY_DEPLOY_WEBHOOK, COOLIFY_TOKEN
+#   3. Créer les variables du dépôt APP_URL (adresse de l'appli en ligne)
+#      et SERVEUR_IP (adresse du serveur sur le réseau Tailscale)
+#
+# Limite connue : la dernière étape prouve que l'appli répond,
+# pas encore que c'est la bonne version qui est en ligne.
+name: Déploiement Coolify
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: deploy-coolify
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Rejoindre le réseau Tailscale
+        uses: tailscale/github-action@064b10558093f38325e838ddea35486bdc6b1d5c # v4.4.0
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          audience: ${{ secrets.TS_AUDIENCE }}
+          tags: tag:ci
+          ping: ${{ vars.SERVEUR_IP }}
+
+      - name: Demander le redéploiement à Coolify
+        env:
+          WEBHOOK: ${{ secrets.COOLIFY_DEPLOY_WEBHOOK }}
+          TOKEN: ${{ secrets.COOLIFY_TOKEN }}
+        run: curl --fail-with-body -sS -m 30 "$WEBHOOK" -H "Authorization: Bearer $TOKEN"
+
+      - name: Vérifier que l'appli répond
+        env:
+          APP_URL: ${{ vars.APP_URL }}
+        run: |
+          for essai in $(seq 1 20); do
+            if curl -fsS -m 10 -o /dev/null "$APP_URL"; then
+              echo "OK : l'appli répond (essai $essai)"
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "STOP : l'appli ne répond pas après 5 minutes"
+          exit 1

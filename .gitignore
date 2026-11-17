@@ -1,0 +1,6 @@
+# Une configuration remplie reste dans votre instance, jamais ici.
+harness.conf
+.env
+.env.*
+# Binaire de gitleaks téléchargé par la CI.
+/gitleaks

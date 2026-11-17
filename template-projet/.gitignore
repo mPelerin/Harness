@@ -1,0 +1,11 @@
+# Secrets : jamais dans le dépôt
+.env
+.env.*
+!.env.example
+
+# Fichiers de système
+.DS_Store
+Thumbs.db
+
+# Captures et journaux de Playwright MCP
+.playwright-mcp/

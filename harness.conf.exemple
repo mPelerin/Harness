@@ -1,0 +1,26 @@
+# harness.conf : la configuration de votre instance du harness.
+# Format CLE=valeur, une clé par ligne. Aucun secret ici : pas de mot de passe, pas de clé, pas de jeton.
+#
+# Mode d'emploi :
+#   1. Copiez ce fichier en config/harness.conf dans votre dépôt d'instance (privé).
+#   2. Remplissez les valeurs.
+#   3. Lancez scripts/installer.sh du harness avec le chemin de ce dossier config/.
+
+# Comment l'agent vous appelle.
+PRENOM=
+# Votre compte GitHub.
+COMPTE_GITHUB=
+# Domaine des mises en ligne (branche main).
+DOMAINE_PROD=
+# Domaine de la préprod, derrière un login (branche preprod).
+DOMAINE_PREPROD=
+# Alias SSH de votre serveur, tel qu'écrit dans ~/.ssh/config.
+HOTE_SSH_SERVEUR=
+# Nom du projet dans Coolify.
+PROJET_COOLIFY=
+# Nom de la source GitHub dans Coolify (l'application GitHub reliée à Coolify).
+SOURCE_COOLIFY=
+# Chemin, sur le serveur, du fichier qui porte le jeton Doppler (pas le jeton lui-même).
+FICHIER_DOPPLER=
+# Facultatif : où l'installeur met de côté ce qui gêne. Vide : ~/.local/state/harness/sauvegardes
+DOSSIER_SAUVEGARDES=

@@ -1,0 +1,28 @@
+# CI : la même vérification que sur le PC, depuis une machine neuve.
+# Tourne sur toute demande de fusion, et après fusion sur main et preprod.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, preprod]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verifier:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run verifier

@@ -1,0 +1,24 @@
+# Garde-fous du dépôt harness, lancés par Lefthook (https://github.com/evilmartians/lefthook).
+# Brancher une fois après le clone : lefthook install
+# Ils lisent la liste noire de votre instance (~/.config/harness/interdits.txt), jamais copiée ici.
+# Sans elle, ils refusent le commit.
+
+pre-commit:
+  commands:
+    liste-noire:
+      run: bash scripts/liste-noire.sh --index
+    gitleaks:
+      run: gitleaks git --pre-commit --staged --redact --no-banner .
+
+commit-msg:
+  commands:
+    liste-noire:
+      run: bash scripts/liste-noire.sh --message {1}
+
+pre-push:
+  commands:
+    liste-noire:
+      run: bash scripts/liste-noire.sh --push
+      use_stdin: true
+    gitleaks:
+      run: gitleaks git --redact --no-banner .
