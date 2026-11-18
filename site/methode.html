@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harness : la méthode</title>
+<meta name="description" content="La méthode complète du harness : les skills dans l'ordre, les trois portes humaines, et les habitudes qui rendent le travail plus propre.">
+<script>document.documentElement.classList.add("js")</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/site.js" defer></script>
+</head>
+<body>
+<a class="saut" href="#contenu">Aller au contenu</a>
+<nav class="nav" aria-label="Pages du site">
+  <div class="nav-pilule">
+    <a class="nav-logo" href="index.html">Harness<span>.</span></a>
+    <div class="nav-liens">
+      <a href="index.html">Vue d'ensemble</a>
+      <a href="methode.html" aria-current="page">Méthode</a>
+      <a href="installation.html">Installation</a>
+      <a href="opencode.html">OpenCode</a>
+      <a href="hermes.html">Hermès</a>
+      <a href="github.html">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<main id="contenu">
+  <header class="hero">
+    <div class="conteneur" data-decale="0.1">
+      <span class="etiquette apparait">La méthode</span>
+      <h1 class="apparait">De l'idée en ligne, <em>sans sauter</em> d'étape.</h1>
+      <p class="hero-texte apparait">La méthode tient en une suite de skills. Chacun fait une chose, la prouve, puis passe la main au suivant. Entre eux, trois portes où rien n'avance sans vous.</p>
+      <div class="ligne-degrade apparait"></div>
+    </div>
+  </header>
+
+  <section style="padding-top:24px">
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Le circuit</span>
+        <h2 class="masque"><span>Six étapes, <em>trois portes</em>.</span></h2>
+        <p class="sous-titre apparait">Les points pleins sont les portes. Une porte est un point d'arrêt : l'agent prépare, propose et prouve, puis il attend votre "go" écrit.</p>
+      </div>
+      <ol class="frise" data-decale="0.08">
+        <li class="apparait"><span class="etiquette">cadrage</span><h3>Transformer l'idée en documents</h3><p>L'agent reformule, puis pose ses questions une à la fois. Il écrit <code>docs/cadrage/</code> : le PRD (ce que fait le produit, pour qui, ce qui est hors périmètre), les écrans et les user stories. Il remplit le <code>AGENTS.md</code> du projet et commite sur <code>preprod</code>.</p></li>
+        <li class="apparait porte"><span class="etiquette">Porte 1 : décider</span><h3>Vous relisez, vous dites "go"</h3><p>Tant que le cadrage n'est pas validé, aucune ligne de code n'est écrite.</p></li>
+        <li class="apparait"><span class="etiquette">tickets</span><h3>Découper en tickets fins</h3><p>Chaque story devient un ou plusieurs tickets GitHub qui traversent toute l'appli, de l'écran à la base. Chacun dit ce qui est fini, ce qui est hors périmètre et ce qu'il faut préparer avant de coder.</p></li>
+        <li class="apparait"><span class="etiquette">feature</span><h3>Coder le lot, ticket après ticket</h3><p>Pour chaque ticket : une branche, le code en partant des tests, la vérification, la relecture, la fiche QA, puis la demande de fusion jusqu'à la CI verte. Les questions qui restent arrivent en un seul message, au début.</p></li>
+        <li class="apparait porte"><span class="etiquette">Porte 2 : tester</span><h3>Un seul tableau pour tout le lot</h3><p>Vous testez à l'écran avec la fiche QA, puis vous dites "go tout" ou "go 2 4". L'agent fusionne chaque ticket dans <code>preprod</code> et le ferme à la main.</p></li>
+        <li class="apparait porte"><span class="etiquette">Porte 3 : mettre en ligne</span><h3>Fusionner preprod sur main</h3><p>Votre "go mise en ligne", et rien d'autre. L'agent prouve ensuite que la bonne version est en ligne, pas seulement que le site répond.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Les mots à dire</span>
+        <h2 class="masque"><span>Vous dites un mot, <em>l'agent déroule</em>.</span></h2>
+      </div>
+      <div class="tableau-boite apparait">
+        <table>
+          <thead><tr><th>Vous dites</th><th>Ce que fait l'agent</th><th>Où il s'arrête</th></tr></thead>
+          <tbody>
+            <tr><td>cadrage</td><td>Pose les questions, écrit le PRD, les écrans, les stories, remplit AGENTS.md</td><td>Porte 1 : votre "go" après relecture</td></tr>
+            <tr><td>tickets</td><td>Découpe les stories en tickets GitHub</td><td>Votre "go" sur le découpage</td></tr>
+            <tr><td>feature tout</td><td>Code chaque ticket avec ses tests, vérifie, relit, prépare la fiche QA, ouvre la demande de fusion</td><td>Porte 2 : un seul tableau pour le lot</td></tr>
+            <tr><td>go tout</td><td>Fusionne dans preprod, ferme les tickets à la main</td><td>Nulle part</td></tr>
+            <tr><td>mets en ligne</td><td>Prépare la fusion de preprod vers main</td><td>Porte 3 : votre "go mise en ligne"</td></tr>
+            <tr><td>retro</td><td>Transforme une erreur en contrôle ou en règle</td><td>Votre "go" avant de toucher au harness</td></tr>
+            <tr><td>fini, reprends</td><td>Écrit la passation, ou repart de la dernière</td><td>Nulle part</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Les trois portes</span>
+        <h2 class="masque"><span>Chaque porte a <em>sa raison</em>.</span></h2>
+        <p class="sous-titre apparait">Elles viennent d'erreurs réelles. Une case que vous ne pouvez pas cocher veut dire "on n'ouvre pas encore". La liste complète est dans <code>docs/portes.md</code> de chaque projet.</p>
+      </div>
+      <div class="grille g3" data-decale="0.1">
+        <article class="carte apparait"><span class="pastille">Porte 1</span><h3>Décider, avant le code</h3><p>Le ticket dit ce qu'on fait et ce qu'on ne fait pas. Ses critères de fin sont des phrases que vous pouvez vérifier vous-même. Les tests ne savent pas ce que "fini" veut dire pour vous.</p></article>
+        <article class="carte apparait"><span class="pastille">Porte 2</span><h3>Tester, avant la fusion</h3><p>Une CI verte n'est pas un "oui". On a déjà vu plus de 2 000 tests verts autour d'une fonction qui n'avait jamais tourné, parce que les tests imitaient la base.</p></article>
+        <article class="carte apparait"><span class="pastille">Porte 3</span><h3>Mettre en ligne</h3><p>Le code se déploie tout seul, la base de données non. Avant le "go" : le changement de base est appliqué, la commande de retour arrière est écrite, et vous pouvez surveiller ensuite.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Un travail plus propre</span>
+        <h2 class="masque"><span>Les habitudes qui <em>font la différence</em>.</span></h2>
+        <p class="sous-titre apparait">Elles sont écrites dans les règles communes et dans les skills. L'agent les suit sans qu'on les lui rappelle.</p>
+      </div>
+      <ol class="numerotee" data-decale="0.05">
+        <li class="apparait"><div><h3>Une modification à la fois</h3><p>Chaque changement est testé avant le suivant. Quand quelque chose casse, on sait tout de suite lequel.</p></div></li>
+        <li class="apparait"><div><h3>Pas de "ça marche" sans preuve</h3><p>La preuve, c'est la commande lancée et sa sortie, liées à un commit précis. Par exemple <code>npm run verifier</code>, code 0, commit <code>a1b2c3d</code>.</p></div></li>
+        <li class="apparait"><div><h3>Le vérifié, l'hypothèse et la recommandation, séparés</h3><p>Vous savez toujours ce qui a été contrôlé et ce qui n'est qu'une supposition de l'agent.</p></div></li>
+        <li class="apparait"><div><h3>Lire avant de demander</h3><p>L'agent lit le <code>AGENTS.md</code> du projet, le README et <code>docs/</code> avant de poser une question. Une réponse qui resservira y est notée, pour ne jamais vous la redemander.</p></div></li>
+        <li class="apparait"><div><h3>Un ticket, un commit, une fusion en squash</h3><p>Le squash réunit tout le travail d'une branche en un seul commit au moment de la fusion. L'historique se lit comme une liste de tickets.</p></div></li>
+        <li class="apparait"><div><h3>Le test d'abord</h3><p>Le skill tdd écrit un test, le voit échouer, puis écrit le plus petit code qui le fait passer. Pour un bug, il reproduit d'abord le défaut par un test.</p></div></li>
+        <li class="apparait"><div><h3>Une relecture par angles</h3><p>Le skill revue passe un angle à la fois et classe chaque problème avec son <code>fichier:ligne</code>. Quand le changement touche à l'argent, aux droits d'accès, aux données personnelles ou à la base, un autre modèle relit.</p></div></li>
+        <li class="apparait"><div><h3>Une fiche QA qui ne vous laisse que l'écran</h3><p>L'agent prouve tout ce qu'une commande peut prouver. Il vous laisse huit étapes à l'écran au plus, dont au moins un chemin qui doit échouer, comme une mauvaise saisie ou un double clic.</p></div></li>
+        <li class="apparait"><div><h3>Les prérequis humains déclarés</h3><p>Une variable, un compte ou une migration à poser avant de coder est écrit dans le ticket. La commande <code>pre-vol</code> les liste et bloque le lot s'il en manque.</p></div></li>
+        <li class="apparait"><div><h3>Des numéros lus, jamais supposés</h3><p>Les tickets et les demandes de fusion partagent la même numérotation sur GitHub. L'agent lit le numéro dans la sortie de la commande, il ne le devine pas.</p></div></li>
+        <li class="apparait"><div><h3>Un retour arrière pour chaque action</h3><p>Ce qui change votre PC ou un dépôt est noté avec la commande qui le défait.</p></div></li>
+        <li class="apparait"><div><h3>Une courte recherche avant de répondre</h3><p>Dès que le sujet touche un outil, un marché ou une règle, l'agent cherche ce qui existe, ce qui se fait et ce qui n'est pas possible. Il cite ses sources avec leurs dates.</p></div></li>
+        <li class="apparait"><div><h3>Les idées au parking</h3><p>Une idée nouvelle en cours de route ne détourne pas le travail. Elle est notée, et vous décidez si on la lance.</p></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Les skills</span>
+        <h2 class="masque"><span>Treize fiches de travail.</span></h2>
+        <p class="sous-titre apparait">Un skill est un dossier avec un fichier <code>SKILL.md</code>. Sa description dit ce qu'il fait et quand l'utiliser : c'est elle qui le déclenche.</p>
+      </div>
+      <div class="grille g3" data-decale="0.04">
+        <article class="carte apparait"><span class="pastille">cadrage</span><p>De l'idée aux documents validés : PRD, écrans, stories, AGENTS.md du projet.</p></article>
+        <article class="carte apparait"><span class="pastille">tickets</span><p>Crée, relit et corrige les tickets GitHub, à partir des stories ou pour un bug isolé.</p></article>
+        <article class="carte apparait"><span class="pastille">feature</span><p>Réalise un lot de tickets d'affilée et s'arrête une fois, à la porte 2.</p></article>
+        <article class="carte apparait"><span class="pastille">tdd</span><p>Un comportement à la fois, en partant d'un test qui échoue.</p></article>
+        <article class="carte apparait"><span class="pastille">verifier</span><p>Lance les contrôles du projet et rend la preuve : commande, code de sortie, dernière ligne, commit.</p></article>
+        <article class="carte apparait"><span class="pastille">revue</span><p>Relit un changement sous plusieurs angles séparés et classe les problèmes.</p></article>
+        <article class="carte apparait"><span class="pastille">qa-prep</span><p>Prépare la fiche de test et la bloque si un prérequis humain manque.</p></article>
+        <article class="carte apparait"><span class="pastille">livrer</span><p>Pousse, ouvre la demande de fusion, attend la CI, fusionne après votre "go".</p></article>
+        <article class="carte apparait"><span class="pastille">retro</span><p>Transforme une erreur en garde-fou : un contrôle automatique d'abord, une règle écrite sinon.</p></article>
+        <article class="carte apparait"><span class="pastille">cloture-session</span><p>Écrit la passation en fin de session, ou repart de la dernière en reprise.</p></article>
+        <article class="carte apparait"><span class="pastille">nuit</span><p>Confie le lot à Hermès sur le serveur. Le matin, la préprod est prête à tester.</p></article>
+        <article class="carte apparait"><span class="pastille">preprod</span><p>Déploie la branche preprod derrière un login, puis prouve que la bonne version tourne.</p></article>
+        <article class="carte apparait"><span class="pastille">test-harness</span><p>Le skill témoin : il prouve que les skills sont bien installés et lus.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="sombre apparait">
+        <span class="etiquette">Ce que l'agent ne fait jamais seul</span>
+        <h2 class="masque" style="margin-bottom:28px"><span>Certaines actions <em>attendent</em> votre "go".</span></h2>
+        <ul class="puces">
+          <li>Commencer un ticket sensible (argent, droits d'accès, données personnelles, base de données, nouvelle bibliothèque) sans un "go" de plus.</li>
+          <li>Fusionner dans <code>preprod</code> sans votre "go" de porte 2 et une CI toute verte.</li>
+          <li>Fusionner sur <code>main</code> sans votre "go" de porte 3.</li>
+          <li>Changer la base de données en ligne sans un "go" écrit à part.</li>
+          <li>Ajouter une bibliothèque avant de vous avoir montré son origine et sa version exacte.</li>
+          <li>Pousser en force, commiter directement sur <code>main</code> ou contourner un hook : jamais, même avec un "go".</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Quel modèle choisir</span>
+        <h2 class="masque"><span>Le bon modèle <em>pour la tâche</em>.</span></h2>
+        <p class="sous-titre apparait">Deux questions suffisent. Une erreur serait-elle coûteuse à défaire ? La tâche demande-t-elle beaucoup de réflexion ? Deux oui : le plus puissant. Un seul : le milieu. Aucun : le plus léger.</p>
+      </div>
+      <div class="grille g3" data-decale="0.1">
+        <article class="carte apparait"><span class="pastille">deux oui</span><h3>Le plus puissant</h3><p>Un script qui modifie votre système, la conception d'un skill ou d'une architecture, une décision difficile à défaire.</p></article>
+        <article class="carte apparait"><span class="pastille">un oui</span><h3>Le milieu de gamme</h3><p>Un script de contrôle, un gabarit, une configuration, une revue de code. Soigné, mais facile à vérifier ensuite.</p></article>
+        <article class="carte apparait"><span class="pastille">aucun</span><h3>Le plus léger</h3><p>Guider une commande, lire une sortie, rédiger un README ou un récapitulatif. Peu de réflexion, beaucoup d'échanges.</p></article>
+      </div>
+      <p class="gris apparait" style="margin-top:24px;font-size:16px">L'agent termine ses messages par le modèle conseillé pour l'action suivante. Il ne change pas de modèle lui-même : c'est vous qui le faites dans l'appli.</p>
+      <div class="suivant">
+        <a class="lien-fleche" href="index.html">Retour à la vue d'ensemble</a>
+        <a class="lien-fleche" href="installation.html">Page suivante : l'installation</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="pied">
+  <div class="conteneur pied-grille">
+    <div>
+      <b>Harness<span style="color:var(--accent)">.</span></b>
+      <p>Des règles, des skills et une méthode pour les agents IA de code. Écrit une fois, lu par Claude Code et OpenCode.</p>
+      <p class="mono">Les portes humaines sont adaptées de kit-agents-ia (Mathis Gorvien, licence MIT).</p>
+    </div>
+    <div><h4>Comprendre</h4><ul><li><a href="index.html">Vue d'ensemble</a></li><li><a href="methode.html">Méthode</a></li><li><a href="installation.html">Installation</a></li></ul></div>
+    <div><h4>Outils</h4><ul><li><a href="opencode.html">OpenCode</a></li><li><a href="hermes.html">Hermès</a></li><li><a href="github.html">GitHub</a></li></ul></div>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harness : OpenCode</title>
+<meta name="description" content="Comment OpenCode lit les mêmes règles et les mêmes skills que Claude Code, et comment s'assurer que tout est bien branché.">
+<script>document.documentElement.classList.add("js")</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/site.js" defer></script>
+</head>
+<body>
+<a class="saut" href="#contenu">Aller au contenu</a>
+<nav class="nav" aria-label="Pages du site">
+  <div class="nav-pilule">
+    <a class="nav-logo" href="index.html">Harness<span>.</span></a>
+    <div class="nav-liens">
+      <a href="index.html">Vue d'ensemble</a>
+      <a href="methode.html">Méthode</a>
+      <a href="installation.html">Installation</a>
+      <a href="opencode.html" aria-current="page">OpenCode</a>
+      <a href="hermes.html">Hermès</a>
+      <a href="github.html">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<main id="contenu">
+  <header class="hero">
+    <div class="conteneur" data-decale="0.1">
+      <span class="etiquette apparait">OpenCode</span>
+      <h1 class="apparait">Un deuxième agent, <em>les mêmes</em> règles.</h1>
+      <p class="hero-texte apparait">OpenCode est un agent de code open source qui tourne dans le terminal, comme Claude Code. Dans le harness, c'est le deuxième avis : il travaille avec d'autres modèles, mais suit exactement la même méthode.</p>
+      <div class="ligne-degrade apparait"></div>
+    </div>
+  </header>
+
+  <section style="padding-top:24px">
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Pourquoi deux agents</span>
+        <h2 class="masque"><span>Un avis qui vient <em>d'ailleurs</em>.</span></h2>
+        <p class="sous-titre apparait">Un modèle relit mal ses propres angles morts. Le skill revue confie la relecture à un autre modèle quand c'est possible, et toujours quand le changement touche à l'argent, aux droits d'accès, aux données personnelles ou à la base.</p>
+      </div>
+      <div class="grille g2" data-decale="0.1">
+        <article class="carte apparait"><span class="pastille">Claude Code</span><h3>L'agent principal</h3><p>Il lit <code>~/.claude/CLAUDE.md</code>, les skills de <code>~/.claude/skills/</code> et, dans un projet, le <code>CLAUDE.md</code> qui importe <code>AGENTS.md</code>.</p></article>
+        <article class="carte apparait"><span class="pastille">OpenCode</span><h3>Le deuxième avis</h3><p>Il lit <code>~/.config/opencode/AGENTS.md</code>, les mêmes skills, et directement le <code>AGENTS.md</code> du projet. Ses modèles viennent du service Synthetic.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Où il lit</span>
+        <h2 class="masque"><span>Quatre portes d'entrée.</span></h2>
+        <p class="sous-titre apparait">L'installeur branche les trois premières. La quatrième est posée dans chaque projet par <code>nouveau-projet</code>.</p>
+      </div>
+      <div class="tableau-boite apparait">
+        <table>
+          <thead><tr><th>Ce qu'il lit</th><th>Où</th><th>D'où ça vient</th></tr></thead>
+          <tbody>
+            <tr><td>Les règles communes</td><td><code>~/.config/opencode/AGENTS.md</code></td><td>Lien vers les règles générées : le moteur, puis votre profil</td></tr>
+            <tr><td>Les skills</td><td><code>~/.claude/skills/&lt;nom&gt;/SKILL.md</code></td><td>OpenCode lit ce dossier, prévu pour Claude Code. Sans Claude Code sur la machine, l'installeur passe par <code>~/.config/opencode/skills/</code></td></tr>
+            <tr><td>Les règles du projet</td><td><code>AGENTS.md</code> du projet</td><td>Le gabarit, rempli par le skill cadrage</td></tr>
+            <tr><td>Les outils MCP</td><td><code>opencode.json</code> du projet</td><td>Copié par <code>nouveau-projet</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="gris apparait" style="margin-top:20px;font-size:16px">L'ordre compte. OpenCode cherche d'abord le <code>AGENTS.md</code> du projet, puis son fichier global, et seulement en secours <code>~/.claude/CLAUDE.md</code>. Le premier trouvé gagne dans chaque catégorie. C'est pour ça que l'installeur pose aussi le fichier global d'OpenCode, au lieu de compter sur le secours.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Les outils MCP</span>
+        <h2 class="masque"><span>Sept outils, <em>trois allumés</em>.</span></h2>
+        <p class="sous-titre apparait">Un MCP est un serveur qui donne des outils en plus à un agent, par exemple lire la documentation d'une bibliothèque ou piloter un navigateur. Chaque outil prend un peu de place dans la mémoire de travail de l'agent.</p>
+      </div>
+      <div class="tableau-boite apparait">
+        <table>
+          <thead><tr><th>Outil</th><th>Sert à</th><th>Dans opencode.json</th></tr></thead>
+          <tbody>
+            <tr><td>Context7</td><td>Lire la doc d'une bibliothèque, à la bonne version</td><td><span class="vivant">allumé</span></td></tr>
+            <tr><td>Playwright</td><td>Parcourir l'appli comme un utilisateur, faire une capture</td><td><span class="vivant">allumé</span></td></tr>
+            <tr><td>Next.js DevTools</td><td>Lire les erreurs et les routes de l'appli en développement</td><td><span class="vivant">allumé</span></td></tr>
+            <tr><td>Chrome DevTools</td><td>Déboguer : console, réseau, performances</td><td>coupé, à la demande</td></tr>
+            <tr><td>Agentation</td><td>Lire les annotations posées sur l'écran</td><td>coupé, à la demande</td></tr>
+            <tr><td>Vercel</td><td>Suivre les déploiements, en lecture seule</td><td>coupé</td></tr>
+            <tr><td>Sentry</td><td>Lire les erreurs de l'appli en ligne, en lecture seule</td><td>coupé</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="grille g2" data-decale="0.1" style="margin-top:28px">
+        <article class="carte apparait"><span class="pastille">allumer un outil</span><h3>Passer enabled à true</h3><p>Dans <code>opencode.json</code> du projet, mettez <code>"enabled": true</code> sur l'outil, puis rouvrez le projet. Claude Code, lui, charge un fichier à part avec <code>--mcp-config</code>.</p></article>
+        <article class="carte apparait"><span class="pastille">deux formats</span><h3>Même liste, écriture différente</h3><p>OpenCode lit la clé <code>mcp</code> et les variables <code>{env:NOM}</code>. Claude Code lit <code>mcpServers</code> et <code>${NOM}</code>. Une clé ne s'écrit jamais : seulement le nom de sa variable.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Le faire marcher</span>
+        <h2 class="masque"><span>La liste de <em>contrôle</em>.</span></h2>
+      </div>
+      <ol class="numerotee" data-decale="0.06">
+        <li class="apparait"><div><h3>Le dossier d'OpenCode existe avant l'installeur</h3><p>Sans <code>~/.config/opencode</code>, l'installeur écrit "[ignoré] OpenCode n'est pas installé ici" et ne branche pas les règles. Lancez OpenCode une fois ou créez le dossier, puis relancez l'installeur.</p></div></li>
+        <li class="apparait"><div><h3>Le vérificateur dit OK pour OpenCode</h3><p>Sa rubrique "Règles pour OpenCode" contrôle que le lien vers les règles générées est à jour.</p></div></li>
+        <li class="apparait"><div><h3>Aucun skill en double</h3><p>Un même nom dans <code>~/.claude/skills</code> et dans <code>~/.config/opencode/skills</code> apparaît deux fois dans OpenCode. Le vérificateur le signale.</p></div></li>
+        <li class="apparait"><div><h3>La lecture du dossier .claude reste active</h3><p>D'après la documentation d'OpenCode, la variable <code>OPENCODE_DISABLE_CLAUDE_CODE=1</code> coupe toute lecture de <code>.claude</code>. Avec elle, les skills du harness disparaissent.</p></div></li>
+        <li class="apparait"><div><h3>Une session neuve et les deux mots</h3><p>Après chaque installation ou changement de règles, fermez OpenCode, rouvrez-le, puis demandez les mots de contrôle : <code>copeau-42</code> et <code>rabot-17</code>.</p></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="sombre apparait">
+        <span class="etiquette">Agnostique, par principe</span>
+        <h2 class="masque" style="margin-bottom:28px"><span>Rien qui ne marche <em>que pour un</em>.</span></h2>
+        <ul class="puces">
+          <li>Un <code>SKILL.md</code> n'a que deux champs d'en-tête : <code>name</code> et <code>description</code>. Un champ propre à un seul agent casserait l'autre.</li>
+          <li>Pas de plugin d'agent, même pratique : un seul des deux le lirait.</li>
+          <li>GitHub passe par la commande <code>gh</code>, que les deux agents savent lancer, plutôt que par un serveur MCP.</li>
+          <li>Chaque outil MCP est écrit deux fois, une par format, avec la même version épinglée.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Sources</span>
+        <h2 class="masque"><span>Lues à la date du 18.11.2026.</span></h2>
+        <p class="sous-titre apparait">OpenCode a deux documentations, V1 et V2. Les chemins et l'ordre de lecture peuvent varier un peu entre les deux : vérifiez votre version.</p>
+      </div>
+      <ul class="puces apparait">
+        <li><a href="https://opencode.ai/docs/rules/">OpenCode, règles et AGENTS.md</a></li>
+        <li><a href="https://opencode.ai/docs/skills">OpenCode, skills</a></li>
+        <li><a href="https://agentskills.io/specification">Spécification Agent Skills</a></li>
+      </ul>
+      <div class="suivant">
+        <a class="lien-fleche" href="installation.html">Page précédente : l'installation</a>
+        <a class="lien-fleche" href="hermes.html">Page suivante : Hermès</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="pied">
+  <div class="conteneur pied-grille">
+    <div>
+      <b>Harness<span style="color:var(--accent)">.</span></b>
+      <p>Des règles, des skills et une méthode pour les agents IA de code. Écrit une fois, lu par Claude Code et OpenCode.</p>
+      <p class="mono">Les portes humaines sont adaptées de kit-agents-ia (Mathis Gorvien, licence MIT).</p>
+    </div>
+    <div><h4>Comprendre</h4><ul><li><a href="index.html">Vue d'ensemble</a></li><li><a href="methode.html">Méthode</a></li><li><a href="installation.html">Installation</a></li></ul></div>
+    <div><h4>Outils</h4><ul><li><a href="opencode.html">OpenCode</a></li><li><a href="hermes.html">Hermès</a></li><li><a href="github.html">GitHub</a></li></ul></div>
+  </div>
+</footer>
+</body>
+</html>
