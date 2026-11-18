@@ -11,7 +11,9 @@
 #   - règles  : génère AGENTS.md = règles du moteur + profil de l'instance, puis
 #               ~/.claude/CLAUDE.md et ~/.config/opencode/AGENTS.md -> ce fichier généré ;
 #   - skills  : un lien par skill du moteur, puis un par skill de l'instance, dans ~/.claude/skills/ ;
-#   - commande : ~/.local/bin/nouveau-projet -> scripts/nouveau-projet.sh du moteur.
+#   - commandes : ~/.local/bin/nouveau-projet -> scripts/nouveau-projet.sh du moteur,
+#                 ~/.local/bin/orchestrateur -> scripts/orchestrateur.sh du moteur,
+#                 ~/.local/bin/pre-vol -> scripts/pre-vol.sh du moteur.
 #
 # Ce qu'il garantit :
 #   - il ne supprime jamais rien : ce qui occupe la place d'un lien part dans une sauvegarde datée ;
@@ -137,10 +139,11 @@ sauvegarder() {
 }
 
 # Crée le lien "lien" vers "cible". Ne fait rien s'il est déjà bon.
+# La cible doit exister : un lien qui pointe dans le vide n'est jamais "déjà bon".
 relier() {
   local cible="$1"
   local lien="$2"
-  if [ -L "$lien" ] && [ "$(readlink -- "$lien")" = "$cible" ]; then
+  if [ -L "$lien" ] && [ -e "$lien" ] && [ "$(readlink -- "$lien")" = "$cible" ]; then
     echo "  [déjà bon] $lien"
     deja_bons=$((deja_bons + 1))
     return 0
@@ -248,8 +251,10 @@ else
 fi
 echo
 
-echo "Commande nouveau-projet"
+echo "Commandes du harness"
 relier "$DEPOT/scripts/nouveau-projet.sh" "$HOME/.local/bin/nouveau-projet"
+relier "$DEPOT/scripts/orchestrateur.sh" "$HOME/.local/bin/orchestrateur"
+relier "$DEPOT/scripts/pre-vol.sh" "$HOME/.local/bin/pre-vol"
 echo
 
 echo "Bilan : $crees lien(s) à créer ou créés, $deja_bons déjà bon(s), $sauvegardes élément(s) mis de côté."

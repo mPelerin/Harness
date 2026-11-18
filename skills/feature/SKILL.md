@@ -1,6 +1,6 @@
 ---
 name: feature
-description: Réalise un ou plusieurs tickets GitHub d'affilée, sans arrêt inutile. Lit les tickets et le code, pose en un seul message les questions qui restent, code chaque ticket dans un seul commit, vérifie, relit, prépare la fiche QA, puis enchaîne avec livrer jusqu'à la demande de fusion et la CI verte. S'arrête une fois, à la porte 2, avec un tableau unique. À utiliser quand l'utilisateur dit "feature", "feature 12", "feature 2 3 4", "feature tout", "prends le ticket 12", "enchaîne les tickets" ou "fais les tickets ouverts". Ne pas utiliser pour une idée sans ticket (cadrage), pour écrire ou corriger un ticket (tickets), ni pour une mise en ligne (livrer).
+description: Réalise un ou plusieurs tickets GitHub d'affilée, sans arrêt inutile. Lit les tickets et le code, pose en un seul message les questions qui restent, code chaque ticket dans un seul commit, vérifie, relit, prépare la fiche QA, puis enchaîne avec livrer jusqu'à la demande de fusion et la CI verte. S'arrête une fois, à la porte 2, avec un tableau unique. Si ORCHESTRATEUR est rempli dans harness.conf, il délègue : une sous-conversation par ticket dépose la carte et la suit, et la conversation principale ne montre qu'un tableau. À utiliser quand l'utilisateur dit "feature", "feature 12", "feature 2 3 4", "feature tout", "feature local 12", "prends le ticket 12", "enchaîne les tickets" ou "fais les tickets ouverts". Ne pas utiliser pour une idée sans ticket (cadrage), pour écrire ou corriger un ticket (tickets), ni pour une mise en ligne (livrer).
 ---
 
 # Feature : réaliser des tickets d'affilée
@@ -36,11 +36,53 @@ L'agent ne s'arrête de nouveau avant le code que dans trois cas :
 - Ticket flou, sans "C'est fini quand" vérifiable : skill tickets d'abord.
 - Mettre en ligne (`preprod` vers main) : skill livrer, mode mise en ligne.
 
+## Mode délégation
+
+**Quand il s'applique.**
+```bash
+sed -n 's/^ORCHESTRATEUR=//p' ~/.config/harness/harness.conf | tail -n 1
+```
+Une valeur : délégation. Vide ou absente : mode local, les étapes normales.
+"feature local 12" ou "feature local tout" force le mode local, sans lire la clé.
+
+**Principe.** La conversation principale ne code pas. Elle reste un registre.
+Chaque ticket part dans une **sous-conversation neuve** : l'outil de sous-agent de l'agent, un brief court, rien d'autre.
+Les tickets indépendants partent en arrière-plan. Un ticket qui "Dépend de" un autre attend le retour de celui-ci.
+Pas d'outil de sous-agent : le dire, et proposer « feature local ». Ne pas coder ici à la place.
+
+**Pré-vol, avant tout dépôt.** `pre-vol <numéros> --strict` (code 1 : il reste un blocage, ou un ticket ne déclare rien).
+Un ticket bloqué n'est pas déposé, il est mis "à préparer" dans le tableau.
+Tout ticket qui réclame une variable, un compte, une migration ou un service le déclare dans "Prérequis" (skill tickets).
+
+**Ticket sensible.** Argent, droits d'accès, données personnelles, base, nouvelle bibliothèque : il part seulement si le go écrit est dans la conversation. Sans ce go, il n'est pas déposé, et le tableau le dit. Jamais de go supposé.
+
+**Le brief du sous-agent, neuf lignes.**
+> Ticket #N, dépôt compte/dépôt, branche de base `preprod`. Ne touche jamais à `main`.
+> Tu ne codes pas : tu déposes et tu suis.
+> Écris le corps de la demande : ticket, dépôt, base `preprod`, jamais `main`, go écrit si le ticket est sensible.
+> Pour Hermès, dans ce corps : « Tu ne codes pas. Choisis l'agent (écran, données, droits, CI, défaut). Crée une carte enfant avec `--parent <cette carte>`, skills feature et tdd, dont le corps reprend le ticket, la base `preprod` et l'interdiction de `main`. Elle code, pousse et ouvre la demande de fusion vers `preprod`, sans fusionner. »
+> Dépose : `orchestrateur deposer-demande --ticket N --depot compte/dépôt --titre "Ticket #N : titre" --corps FICHIER`.
+> Suis : `orchestrateur suivre CARTE --depot compte/dépôt --ticket N`.
+> Tu absorbes l'attente : kanban, états, relances, CI. Jamais de code, de diff ni de journal.
+> Tu ne réponds qu'une fois, à la fin.
+> `ticket #N, demande de fusion #P, CI verte` ou `ticket #N, bloqué : motif de cinq mots`.
+
+**Le tableau, seule sortie de la conversation principale.**
+
+| Ticket | Agent | Demande de fusion | État |
+| --- | --- | --- | --- |
+
+Il se remplit au fil des retours. Tant qu'une sous-conversation n'a pas rendu sa ligne, la sienne reste "en cours".
+Puis s'arrêter. Ne pas attendre les cartes ici, ne pas relancer soi-même.
+
 ## Skills appelés
 
-tdd (étape 5), verifier (étape 6), revue (étape 7), qa-prep (étape 8), livrer (étape 9).
+En mode local : tdd (étape 5), verifier (étape 6), revue (étape 7), qa-prep (étape 8), livrer (étape 9).
+En mode délégation : aucun. Le travail se fait sur le serveur.
 
 ## Étapes
+
+En mode délégation, l'étape 1 et le pré-vol se font ici. Les étapes 2 et 4 à 9 ne se font pas ici. Le tableau de suivi remplace l'étape 10.
 
 1. **Lire les tickets.**
    Pour chacun : `gh issue view <numéro> --json number,title,body,labels,state`.
@@ -109,6 +151,7 @@ tdd (étape 5), verifier (étape 6), revue (étape 7), qa-prep (étape 8), livre
 
 - **Avant le code**, seulement dans les trois cas de la porte 1, et une seule fois pour tout le lot.
 - **Porte 2**, à l'étape 10. Une fois pour tout le lot.
+- **Mode délégation**, après le tableau. On ne suit pas les cartes dans cette conversation.
 - **Arrêt d'un ticket, le lot continue** : verifier rouge après trois tentatives, CI rouge après trois tentatives, conflit. Le noter dans le rapport.
   Avant de passer au suivant : `git rebase --abort` ou `git merge --abort` si l'un est en cours, l'état reste commité sur la branche du ticket, rien de plus n'est poussé, `git status --short` est vide, puis `git switch preprod`.
 - **Arrêt de tout** : dossier pas propre, `preprod` absente, `AGENTS.md` encore à trous, `git fetch` en échec, push refusé par GitHub.
@@ -120,6 +163,8 @@ Le rapport de l'étape 10 contient, par ticket :
 - le numéro, la branche, le commit (celui que le "go" couvrira), le lien de la demande de fusion
 - la CI verte, et le bloc de verifier sur le même commit
 - le chemin de la fiche QA, et s'il y a quelque chose à tester à l'écran
+
+En mode délégation : le tableau de suivi, une ligne par ticket, et la carte déposée pour chacun.
 
 ## Interdits
 
@@ -135,3 +180,5 @@ Le rapport de l'étape 10 contient, par ticket :
 - Dire "ça passe" sans la sortie citée.
 - Modifier un ticket : c'est le skill tickets.
 - Deviner une décision produit.
+- En mode délégation : coder, créer une branche, écrire un diff ou un journal dans cette conversation.
+- Déposer deux fois la même demande le même jour. Laisser une carte toucher `main`.
