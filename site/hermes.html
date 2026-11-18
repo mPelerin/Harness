@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harness : Hermès</title>
+<meta name="description" content="Hermès, l'orchestrateur du serveur : le mode nuit, la délégation en journée, le choix des profils, et ce qu'il ne fait jamais.">
+<script>document.documentElement.classList.add("js")</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/site.js" defer></script>
+</head>
+<body>
+<a class="saut" href="#contenu">Aller au contenu</a>
+<nav class="nav" aria-label="Pages du site">
+  <div class="nav-pilule">
+    <a class="nav-logo" href="index.html">Harness<span>.</span></a>
+    <div class="nav-liens">
+      <a href="index.html">Vue d'ensemble</a>
+      <a href="methode.html">Méthode</a>
+      <a href="installation.html">Installation</a>
+      <a href="opencode.html">OpenCode</a>
+      <a href="hermes.html" aria-current="page">Hermès</a>
+      <a href="github.html">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<main id="contenu">
+  <header class="hero">
+    <div class="conteneur" data-decale="0.1">
+      <span class="etiquette apparait">Hermès</span>
+      <h1 class="apparait">Il répartit, <em>surveille</em> et prévient.</h1>
+      <p class="hero-texte apparait">Hermès tourne sur votre serveur. Il reçoit un lot de travail, le découpe et confie chaque ticket à un agent spécialisé. Lui ne code jamais. Le matin, vous trouvez une préprod à tester et un message qui dit ce qui est fait.</p>
+      <div class="ligne-degrade apparait"></div>
+    </div>
+  </header>
+
+  <section style="padding-top:24px">
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Ce qu'est Hermès</span>
+        <h2 class="masque"><span>Un agent, <em>des profils</em>, un tableau.</span></h2>
+        <p class="sous-titre apparait">Hermes Agent est un agent open source de Nous Research. Le harness s'en sert pour trois de ses fonctions.</p>
+      </div>
+      <div class="grille g3" data-decale="0.1">
+        <article class="carte apparait"><span class="pastille">les profils</span><h3>Un agent par métier</h3><p>Chaque profil a son dossier, son modèle et un fichier <code>SOUL.md</code> qui décrit son rôle : écrans, données, sécurité, déploiement, débogage.</p></article>
+        <article class="carte apparait"><span class="pastille">le kanban</span><h3>Une carte par tâche</h3><p>Un tableau partagé par tous les profils. Une carte porte une tâche, son profil, ses dépendances et son état : en cours, finie ou bloquée.</p></article>
+        <article class="carte apparait"><span class="pastille">les messages</span><h3>Un mot sur Telegram</h3><p>Hermès envoie le résumé du matin. Il part toujours, même quand tout a échoué.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="chiffres" data-decale="0.1">
+        <div class="chiffre apparait"><b>0</b><span>ligne de code écrite par l'orchestrateur</span></div>
+        <div class="chiffre apparait"><b data-compte="4">4</b><span>verbes : découper, répartir, surveiller, alerter</span></div>
+        <div class="chiffre apparait"><b data-compte="1">1</b><span>carte kanban par ticket</span></div>
+        <div class="chiffre apparait"><b data-compte="1">1</b><span>seul profil reçoit les secrets de déploiement</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Le mode nuit</span>
+        <h2 class="masque"><span>Vous cadrez le soir, <em>vous testez</em> le matin.</span></h2>
+        <p class="sous-titre apparait">Le skill nuit n'invente aucune méthode. Il enchaîne tickets, feature, livrer et preprod, en confiant chaque geste technique à une carte.</p>
+      </div>
+      <ol class="frise" data-decale="0.07">
+        <li class="apparait porte"><span class="etiquette">Le soir</span><h3>Vous dites "oui" au mode nuit</h3><p>Le cadrage est poussé sur <code>preprod</code>. Le pré-vol est vert : aucune variable, aucun compte ni aucune migration ne manque. Sinon, rien ne part.</p></li>
+        <li class="apparait"><span class="etiquette">Sur le PC</span><h3>L'agent passe la main, puis s'arrête</h3><p>Il dépose la tâche chez Hermès par SSH avec la commande <code>hermes-nuit</code>, donne son numéro, et ne code rien sur le PC.</p></li>
+        <li class="apparait"><span class="etiquette">Sur le serveur</span><h3>Les tickets sont créés</h3><p>À partir des stories. Les tickets sensibles sont marqués, les prérequis sont écrits par leur nom, jamais par leur valeur.</p></li>
+        <li class="apparait"><span class="etiquette">Répartir</span><h3>Une carte par ticket, dans l'ordre des dépendances</h3><p>Chaque carte reçoit un profil adapté et le skill feature. Elle code, teste, ouvre la demande de fusion vers <code>preprod</code> et fusionne quand la CI est toute verte.</p></li>
+        <li class="apparait"><span class="etiquette">Surveiller</span><h3>Regarder sans intervenir</h3><p>Une carte en échec passe "bloquée". Hermès note la raison. Il ne la relance pas à la main et ne code pas à sa place.</p></li>
+        <li class="apparait"><span class="etiquette">Déployer</span><h3>Une carte pour la préprod</h3><p>Le profil de déploiement applique le skill preprod. Preuve attendue : 401 sans login, 200 avec, et le commit en ligne égal à celui de <code>origin/preprod</code>.</p></li>
+        <li class="apparait"><span class="etiquette">Prévenir</span><h3>Le message du matin</h3><p>L'adresse de préprod, les tickets fusionnés, ceux laissés de côté avec leur raison. Jamais le mot de passe.</p></li>
+        <li class="apparait porte"><span class="etiquette">Le matin</span><h3>La porte 2, sur la préprod</h3><p>Vous testez sur l'adresse, puis "go tout", "go 2 4" ou ce qui ne va pas. Rien ne part vers <code>main</code> : la porte 3 reste la même.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Trois exceptions</span>
+        <h2 class="masque"><span>Valables pour <em>ce lot</em> et cette nuit.</span></h2>
+      </div>
+      <div class="grille g3" data-decale="0.1">
+        <article class="carte apparait"><span class="pastille">01</span><h3>Le "oui" vaut deux "go"</h3><p>Celui du découpage en tickets, et celui de la fusion dans <code>preprod</code>. Jamais celui de <code>main</code>.</p></article>
+        <article class="carte apparait"><span class="pastille">02</span><h3>La porte 2 se passe le matin</h3><p>Sur le site de préprod. Les tickets fusionnés restent ouverts jusqu'à votre "go".</p></article>
+        <article class="carte apparait"><span class="pastille">03</span><h3>Un ticket sensible attend</h3><p>Argent, droits d'accès, données personnelles, base de données, nouvelle bibliothèque : créé, jamais codé sans un "go" écrit.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Choisir le profil</span>
+        <h2 class="masque"><span>Le bon agent <em>pour chaque carte</em>.</span></h2>
+        <p class="sous-titre apparait">La liste des profils se lit sur le serveur, à chaque nuit. Si votre instance a un fichier <code>profils.md</code>, Hermès le suit en premier : il dit quels profils codent et lesquels sont réservés à autre chose.</p>
+      </div>
+      <div class="tableau-boite apparait">
+        <table>
+          <thead><tr><th>Travail dominant</th><th>Rôle à chercher</th></tr></thead>
+          <tbody>
+            <tr><td>écran, page, composant, style</td><td>front, interface</td></tr>
+            <tr><td>schéma, migration, requête, donnée</td><td>données, base</td></tr>
+            <tr><td>mot de passe, session, droits d'accès</td><td>sécurité</td></tr>
+            <tr><td>CI, conteneur, volume, déploiement</td><td>plateforme, déploiement</td></tr>
+            <tr><td>test qui échoue, défaut à reproduire</td><td>débogage, test</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="gris apparait" style="margin-top:20px;font-size:16px">Un ticket qui mêle deux domaines prend le profil du plus risqué : sécurité, données et déploiement passent avant l'écran.</p>
+      <ol class="numerotee" data-decale="0.08" style="margin-top:28px">
+        <li class="apparait"><div><h3>Le profil existe</h3><p>Il figure dans <code>hermes profile list</code>. Hermès ne crée, ne modifie ni ne supprime jamais un profil.</p></div></li>
+        <li class="apparait"><div><h3>Son rôle est de coder</h3><p>Ni recherche, ni messagerie, ni usage personnel.</p></div></li>
+        <li class="apparait"><div><h3>Son modèle convient au code</h3><p>Un profil dont le modèle est réglé sur <code>synthetic</code> ne reçoit pas de carte de code. Aucun profil ne convient : la carte reste bloquée, et le message du matin le dit.</p></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">En journée</span>
+        <h2 class="masque"><span>La délégation, <em>sans bruit</em>.</span></h2>
+        <p class="sous-titre apparait">Quand la clé <code>ORCHESTRATEUR</code> est remplie dans <code>harness.conf</code>, le skill feature ne code plus sur le PC. Il confie chaque ticket à Hermès et ne vous montre qu'un tableau.</p>
+      </div>
+      <div class="grille g2" data-decale="0.1">
+        <article class="carte apparait"><span class="pastille">déposer</span><h3>Une sous-conversation par ticket</h3><p>Elle dépose la demande avec <code>orchestrateur deposer-demande</code>, puis la suit avec <code>orchestrateur suivre</code>. Elle absorbe l'attente et ne répond qu'une fois, à la fin.</p></article>
+        <article class="carte apparait"><span class="pastille">rester local</span><h3>"feature local"</h3><p>Force le codage sur le PC, sans lire la clé. Utile pour un petit ticket, ou quand le serveur est occupé.</p></article>
+      </div>
+      <div class="tableau-boite apparait" style="margin-top:28px">
+        <table>
+          <thead><tr><th>Code de sortie</th><th>Ce qu'il veut dire</th></tr></thead>
+          <tbody>
+            <tr><td><code>0</code></td><td>La carte est finie</td></tr>
+            <tr><td><code>3</code></td><td><code>ORCHESTRATEUR</code> est vide : pas de délégation</td></tr>
+            <tr><td><code>4</code></td><td>La carte est bloquée ou archivée</td></tr>
+            <tr><td><code>5</code></td><td>Délai dépassé, la carte travaille encore</td></tr>
+            <tr><td><code>6</code></td><td>La demande est finie sans carte de code</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="sombre apparait">
+        <span class="etiquette">Ce qu'Hermès ne fait jamais</span>
+        <h2 class="masque" style="margin-bottom:28px"><span>Chaque geste technique <em>appartient</em> à une carte.</span></h2>
+        <ul class="puces">
+          <li>Coder, fusionner ou déployer depuis sa propre tâche d'orchestrateur.</li>
+          <li>Pousser ou fusionner sur <code>main</code>, ou toucher à une adresse de production.</li>
+          <li>Fusionner une demande dont la CI est rouge, absente ou en cours.</li>
+          <li>Fermer un ticket : c'est votre "go" du matin qui le fait.</li>
+          <li>Lire, afficher ou inventer un secret. Seul le profil de déploiement reçoit ceux de Coolify et de la préprod.</li>
+          <li>Créer une préprod sans login, ou plus d'une ressource Coolify par projet.</li>
+          <li>Répondre à une demande d'accord à votre place. Une commande refusée arrête la carte.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Sur le serveur</span>
+        <h2 class="masque"><span>Ce qui doit être <em>en place</em>.</span></h2>
+      </div>
+      <ol class="numerotee" data-decale="0.06">
+        <li class="apparait"><div><h3>Hermes Agent</h3><p>Avec son tableau kanban, l'envoi Telegram, vos profils, et la commande <code>hermes-nuit</code> qui dépose une tâche chez l'orchestrateur.</p></div></li>
+        <li class="apparait"><div><h3>Les deux dépôts du harness</h3><p>Installés pour l'utilisateur qui fait tourner Hermès, avec <code>harness.conf</code> et <code>profils.md</code> dans <code>~/.config/harness/</code>. Sans eux, la carte de déploiement s'arrête sur une clé absente.</p></div></li>
+        <li class="apparait"><div><h3>Le profil de déploiement</h3><p>Son nom est dans <code>PROFIL_DEPLOIEMENT</code>. C'est le seul qui reçoit le jeton Coolify et le login de préprod, depuis le coffre de secrets.</p></div></li>
+        <li class="apparait"><div><h3>Coolify prêt à l'emploi</h3><p>Coolify est le programme qui fait tourner vos applis dans des conteneurs. Son API est activée, l'adresse d'appel est autorisée, le jeton a les droits de lecture, d'écriture et de déploiement. Pour un dépôt privé, sa source GitHub est connue par son identifiant, <code>UUID_SOURCE_COOLIFY</code>.</p></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Sources</span>
+        <h2 class="masque"><span>Lues à la date du 18.11.2026.</span></h2>
+        <p class="sous-titre apparait">Hermes Agent évolue vite. Les commandes citées ici sont celles qu'utilise le skill nuit : vérifiez-les sur votre version.</p>
+      </div>
+      <ul class="puces apparait">
+        <li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent, dépôt officiel</a></li>
+        <li><a href="https://hermes-agent.nousresearch.com/docs/user-guide/features/kanban">Hermes Agent, documentation du kanban</a></li>
+      </ul>
+      <div class="suivant">
+        <a class="lien-fleche" href="opencode.html">Page précédente : OpenCode</a>
+        <a class="lien-fleche" href="github.html">Page suivante : GitHub</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="pied">
+  <div class="conteneur pied-grille">
+    <div>
+      <b>Harness<span style="color:var(--accent)">.</span></b>
+      <p>Des règles, des skills et une méthode pour les agents IA de code. Écrit une fois, lu par Claude Code et OpenCode.</p>
+      <p class="mono">Les portes humaines sont adaptées de kit-agents-ia (Mathis Gorvien, licence MIT).</p>
+    </div>
+    <div><h4>Comprendre</h4><ul><li><a href="index.html">Vue d'ensemble</a></li><li><a href="methode.html">Méthode</a></li><li><a href="installation.html">Installation</a></li></ul></div>
+    <div><h4>Outils</h4><ul><li><a href="opencode.html">OpenCode</a></li><li><a href="hermes.html">Hermès</a></li><li><a href="github.html">GitHub</a></li></ul></div>
+  </div>
+</footer>
+</body>
+</html>
