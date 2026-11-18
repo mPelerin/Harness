@@ -1,6 +1,6 @@
 ---
 name: nuit
-description: Mode nuit. Sur un projet déjà cadré, Hermès découpe le travail en tickets, confie chaque ticket à une carte kanban et à un agent spécialisé, fait fusionner le résultat dans preprod, déploie la préprod sur <projet>.<DOMAINE_PREPROD> derrière un login, puis prévient l'utilisateur sur Telegram. L'orchestrateur ne code jamais — il répartit, surveille et alerte. À utiliser quand l'utilisateur dit "mode nuit", "nuit", "lance la nuit", "fais la V0.1 cette nuit", ou répond oui à la proposition de fin de cadrage. Ne pas utiliser sans ce oui de l'utilisateur, ni pour un projet sans cadrage (cadrage), ni pour une mise en ligne sur main (livrer).
+description: Mode nuit. Sur un projet déjà cadré, Hermès découpe le travail en tickets, confie chaque ticket à une carte kanban et à un agent spécialisé, fait fusionner le résultat dans preprod, déploie la préprod sur <projet>.<DOMAINE_PREPROD> derrière un login, puis prévient l'utilisateur sur Telegram. L'orchestrateur ne code jamais : il répartit, surveille et alerte. À utiliser quand l'utilisateur dit "mode nuit", "nuit", "lance la nuit", "fais la V0.1 cette nuit", ou répond oui à la proposition de fin de cadrage. Ne pas utiliser sans ce oui de l'utilisateur, ni pour un projet sans cadrage (cadrage), ni pour une mise en ligne sur main (livrer).
 ---
 
 # Nuit : du cadrage à la préprod, sans l'utilisateur
@@ -29,9 +29,13 @@ Ce n'est pas une variable GitHub. Dans Coolify, chaque ressource suit une branch
 
 ## Configuration
 
-Les valeurs propres à l'utilisateur sont dans `~/.config/harness/harness.conf`. Les lire avec `sed -n 's/^CLE=//p' ~/.config/harness/harness.conf`, en remplaçant `CLE`. Une clé utile vide ou absente : **arrêt**, le dire. Ce skill lit `DOMAINE_PROD`, `DOMAINE_PREPROD` et `HOTE_SSH_SERVEUR`.
+Les valeurs propres à l'utilisateur sont dans `~/.config/harness/harness.conf`. Les lire avec `sed -n 's/^CLE=//p' ~/.config/harness/harness.conf`, en remplaçant `CLE`. Une clé utile vide ou absente : **arrêt**, le dire. Ce skill lit `DOMAINE_PROD`, `DOMAINE_PREPROD`, `PROJET_COOLIFY` et `HOTE_SSH_SERVEUR`. Le skill preprod en lit d'autres (`SOURCE_COOLIFY`, `UUID_SOURCE_COOLIFY`, `FICHIER_DOPPLER`).
+
+**Ce fichier doit exister aussi sur le serveur**, pour l'utilisateur qui fait tourner Hermès. Sans lui, la carte de déploiement s'arrête sur une clé absente.
 
 Prérequis sur le serveur : Hermès Agent avec son tableau kanban et l'envoi Telegram, une commande `hermes-nuit` qui dépose la tâche chez l'orchestrateur, les profils d'agents de l'étape 4, Coolify, et les deux dépôts du harness installés pour l'utilisateur qui fait tourner Hermès.
+
+Prérequis Coolify (API activée, adresse autorisée, jeton, source GitHub) : réglés une fois par l'utilisateur, détaillés et contrôlés par le skill preprod. L'orchestrateur ne les règle jamais.
 
 ## Quand l'utiliser
 
@@ -79,8 +83,9 @@ Prérequis sur le serveur : Hermès Agent avec son tableau kanban et l'envoi Tel
      "Ticket #<numéro> : <titre>"
    ```
 
-   Le corps de la carte, en cinq lignes :
+   Le corps de la carte, en six lignes :
    - « Ticket #<numéro>, branche de base `preprod`. Go écrit de l'utilisateur pour ce lot, le <date>. »
+   - « Par exception au skill feature, qui met en attente un ticket dont la dépendance est encore `OPEN` : une dépendance compte comme arrivée quand sa demande de fusion est `MERGED` dans `preprod`, même si son ticket reste ouvert. Ne l'attends pas fermé. »
    - « Skill feature : lis le ticket, code, teste, pousse la branche, ouvre la demande de fusion vers `preprod`. **Ne touche jamais à `main`.** »
    - « Quand la CI est toute verte : fusion en squash avec `--match-head-commit`, puis commentaire sur le ticket : `Fusionné dans preprod par le mode nuit, demande de fusion #<pr>, commit <code>. À tester sur <adresse>. Ticket laissé ouvert.` Ne ferme pas le ticket. »
    - « Avant de fusionner : `git fetch` et rebase sur `origin/preprod`, pour ne pas écraser une fusion voisine. »
@@ -120,8 +125,8 @@ Prérequis sur le serveur : Hermès Agent avec son tableau kanban et l'envoi Tel
      "Déployer la préprod de <dépôt> et prouver qu'elle est fermée"
    ```
 
-   Son corps : le dépôt, la branche `preprod`, l'adresse attendue, et « applique le skill preprod, sans inventer de secret ».
-   L'attendre, et lire sa preuve : l'adresse, le 401 sans login, le 200 avec, le commit déployé.
+   Son corps : le dépôt, la branche `preprod`, l'adresse attendue, et « applique le skill preprod, sans inventer de secret ». Le skill commence par contrôler les prérequis Coolify en lecture seule : un prérequis qui manque arrête la carte, avec son nom.
+   L'attendre, et lire sa preuve : le contrôle des prérequis, l'adresse, le 401 sans login, le 200 avec, le commit déployé.
    Preuve : le statut de la carte et sa preuve.
 
 7. **La preuve est dans le skill preprod.** 401 sans login, 200 avec login, commit déployé égal à `origin/preprod`, sinon « Version non vérifiée ». Elle est produite par la carte de l'étape 6, pas par l'orchestrateur.
@@ -133,6 +138,8 @@ Prérequis sur le serveur : Hermès Agent avec son tableau kanban et l'envoi Tel
    - l'adresse de préprod, si elle répond, et que le login est celui des préprods ;
    - les tickets fusionnés, par numéro ;
    - les tickets laissés, une ligne chacun : sensible, question en attente, CI rouge, conflit, carte bloquée ;
+   - si le déploiement s'est arrêté : le prérequis Coolify qui manque, nommé, avec la ligne à corriger ;
+   - si l'appli écrit des fichiers en local : « effacés à chaque redéploiement, pas de volume en préprod » ;
    - « Testez sur l'adresse, puis dites go tout, go 2 4, ou ce qui ne va pas. »
    Preuve : le code de sortie de l'envoi.
 
@@ -147,7 +154,7 @@ Prérequis sur le serveur : Hermès Agent avec son tableau kanban et l'envoi Tel
 - **Porte 2**, étape 9. Aucun ticket fermé avant le "go" du matin.
 - **Arrêt de tout** : pas de "oui" de l'utilisateur, cadrage absent ou pas poussé, `AGENTS.md` à trous, `git fetch` en échec, CI rouge sur `preprod` après une fusion, quota du modèle épuisé. Sur le serveur, passer à l'étape 8.
 - **Arrêt d'une carte, le lot continue** : question sans réponse, CI rouge après trois tentatives, conflit, commande refusée faute d'accord. La carte reste `blocked`, ses dépendantes attendent, le message du matin le dit.
-- **Arrêt du déploiement** : login de préprod absent, secret ou base manquants, API Coolify qui refuse, appli qui ne répond pas après les 20 essais. Le code reste dans `preprod`, le message le dit.
+- **Arrêt du déploiement** : login de préprod absent, secret ou base manquants, prérequis Coolify manquant (API désactivée, adresse non autorisée, jeton limité à un projet), API Coolify qui refuse, appli qui ne répond pas après les 20 essais. Le code reste dans `preprod`, le message le dit.
 
 ## Preuve attendue
 
