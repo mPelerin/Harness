@@ -6,6 +6,21 @@ Une boîte à outils pour travailler avec des agents IA de code : des règles, d
 
 Sans harness, chaque agent repart de zéro et il faut tout lui réexpliquer. Avec le harness, les règles de base sont déjà là au démarrage, les mêmes pour tous les agents.
 
+## Le site du harness
+
+**[Ouvrir le site](site/index.html)** : six pages pour comprendre l'ensemble avant de plonger dans les fichiers.
+
+| Page | Ce qu'elle explique |
+| --- | --- |
+| [Vue d'ensemble](site/index.html) | Pour qui, pourquoi, ce que le harness fait et ce qu'il ne fait pas |
+| [Méthode](site/methode.html) | Les skills dans l'ordre, les trois portes, ce qui rend le travail plus propre |
+| [Installation](site/installation.html) | Brancher le harness sur le PC, puis créer un projet |
+| [OpenCode](site/opencode.html) | Comment le deuxième agent lit les mêmes règles et les mêmes skills |
+| [Hermès](site/hermes.html) | L'orchestrateur du serveur : mode nuit et délégation |
+| [GitHub](site/github.html) | Branches, tickets, demandes de fusion, CI et garde-fous |
+
+Sur GitHub, un fichier HTML s'affiche en code source. Pour lire le site, ouvrez `site/index.html` dans un navigateur depuis votre clone. Le style des pages est décrit dans `site/DESIGN.md`.
+
 ## Deux dépôts : le moteur et votre instance
 
 Ce dépôt est le **moteur**. Il ne contient rien de personnel.
@@ -40,6 +55,7 @@ harness/
   template-projet/       le socle commun à tous les projets
   profils/nextjs/        le profil TypeScript et Next.js : hooks, CI, Dependabot
   mcp/                   les outils MCP, réglés pour Claude Code et OpenCode
+  site/                  le site de présentation, six pages HTML, et son DESIGN.md
 ```
 
 ## Installer
@@ -59,7 +75,7 @@ Ce que fait l'installeur :
 - il relie `~/.config/harness` au dossier `config/` de votre instance ;
 - il génère les règles des agents : `AGENTS.md` du moteur, puis votre `profil.md` ;
 - il relie les skills du moteur, puis ceux de l'instance, dans `~/.claude/skills/` ;
-- il relie la commande `nouveau-projet`.
+- il relie les commandes `nouveau-projet`, `orchestrateur` et `pre-vol` dans `~/.local/bin/`.
 
 Il ne supprime jamais rien. Ce qui gêne est mis de côté dans un dossier daté (`DOSSIER_SAUVEGARDES` de `harness.conf`, sinon `~/.local/state/harness/sauvegardes/`).
 

@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harness : GitHub</title>
+<meta name="description" content="Comment le harness se sert de GitHub : deux branches, des tickets fins, des demandes de fusion prouvées, la CI et les garde-fous avant chaque push.">
+<script>document.documentElement.classList.add("js")</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/site.js" defer></script>
+</head>
+<body>
+<a class="saut" href="#contenu">Aller au contenu</a>
+<nav class="nav" aria-label="Pages du site">
+  <div class="nav-pilule">
+    <a class="nav-logo" href="index.html">Harness<span>.</span></a>
+    <div class="nav-liens">
+      <a href="index.html">Vue d'ensemble</a>
+      <a href="methode.html">Méthode</a>
+      <a href="installation.html">Installation</a>
+      <a href="opencode.html">OpenCode</a>
+      <a href="hermes.html">Hermès</a>
+      <a href="github.html" aria-current="page">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<main id="contenu">
+  <header class="hero">
+    <div class="conteneur" data-decale="0.1">
+      <span class="etiquette apparait">GitHub</span>
+      <h1 class="apparait">Le registre <em>de tout</em> ce qui se passe.</h1>
+      <p class="hero-texte apparait">Les tickets, les demandes de fusion, la CI et l'historique vivent sur GitHub. L'agent s'en sert par la commande <code>gh</code>, avec des règles strictes : rien ne part sans preuve, rien ne se ferme tout seul.</p>
+      <div class="ligne-degrade apparait"></div>
+    </div>
+  </header>
+
+  <section style="padding-top:24px">
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Les branches</span>
+        <h2 class="masque"><span>Deux branches, <em>jamais trois</em>.</span></h2>
+        <p class="sous-titre apparait">Une branche est une ligne de travail parallèle. Chaque ticket a la sienne le temps d'être codé, puis elle disparaît après la fusion. Seules deux durent.</p>
+      </div>
+      <div class="grille g2" data-decale="0.1">
+        <article class="carte apparait"><span class="pastille">main</span><h3>Ce qui est en ligne</h3><p>Elle publie sur <code>DOMAINE_PROD</code>. Rien ne s'y écrit directement : une mise en ligne est une fusion de <code>preprod</code> vers <code>main</code>, après la porte 3. C'est toujours la branche par défaut du dépôt.</p></article>
+        <article class="carte apparait"><span class="pastille">preprod</span><h3>Le travail validé, pas encore en ligne</h3><p>Elle découle de <code>main</code> et ne la remplace jamais. Elle publie sur <code>DOMAINE_PREPROD</code>, derrière un login. Chaque ticket validé y est fusionné.</p></article>
+      </div>
+      <p class="gris apparait" style="margin-top:20px;font-size:16px">Les deux domaines viennent de <code>harness.conf</code> et ne s'écrivent jamais en dur dans un projet. Dans Coolify, chaque appli suit une branche et se redéploie quand cette branche reçoit un push.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Les tickets</span>
+        <h2 class="masque"><span>Un ticket <em>que l'on peut vérifier</em>.</span></h2>
+        <p class="sous-titre apparait">Les tickets sont des GitHub Issues. Le modèle du projet impose cinq rubriques.</p>
+      </div>
+      <ol class="numerotee" data-decale="0.06">
+        <li class="apparait"><div><h3>Besoin</h3><p>Qui veut faire quoi, pour quel résultat.</p></div></li>
+        <li class="apparait"><div><h3>C'est fini quand</h3><p>Des phrases que vous pouvez vérifier vous-même, à l'écran ou par une commande.</p></div></li>
+        <li class="apparait"><div><h3>Hors périmètre</h3><p>Ce que le ticket ne fait pas. C'est souvent la rubrique qui évite le plus de dérives.</p></div></li>
+        <li class="apparait"><div><h3>Prérequis</h3><p>Les variables, comptes, migrations ou services à poser avant de coder. Des noms seulement, jamais une valeur. Sinon : "Prérequis : aucun".</p></div></li>
+        <li class="apparait"><div><h3>Notes</h3><p>Les dépendances, et la mention "Sensible" quand le ticket touche à l'argent, aux droits d'accès, aux données personnelles ou à la base.</p></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Les demandes de fusion</span>
+        <h2 class="masque"><span>On fusionne <em>ce qui a été testé</em>.</span></h2>
+        <p class="sous-titre apparait">Une demande de fusion (pull request) propose d'ajouter le travail d'une branche à une autre. Celle d'un ticket vise toujours <code>preprod</code>.</p>
+      </div>
+      <div class="grille g3" data-decale="0.08">
+        <article class="carte apparait"><span class="pastille">le contenu</span><h3>Fait, preuves, base, fiche QA</h3><p>Le modèle demande ce qui change, la commande de vérification avec sa dernière ligne et son commit, le changement de base à appliquer avant, et le chemin de la fiche QA.</p></article>
+        <article class="carte apparait"><span class="pastille">la fusion</span><h3>Squash, sur le commit testé</h3><p>Un ticket entre dans <code>preprod</code> en un seul commit. L'option <code>--match-head-commit</code> refuse la fusion si la branche a bougé depuis votre "go".</p></article>
+        <article class="carte apparait"><span class="pastille">la mise en ligne</span><h3>Une fusion normale</h3><p>De <code>preprod</code> vers <code>main</code>, sans squash et sans supprimer <code>preprod</code>. Elle peut emporter plusieurs tickets d'un coup.</p></article>
+      </div>
+      <p class="citation apparait">Un ticket ne se ferme jamais tout seul. Aucun "Closes", "Fixes" ni "Resolves" devant un numéro, nulle part.</p>
+      <p class="gris apparait" style="font-size:16px">L'agent le ferme à la main, après votre "go" et la fusion. Autre règle : les tickets et les demandes de fusion partagent la même numérotation. L'agent lit donc chaque numéro dans la sortie de <code>gh</code>, il ne le devine jamais.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">La CI</span>
+        <h2 class="masque"><span>La même vérification, <em>sur une machine neuve</em>.</span></h2>
+        <p class="sous-titre apparait">La CI (intégration continue) est un robot de GitHub qui relance les contrôles à chaque demande de fusion. Elle attrape ce qui ne marchait que sur votre PC.</p>
+      </div>
+      <div class="tableau-boite apparait">
+        <table>
+          <thead><tr><th>Où</th><th>Quand</th><th>Ce qu'elle fait</th></tr></thead>
+          <tbody>
+            <tr><td>Projet : <code>ci.yml</code></td><td>chaque demande de fusion, chaque push sur main et preprod</td><td><code>npm ci</code>, puis <code>npm run verifier</code>, en dix minutes au plus</td></tr>
+            <tr><td>Projet : Dependabot</td><td>chaque semaine</td><td>Une demande de fusion groupée de mises à jour, vers <code>preprod</code></td></tr>
+            <tr><td>Moteur : gitleaks</td><td>chaque push et demande de fusion</td><td>Cherche des secrets et des adresses privées dans tout l'historique</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="gris apparait" style="margin-top:20px;font-size:16px">Les actions de GitHub sont épinglées par leur empreinte, avec la version en commentaire. Une étiquette comme <code>v7</code> peut être déplacée par son auteur, une empreinte non. Les droits de la CI sont limités à la lecture.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Avant chaque commit et chaque push</span>
+        <h2 class="masque"><span>Les hooks <em>arrêtent</em> l'erreur à la source.</span></h2>
+        <p class="sous-titre apparait">Un hook est un contrôle que Git lance tout seul à un moment précis. Ils sont gérés par Lefthook, à une version fixée.</p>
+      </div>
+      <div class="grille g2" data-decale="0.1">
+        <article class="carte apparait"><span class="pastille">dans un projet</span><h3>Format, lint, vérification</h3><p>Avant un commit : Prettier et ESLint, sur les seuls fichiers du commit. Avant un push : la vérification complète, la même que la CI.</p></article>
+        <article class="carte apparait"><span class="pastille">dans le moteur</span><h3>Liste noire et gitleaks</h3><p>Avant un commit, sur le message et avant un push : la liste noire de votre instance (vos noms, domaines, serveur) et gitleaks (les secrets). Ce qui est personnel ne peut pas entrer dans le dépôt public.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="sombre apparait">
+        <span class="etiquette">Interdit, même avec un "go"</span>
+        <h2 class="masque" style="margin-bottom:28px"><span>Ce qui ne se fait <em>jamais</em>.</span></h2>
+        <ul class="puces">
+          <li>Pousser en force : ni <code>--force</code>, ni <code>--force-with-lease</code>, ni <code>+branche</code>. L'historique publié ne se réécrit pas.</li>
+          <li>Contourner un hook avec <code>--no-verify</code>, ou une protection avec <code>--admin</code>.</li>
+          <li>Commiter directement sur <code>main</code>.</li>
+          <li>Fusionner avec une CI rouge, absente ou encore en cours.</li>
+          <li>Écrire un secret dans un ticket, une demande de fusion ou un message de commit.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Les commandes</span>
+        <h2 class="masque"><span>gh, <em>plutôt qu'un MCP</em>.</span></h2>
+        <p class="sous-titre apparait">Le harness n'utilise pas de serveur MCP pour GitHub. La commande <code>gh</code> suffit, elle coûte moins de place à l'agent et les deux agents savent la lancer.</p>
+      </div>
+      <div class="tableau-boite apparait">
+        <table>
+          <thead><tr><th>Commande</th><th>Sert à</th></tr></thead>
+          <tbody>
+            <tr><td><code>gh issue create</code></td><td>Créer un ticket, puis lire son numéro dans la sortie</td></tr>
+            <tr><td><code>gh pr create --base preprod</code></td><td>Ouvrir la demande de fusion d'un ticket</td></tr>
+            <tr><td><code>gh pr checks</code></td><td>Voir si la CI est toute verte</td></tr>
+            <tr><td><code>gh pr merge --squash --match-head-commit</code></td><td>Fusionner le commit testé, et lui seul</td></tr>
+            <tr><td><code>gh issue close</code></td><td>Fermer le ticket à la main, après la fusion</td></tr>
+            <tr><td><code>gh repo view --json defaultBranchRef</code></td><td>Contrôler que la branche par défaut est <code>main</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="suivant">
+        <a class="lien-fleche" href="hermes.html">Page précédente : Hermès</a>
+        <a class="lien-fleche" href="index.html">Retour à la vue d'ensemble</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="pied">
+  <div class="conteneur pied-grille">
+    <div>
+      <b>Harness<span style="color:var(--accent)">.</span></b>
+      <p>Des règles, des skills et une méthode pour les agents IA de code. Écrit une fois, lu par Claude Code et OpenCode.</p>
+      <p class="mono">Les portes humaines sont adaptées de kit-agents-ia (Mathis Gorvien, licence MIT).</p>
+    </div>
+    <div><h4>Comprendre</h4><ul><li><a href="index.html">Vue d'ensemble</a></li><li><a href="methode.html">Méthode</a></li><li><a href="installation.html">Installation</a></li></ul></div>
+    <div><h4>Outils</h4><ul><li><a href="opencode.html">OpenCode</a></li><li><a href="hermes.html">Hermès</a></li><li><a href="github.html">GitHub</a></li></ul></div>
+  </div>
+</footer>
+</body>
+</html>

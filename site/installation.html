@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harness : l'installation</title>
+<meta name="description" content="Installer le harness sur votre PC, prouver qu'il est lu, puis créer un projet qui l'utilise.">
+<script>document.documentElement.classList.add("js")</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/site.js" defer></script>
+</head>
+<body>
+<a class="saut" href="#contenu">Aller au contenu</a>
+<nav class="nav" aria-label="Pages du site">
+  <div class="nav-pilule">
+    <a class="nav-logo" href="index.html">Harness<span>.</span></a>
+    <div class="nav-liens">
+      <a href="index.html">Vue d'ensemble</a>
+      <a href="methode.html">Méthode</a>
+      <a href="installation.html" aria-current="page">Installation</a>
+      <a href="opencode.html">OpenCode</a>
+      <a href="hermes.html">Hermès</a>
+      <a href="github.html">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<main id="contenu">
+  <header class="hero">
+    <div class="conteneur" data-decale="0.1">
+      <span class="etiquette apparait">L'installation</span>
+      <h1 class="apparait">Brancher le harness, <em>puis</em> créer un projet.</h1>
+      <p class="hero-texte apparait">L'installation se fait une fois par machine. Elle ne copie rien : elle pose des liens vers vos deux dépôts. Ensuite, chaque nouveau projet part d'un gabarit qui contient déjà la méthode.</p>
+      <div class="ligne-degrade apparait"></div>
+    </div>
+  </header>
+
+  <section style="padding-top:24px">
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Avant de commencer</span>
+        <h2 class="masque"><span>Ce qu'il faut sur le PC.</span></h2>
+      </div>
+      <div class="grille g2" data-decale="0.08">
+        <article class="carte apparait"><span class="pastille">les outils</span><h3>Git, gh, Node et un agent</h3><p><code>git</code>, la commande GitHub <code>gh</code>, Node 24 avec <code>npm</code>, et au moins un agent : Claude Code ou OpenCode. Les deux peuvent cohabiter, ils liront les mêmes règles.</p></article>
+        <article class="carte apparait"><span class="pastille">votre instance</span><h3>Un dépôt privé avec config/</h3><p>Copiez <code>harness.conf.exemple</code> du moteur en <code>config/harness.conf</code> et remplissez-le. Ajoutez <code>profil.md</code> (votre façon de travailler) et <code>interdits.txt</code> (la liste noire). <code>profils.md</code> est facultatif.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Trois commandes</span>
+        <h2 class="masque"><span>Essayer, installer, <em>vérifier</em>.</span></h2>
+        <p class="sous-titre apparait">Depuis le dossier du moteur. Remplacez le chemin par celui de votre instance.</p>
+      </div>
+      <div class="apparait">
+<pre><code>bash scripts/installer.sh --essai --config &lt;votre-instance&gt;/config
+bash scripts/installer.sh --config &lt;votre-instance&gt;/config
+bash scripts/verifier-install.sh</code></pre>
+      </div>
+      <ol class="numerotee" data-decale="0.08" style="margin-top:24px">
+        <li class="apparait"><div><h3>L'essai à blanc</h3><p>Il montre ce qui serait fait, sans rien changer. Lisez-le avant de lancer la vraie installation.</p></div></li>
+        <li class="apparait"><div><h3>L'installation</h3><p>Elle pose les liens et génère les règles. Elle ne supprime jamais rien : ce qui gêne est mis de côté dans un dossier daté.</p></div></li>
+        <li class="apparait"><div><h3>Le vérificateur</h3><p>Il contrôle tout en lecture seule et finit par <code>OK</code> ou <code>STOP</code>. Une installation conforme affiche zéro problème.</p></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Ce que fait l'installeur</span>
+        <h2 class="masque"><span>Des liens, <em>pas des copies</em>.</span></h2>
+        <p class="sous-titre apparait">Un lien symbolique est un raccourci vers un fichier ou un dossier. Si vous modifiez l'original, tous les agents voient le changement, sans rien recopier.</p>
+      </div>
+      <div class="tableau-boite apparait">
+        <table>
+          <thead><tr><th>Sur le PC</th><th>Pointe vers</th><th>Pour</th></tr></thead>
+          <tbody>
+            <tr><td><code>~/.config/harness</code></td><td>le dossier <code>config/</code> de votre instance</td><td>que les skills lisent vos valeurs</td></tr>
+            <tr><td><code>~/.claude/CLAUDE.md</code></td><td>les règles générées</td><td>Claude Code</td></tr>
+            <tr><td><code>~/.config/opencode/AGENTS.md</code></td><td>les mêmes règles générées</td><td>OpenCode</td></tr>
+            <tr><td><code>~/.claude/skills/&lt;nom&gt;</code></td><td>chaque skill du moteur, puis de l'instance</td><td>les deux agents</td></tr>
+            <tr><td><code>~/.local/bin/</code></td><td><code>nouveau-projet</code>, <code>orchestrateur</code>, <code>pre-vol</code></td><td>les commandes du harness</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="gris apparait" style="margin-top:20px;font-size:16px">Les règles sont générées : le <code>AGENTS.md</code> du moteur, puis votre <code>profil.md</code> à la suite. Après un changement de l'un des deux, relancez l'installeur. Le vérificateur signale des règles qui ne sont plus à jour.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Prouver que c'est lu</span>
+        <h2 class="masque"><span>Deux mots de contrôle.</span></h2>
+        <p class="sous-titre apparait">Ouvrez une session neuve et posez ces deux questions. Une mauvaise réponse veut dire que l'agent ne lit pas le harness.</p>
+      </div>
+      <div class="tableau-boite apparait">
+        <table>
+          <thead><tr><th>Question à l'agent</th><th>Réponse attendue</th><th>Ce que ça prouve</th></tr></thead>
+          <tbody>
+            <tr><td>Quel est le mot de contrôle du harness ?</td><td><code>copeau-42</code></td><td>Les règles sont lues</td></tr>
+            <tr><td>Quel est le mot de contrôle du skill test ?</td><td><code>rabot-17</code></td><td>Les skills sont lus</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Créer un projet</span>
+        <h2 class="masque"><span>Une commande, <em>cinq étapes</em>.</span></h2>
+        <p class="sous-titre apparait">Le nom s'écrit en minuscules, chiffres et tirets. La commande s'arrête si le dossier existe déjà, et ne touche à rien en dehors.</p>
+      </div>
+      <div class="apparait"><pre><code>nouveau-projet mon-appli</code></pre></div>
+      <ol class="frise" data-decale="0.08" style="margin-top:32px">
+        <li class="apparait"><span class="etiquette">1 sur 5</span><h3>Créer l'appli Next.js</h3><p>Avec le générateur officiel, à une version fixée.</p></li>
+        <li class="apparait"><span class="etiquette">2 sur 5</span><h3>Poser le socle et le profil</h3><p>Le gabarit commun, le profil TypeScript et Next.js, et les fichiers des outils MCP pour les deux agents.</p></li>
+        <li class="apparait"><span class="etiquette">3 sur 5</span><h3>Installer les outils de contrôle</h3><p>Prettier (mise en forme), Vitest (tests) et Lefthook (hooks Git), chacun à une version fixée.</p></li>
+        <li class="apparait"><span class="etiquette">4 sur 5</span><h3>Fixer les versions et faire le premier commit</h3><p>Chaque plage de version comme <code>^5</code> est remplacée par la version réellement installée. Les hooks sont activés.</p></li>
+        <li class="apparait"><span class="etiquette">5 sur 5</span><h3>Lancer la vérification complète</h3><p>Le projet finit par <code>OK</code>. Il ne reste qu'à le relier à GitHub et à dire "cadrage".</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Le gabarit</span>
+        <h2 class="masque"><span>Ce que le projet <em>contient déjà</em>.</span></h2>
+      </div>
+      <div class="tableau-boite apparait">
+        <table>
+          <thead><tr><th>Fichier</th><th>Rôle</th></tr></thead>
+          <tbody>
+            <tr><td><code>AGENTS.md</code></td><td>Les règles du projet pour l'agent : technologies, conventions, règles métier, sécurité, commandes de vérification, pièges connus. Le skill cadrage le remplit.</td></tr>
+            <tr><td><code>CLAUDE.md</code></td><td>Une seule ligne qui importe <code>AGENTS.md</code>, pour que Claude Code lise le même fichier qu'OpenCode.</td></tr>
+            <tr><td><code>docs/portes.md</code></td><td>Les trois portes et leurs cases à cocher.</td></tr>
+            <tr><td><code>docs/decisions.md</code></td><td>Les décisions prises, pour ne pas les refaire.</td></tr>
+            <tr><td><code>docs/qa/</code></td><td>Le modèle de fiche QA.</td></tr>
+            <tr><td><code>.github/</code></td><td>Les modèles de ticket (bug, fonction), le modèle de demande de fusion, la CI et Dependabot.</td></tr>
+            <tr><td><code>lefthook.yml</code></td><td>Avant un commit, mise en forme et lint. Avant un push, la vérification complète.</td></tr>
+            <tr><td><code>.mcp.json</code>, <code>opencode.json</code></td><td>Les outils MCP du projet, un fichier par agent.</td></tr>
+            <tr><td><code>LICENCES-TIERS.md</code></td><td>Les licences de ce qui vient d'ailleurs.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Relier à GitHub</span>
+        <h2 class="masque"><span>main d'abord, <em>preprod</em> ensuite.</span></h2>
+        <p class="sous-titre apparait">GitHub prend la première branche poussée comme branche par défaut. Elle doit toujours être <code>main</code>, jamais <code>preprod</code>.</p>
+      </div>
+      <div class="apparait">
+<pre><code>git remote add origin git@github.com:&lt;compte&gt;/mon-appli.git
+git push -u origin main
+git switch -c preprod &amp;&amp; git push -u origin preprod
+gh repo view &lt;compte&gt;/mon-appli --json defaultBranchRef</code></pre>
+      </div>
+      <p class="gris apparait" style="font-size:16px">La dernière commande doit afficher <code>main</code>. Sinon : <code>gh repo edit &lt;compte&gt;/mon-appli --default-branch main</code>.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="sombre apparait">
+        <span class="etiquette">Revenir en arrière</span>
+        <h2 class="masque" style="margin-bottom:28px"><span>Tout se <em>défait</em>.</span></h2>
+        <p>L'installeur ne fait que des liens et un fichier généré. Retirer un lien ne touche pas au fichier visé.</p>
+        <ul class="puces">
+          <li>Enlever un skill : <code>unlink ~/.claude/skills/&lt;nom&gt;</code></li>
+          <li>Retirer les règles : <code>unlink ~/.claude/CLAUDE.md</code> et <code>unlink ~/.config/opencode/AGENTS.md</code>, puis remettre l'ancien fichier depuis la sauvegarde.</li>
+          <li>Retrouver ce qui a été mis de côté : le dossier daté de <code>DOSSIER_SAUVEGARDES</code>, sinon <code>~/.local/state/harness/sauvegardes/</code>, avec l'arborescence d'origine.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Ajouter un skill</span>
+        <h2 class="masque"><span>Quatre gestes.</span></h2>
+      </div>
+      <ol class="numerotee" data-decale="0.08">
+        <li class="apparait"><div><h3>Lire le format</h3><p><code>docs/skills.md</code> du moteur. Le modèle à copier est <code>skills/test-harness/SKILL.md</code>.</p></div></li>
+        <li class="apparait"><div><h3>Choisir le bon dépôt</h3><p>Un skill pour tout le monde va dans le moteur, un skill personnel dans votre instance. Un même nom dans les deux est refusé.</p></div></li>
+        <li class="apparait"><div><h3>Relancer l'installeur, puis le vérificateur</h3><p>Le nouveau lien est posé et contrôlé.</p></div></li>
+        <li class="apparait"><div><h3>Fermer puis rouvrir les agents</h3><p>Les skills se lisent au démarrage d'une session.</p></div></li>
+      </ol>
+      <div class="suivant">
+        <a class="lien-fleche" href="methode.html">Page précédente : la méthode</a>
+        <a class="lien-fleche" href="opencode.html">Page suivante : OpenCode</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="pied">
+  <div class="conteneur pied-grille">
+    <div>
+      <b>Harness<span style="color:var(--accent)">.</span></b>
+      <p>Des règles, des skills et une méthode pour les agents IA de code. Écrit une fois, lu par Claude Code et OpenCode.</p>
+      <p class="mono">Les portes humaines sont adaptées de kit-agents-ia (Mathis Gorvien, licence MIT).</p>
+    </div>
+    <div><h4>Comprendre</h4><ul><li><a href="index.html">Vue d'ensemble</a></li><li><a href="methode.html">Méthode</a></li><li><a href="installation.html">Installation</a></li></ul></div>
+    <div><h4>Outils</h4><ul><li><a href="opencode.html">OpenCode</a></li><li><a href="hermes.html">Hermès</a></li><li><a href="github.html">GitHub</a></li></ul></div>
+  </div>
+</footer>
+</body>
+</html>
