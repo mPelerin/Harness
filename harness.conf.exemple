@@ -23,6 +23,9 @@ SOURCE_COOLIFY=
 # Identifiant (uuid) de cette source GitHub dans Coolify, pour créer une appli depuis un dépôt privé.
 # Ce n'est pas un secret, mais il est propre à votre instance : il ne va jamais dans le dépôt public.
 UUID_SOURCE_COOLIFY=
+# Nom du profil Hermès qui reçoit les secrets de déploiement (jeton Coolify, login de préprod).
+# Le mode nuit lui confie la carte de déploiement. Les autres profils sont choisis seuls.
+PROFIL_DEPLOIEMENT=
 # Chemin, sur le serveur, du fichier qui porte le jeton Doppler (pas le jeton lui-même).
 FICHIER_DOPPLER=
 # Facultatif : où l'installeur met de côté ce qui gêne. Vide : ~/.local/state/harness/sauvegardes

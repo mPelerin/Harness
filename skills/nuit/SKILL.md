@@ -29,7 +29,7 @@ Ce n'est pas une variable GitHub. Dans Coolify, chaque ressource suit une branch
 
 ## Configuration
 
-Les valeurs propres à l'utilisateur sont dans `~/.config/harness/harness.conf`. Les lire avec `sed -n 's/^CLE=//p' ~/.config/harness/harness.conf`, en remplaçant `CLE`. Une clé utile vide ou absente : **arrêt**, le dire. Ce skill lit `DOMAINE_PROD`, `DOMAINE_PREPROD`, `PROJET_COOLIFY` et `HOTE_SSH_SERVEUR`. Le skill preprod en lit d'autres (`SOURCE_COOLIFY`, `UUID_SOURCE_COOLIFY`, `FICHIER_DOPPLER`).
+Les valeurs propres à l'utilisateur sont dans `~/.config/harness/harness.conf`. Les lire avec `sed -n 's/^CLE=//p' ~/.config/harness/harness.conf`, en remplaçant `CLE`. Une clé utile vide ou absente : **arrêt**, le dire. Ce skill lit `DOMAINE_PROD`, `DOMAINE_PREPROD`, `PROJET_COOLIFY`, `PROFIL_DEPLOIEMENT` et `HOTE_SSH_SERVEUR`. Il lit aussi, s'il existe, `~/.config/harness/profils.md`. Le skill preprod en lit d'autres (`SOURCE_COOLIFY`, `UUID_SOURCE_COOLIFY`, `FICHIER_DOPPLER`).
 
 **Ce fichier doit exister aussi sur le serveur**, pour l'utilisateur qui fait tourner Hermès. Sans lui, la carte de déploiement s'arrête sur une clé absente.
 
@@ -91,19 +91,31 @@ Prérequis Coolify (API activée, adresse autorisée, jeton, source GitHub) : r�
    - « Avant de fusionner : `git fetch` et rebase sur `origin/preprod`, pour ne pas écraser une fusion voisine. »
    - « Si une question produit te bloque : ne devine pas. Marque la carte bloquée et écris la question dans le corps. »
 
-   Profil, selon le travail dominant :
+   **Choisir le profil de chaque carte.** L'utilisateur peut avoir des dizaines de profils. Leur liste n'est pas écrite dans ce skill : elle se lit sur le serveur, à chaque nuit.
+   1. Lire la liste une seule fois, au début de l'étape : `hermes profile list`. Le nom d'un profil et son fichier `SOUL.md` disent son rôle (`hermes profile show <nom>` donne le détail).
+   2. Si `~/.config/harness/profils.md` existe, le lire : l'utilisateur y dit quels profils codent et lesquels sont réservés à autre chose. Ce fichier passe avant ton jugement.
+   3. Pour chaque ticket, prendre le profil dont le rôle colle au travail dominant. Ne lire le `SOUL.md` que de deux ou trois candidats, pas de tous les profils.
 
-   | Travail | Profil |
+   Repères, pas une liste fermée. N'importe quel profil installé peut recevoir une carte s'il remplit les trois conditions plus bas.
+
+   | Travail dominant | Rôle à chercher |
    | --- | --- |
-   | écran, page, composant, style | `frontend-engineer` |
-   | schéma, migration, requête, donnée | `data-engineer` |
-   | mot de passe, session, droits d'accès, lien secret | `security-engineer` |
-   | CI, conteneur, volume, déploiement | `platform-engineer` |
-   | test qui échoue, défaut à reproduire | `debugger` |
+   | écran, page, composant, style | front, interface |
+   | schéma, migration, requête, donnée | données, base |
+   | mot de passe, session, droits d'accès, lien secret | sécurité |
+   | CI, conteneur, volume, déploiement | plateforme, déploiement |
+   | test qui échoue, défaut à reproduire | débogage, test |
 
-   Un ticket qui mêle deux domaines prend le profil du plus risqué, et sa carte nomme l'autre partie. Un ticket sensible : même carte, avec le go écrit de l'utilisateur en première ligne (exception 3).
+   Un ticket qui mêle deux domaines prend le profil du domaine le plus risqué (sécurité, données, déploiement, avant l'écran), et sa carte nomme l'autre partie. Un ticket sensible : même carte, avec le go écrit de l'utilisateur en première ligne (exception 3).
 
-   **Vérifier le modèle avant de créer la carte.** Lire le provider du profil : `grep -A2 '^model:' /root/.hermes/profiles/<profil>/config.yaml`. Un profil en `synthetic` ne reçoit **jamais** une carte de code. Le profil de l'utilisateur dit quels profils sont faits pour coder. Ne pas passer `--model` ni `--provider` : la carte hérite du modèle du profil.
+   **Trois conditions avant de créer la carte.** Un profil ne reçoit une carte de code que si :
+   - il figure dans `hermes profile list` ;
+   - son rôle est de coder : ni recherche, ni messagerie, ni usage personnel ;
+   - son modèle n'est pas en `synthetic` : `grep -A2 '^model:' ~/.hermes/profiles/<profil>/config.yaml` (pour le profil `default`, le fichier est `~/.hermes/config.yaml`).
+
+   Aucun profil ne convient : ne pas en créer, ne pas prendre le premier de la liste. La carte reste `blocked`, avec « aucun profil adapté » dans son corps, et le message du matin le dit.
+   Ne pas passer `--model` ni `--provider` : la carte hérite du modèle du profil.
+   Noter pour chaque carte une ligne de raison : « #3, profil X : écran de connexion ».
 
    Tenir une table `#ticket → identifiant de carte` : elle sert aux dépendances et au message du matin.
    Vérifier avec `hermes kanban show <carte>` que la dépendance est bien enregistrée. Si la carte fille démarre trop tôt, la mettre `blocked` et la débloquer après la fusion de sa dépendance.
@@ -116,11 +128,12 @@ Prérequis Coolify (API activée, adresse autorisée, jeton, source GitHub) : r�
    Quand toutes les cartes de code sont `done` ou `blocked`, passer à l'étape 6.
    Preuve : l'état du tableau, les demandes de fusion, et aucune trace d'écriture de code par l'orchestrateur.
 
-6. **Déployer la préprod : une carte `platform-engineer`.**
+6. **Déployer la préprod : une carte du profil de déploiement.**
+   Ce profil est le seul à recevoir `COOLIFY_API_TOKEN`, `PREPROD_LOGIN` et `PREPROD_MOT_DE_PASSE`. L'orchestrateur ne peut ni le deviner ni lire ses secrets : son nom vient de `PROFIL_DEPLOIEMENT` dans `harness.conf`. Clé vide ou absente : **arrêt du déploiement**, le dire.
    Créer la carte du déploiement, parente de toutes les cartes de code :
 
    ```bash
-   hermes kanban create --json --assignee platform-engineer --skill preprod \
+   hermes kanban create --json --assignee "$PROFIL_DEPLOIEMENT" --skill preprod \
      --parent <carte 1> --parent <carte 2> ... \
      "Déployer la préprod de <dépôt> et prouver qu'elle est fermée"
    ```
@@ -159,7 +172,7 @@ Prérequis Coolify (API activée, adresse autorisée, jeton, source GitHub) : r�
 ## Preuve attendue
 
 - Le "oui" de l'utilisateur cité, et sur le PC le numéro de la tâche passée à Hermès.
-- Une carte kanban par ticket, avec son profil et sa dépendance.
+- Une carte kanban par ticket, avec son profil, sa ligne de raison et sa dépendance.
 - Par ticket fusionné : la demande de fusion, le commit, la CI verte, le ticket encore `OPEN`.
 - La carte de déploiement, la ressource Coolify, l'adresse, le 401 sans login et le 200 avec.
 - Le code de sortie de l'envoi Telegram.
@@ -173,6 +186,7 @@ Prérequis Coolify (API activée, adresse autorisée, jeton, source GitHub) : r�
 - Fusionner une demande à la CI rouge, absente ou en cours. Pousser en force. `--no-verify`. `--admin`.
 - Fermer un ticket. Écrire `Closes`, `Fixes` ou `Resolves` devant un numéro.
 - Coder un ticket sensible sans go écrit. Ajouter une bibliothèque sans go écrit. Deviner une décision produit.
+- Créer, modifier ou supprimer un profil Hermès. Confier une carte à un profil absent de `hermes profile list`.
 - Créer une préprod sans login. Créer plus d'une ressource Coolify. Modifier, arrêter ou supprimer une autre ressource. Changer un réglage de Coolify. Lancer une commande Docker directe.
 - Lire, afficher ou inventer un secret ou un mot de passe. Écrire le mot de passe dans un message, un ticket ou un fichier.
 - Répondre à une demande d'accord à la place de l'utilisateur. Une commande refusée arrête la carte.

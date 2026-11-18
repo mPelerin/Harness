@@ -1,0 +1,18 @@
+# profils.md : vos profils Hermès, et ce qu'ils ont le droit de faire.
+# Facultatif. Sans ce fichier, le mode nuit choisit seul d'après la liste des profils et leur rôle.
+# Avec ce fichier, il le suit en premier.
+#
+# Mode d'emploi :
+#   1. Copiez ce fichier en config/profils.md dans votre dépôt d'instance (privé).
+#   2. Une ligne par profil : nom, rôle en quelques mots, puis "code" ou "pas de code".
+#   3. Vous n'avez pas besoin de tout lister. Un profil absent reste choisi d'après son rôle.
+#
+# Aucun secret ici. Seulement des noms et des rôles.
+
+# Exemples, à remplacer par les vôtres :
+frontend-engineer : écrans, composants, style : code
+data-engineer : schémas, migrations, requêtes : code
+security-engineer : mots de passe, sessions, droits d'accès : code
+platform-engineer : CI, conteneurs, déploiement : code
+debugger : tests qui échouent, défauts à reproduire : code
+researcher : veille et recherche web : pas de code

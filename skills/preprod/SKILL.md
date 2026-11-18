@@ -9,7 +9,7 @@ description: Déploie la branche preprod d'un projet sur son adresse de préprod
 
 Une branche `preprod` poussée n'est pas une préprod accessible. Ce skill crée une fois, ou réutilise, la ressource Coolify du dépôt, la laisse se redéployer sur la branche `preprod`, et prouve trois choses : l'adresse répond, elle est fermée sans login, et la version en ligne est celle de `origin/preprod`.
 
-Ce skill est l'étape 6 et l'étape 7 du mode nuit, sorties en un seul endroit pour être confiées à une carte `platform-engineer`.
+Ce skill est l'étape 6 et l'étape 7 du mode nuit, sorties en un seul endroit pour être confiées à la carte du profil de déploiement (`PROFIL_DEPLOIEMENT`).
 
 ## Configuration
 
