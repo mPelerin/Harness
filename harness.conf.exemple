@@ -16,6 +16,9 @@ DOMAINE_PROD=
 DOMAINE_PREPROD=
 # Alias SSH de votre serveur, tel qu'écrit dans ~/.ssh/config.
 HOTE_SSH_SERVEUR=
+# Nom de la commande de l'orchestrateur qui reçoit les cartes (son outil en ligne de commande).
+# Vide : feature code sur ce PC. Rempli : feature délègue les tickets et suit les cartes.
+ORCHESTRATEUR=
 # Nom du projet dans Coolify.
 PROJET_COOLIFY=
 # Nom de la source GitHub dans Coolify (l'application GitHub reliée à Coolify).

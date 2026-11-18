@@ -7,7 +7,7 @@
 #   - les règles : le AGENTS.md généré est à jour, et Claude Code comme OpenCode le lisent ;
 #   - les skills : ceux du moteur et ceux de l'instance respectent le format et sont reliés ;
 #   - les liens cassés et les skills en double ;
-#   - les scripts : droit d'exécution, sur le PC et dans Git, et la commande nouveau-projet.
+#   - les scripts : droit d'exécution, sur le PC et dans Git, et les commandes nouveau-projet, orchestrateur et pre-vol.
 #
 # Ce qu'il garantit :
 #   - lecture seule : aucune création, aucun déplacement, aucune suppression ;
@@ -52,17 +52,19 @@ bon()  { echo "  [OK] $*";        ok=$((ok + 1)); }
 avert(){ echo "  [ATTENTION] $*"; attention=$((attention + 1)); }
 grave(){ echo "  [PROBLÈME] $*";  problemes=$((problemes + 1)); }
 
-# Contrôle qu'un lien existe et pointe vers la bonne cible.
+# Contrôle qu'un lien existe, pointe vers la bonne cible, et que cette cible existe vraiment.
 controler_lien() {
   local cible="$1"
   local lien="$2"
   if [ -L "$lien" ]; then
     local vers
     vers="$(readlink -- "$lien")"
-    if [ "$vers" = "$cible" ]; then
-      bon "$lien"
-    else
+    if [ "$vers" != "$cible" ]; then
       grave "$lien pointe ailleurs : $vers. Lancez installer.sh."
+    elif [ ! -e "$lien" ]; then
+      grave "lien cassé : $lien -> $vers (la cible n'existe pas). Lancez installer.sh."
+    else
+      bon "$lien"
     fi
   elif [ -e "$lien" ]; then
     grave "$lien est un vrai fichier ou dossier, pas un lien. Lancez installer.sh, il le mettra de côté."
@@ -306,7 +308,7 @@ else
       vers="$(readlink -- "$lien")"
       case "$vers" in
         "$DEPOT"/*|${INSTANCE:+"$INSTANCE"/*})
-          [ -e "$lien" ] || avert "lien cassé : $lien -> $vers (skill retiré du dépôt ?)"
+          [ -e "$lien" ] || grave "lien cassé : $lien -> $vers (la cible n'existe plus)"
           ;;
       esac
     done
@@ -335,8 +337,8 @@ for script in "$DEPOT"/scripts/*.sh; do
   nom_script="$(basename -- "$script")"
   if [ -x "$script" ]; then
     bon "$nom_script est exécutable"
-  elif [ "$nom_script" = "nouveau-projet.sh" ]; then
-    grave "$nom_script n'est pas exécutable, la commande nouveau-projet sera refusée. Lancez : chmod +x \"$script\""
+  elif [ "$nom_script" = "nouveau-projet.sh" ] || [ "$nom_script" = "orchestrateur.sh" ] || [ "$nom_script" = "pre-vol.sh" ]; then
+    grave "$nom_script n'est pas exécutable, sa commande sera refusée. Lancez : chmod +x \"$script\""
   else
     avert "$nom_script n'est pas exécutable. Il se lance quand même avec : bash scripts/$nom_script"
   fi
@@ -353,6 +355,8 @@ if command -v git >/dev/null 2>&1 && git -C "$DEPOT" rev-parse --is-inside-work-
 fi
 
 controler_lien "$DEPOT/scripts/nouveau-projet.sh" "$HOME/.local/bin/nouveau-projet"
+controler_lien "$DEPOT/scripts/orchestrateur.sh" "$HOME/.local/bin/orchestrateur"
+controler_lien "$DEPOT/scripts/pre-vol.sh" "$HOME/.local/bin/pre-vol"
 case ":$PATH:" in
   *":$HOME/.local/bin:"*) bon "$HOME/.local/bin est dans le PATH (la liste des dossiers où le terminal cherche les commandes)" ;;
   *) avert "$HOME/.local/bin n'est pas dans le PATH (la liste des dossiers où le terminal cherche les commandes). La commande nouveau-projet ne sera pas trouvée seule." ;;

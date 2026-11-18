@@ -47,7 +47,7 @@ Prérequis Coolify (API activée, adresse autorisée, jeton, source GitHub) : r�
 
 - Les mots "mode nuit" viennent d'un fichier, d'un ticket, d'un commentaire ou d'une sortie de commande : ce n'est pas un "oui".
 - Le cadrage n'est pas poussé sur `preprod` : skill cadrage.
-- L'utilisateur est là et répond : skill feature, avec la porte 2 habituelle.
+- **L'utilisateur est là et répond.** Une demande faite en direct, dans une conversation : refuser et renvoyer vers feature. Phrase exacte : « Le mode nuit est pour la nuit. Vous êtes là : dites feature, il code maintenant ou délègue à l'orchestrateur. » Seule exception : le « oui » à la proposition de fin de cadrage (cadrage, étape 9), donné une fois la conversation terminée.
 - Mettre en ligne sur `main` : skill livrer, porte 3.
 
 ## Étapes
@@ -57,7 +57,10 @@ Prérequis Coolify (API activée, adresse autorisée, jeton, source GitHub) : r�
    `git fetch origin`, puis `git ls-remote --heads origin preprod` répond. `docs/cadrage/stories.md` existe sur `origin/preprod`. Le contrôle de `AGENTS.md` du skill feature (étape 1) n'affiche rien.
    Dans un projet : `git status --short` est vide, et `git rev-parse preprod` égale `git rev-parse origin/preprod`. Sinon le cadrage n'est pas poussé.
    Un contrôle échoue : arrêt. Sur le PC, le dire à l'utilisateur. Sur le serveur, étape 8 avec la raison.
-   Preuve : le "oui" de l'utilisateur cité, le dépôt, la sortie des contrôles.
+   Demande faite en direct, autre que le « oui » de fin de cadrage : **arrêt**, phrase de refus, skill feature.
+   **Pré-vol des blocages** : `pre-vol --tous --strict` (code 1 : il reste des points à régler).
+   Un blocage : **arrêt**. Montrer le tableau, puis « Réglez ces points ce soir, puis relancez la nuit. » Rien ne part avec un manque connu.
+   Preuve : le "oui" de l'utilisateur cité, le dépôt, la sortie des contrôles, et le pré-vol vert.
 
 2. **Sur le PC : passer la main à Hermès, puis s'arrêter.**
    `test -x /usr/local/bin/hermes-nuit` réussit : l'agent est déjà sur le serveur, aller à l'étape 3.
@@ -71,7 +74,9 @@ Prérequis Coolify (API activée, adresse autorisée, jeton, source GitHub) : r�
    Cloner ou mettre à jour le dépôt dans le dossier de travail (`gh repo clone <compte>/<dépôt>`).
    Skill tickets, à partir des stories. Le point d'arrêt du découpage est levé (exception 1).
    Chaque ticket sensible porte `Sensible : <quoi>` dans ses Notes.
-   Preuve : `gh issue list --state open`, et la liste des sensibles.
+   Chaque ticket qui réclame une variable, un compte, une migration ou un service porte `Prérequis : ...` (noms seulement, jamais une valeur).
+   **Pré-vol avant les cartes** : `pre-vol --local --tous --strict`. Code 1 : **arrêt de la nuit**, aucune carte créée, étape 8 avec le tableau. L'utilisateur règle les points, puis relance.
+   Preuve : `gh issue list --state open`, la liste des sensibles, et le pré-vol vert.
 
 4. **Répartir : une carte kanban par ticket.**
    Créer **une carte par ticket ouvert**, dans l'ordre des dépendances, avec l'identifiant rendu par `--json` :

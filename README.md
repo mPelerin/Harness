@@ -14,7 +14,7 @@ Votre **instance** vit dans un dépôt à vous, privé. Elle contient un dossier
 
 | Fichier | Contenu |
 | --- | --- |
-| `harness.conf` | Prénom, compte GitHub, domaines, serveur. Format `CLE=valeur`, aucun secret. Modèle : `harness.conf.exemple` |
+| `harness.conf` | Prénom, compte GitHub, domaines, serveur, commande de l'orchestrateur. Format `CLE=valeur`, aucun secret. Modèle : `harness.conf.exemple` |
 | `profil.md` | Votre façon de travailler et de recevoir les réponses. Ajouté aux règles du moteur |
 | `interdits.txt` | Les mots qui ne doivent jamais entrer dans le moteur (liste noire du hook) |
 
@@ -33,6 +33,8 @@ harness/
     installer.sh           branche les agents sur le moteur et l'instance
     verifier-install.sh    contrôle que tout est bien branché
     nouveau-projet.sh      crée un projet depuis le gabarit (commande nouveau-projet)
+    orchestrateur.sh       dépose une demande chez l'orchestrateur et suit la carte
+    pre-vol.sh             liste les blocages humains avant de coder ou de lancer la nuit
     mesurer-mcp.mjs        mesure la place que prend un outil MCP
   skills/                les skills de méthode, plus le skill témoin test-harness
   template-projet/       le socle commun à tous les projets
@@ -80,6 +82,8 @@ Chaque ligne est un skill. Vous dites le mot, l'agent déroule, et il s'arrête 
 | fini, reprends | Écrit la passation, ou repart de la dernière | Nulle part |
 
 Les portes sont détaillées dans `template-projet/docs/portes.md`.
+
+**Déléguer à un orchestrateur.** Si `ORCHESTRATEUR` est rempli dans `harness.conf`, `feature` ne code pas ici. Il ouvre une sous-conversation par ticket. Elle dépose la carte chez l'orchestrateur et la suit, sans bruit. La conversation principale ne garde qu'un tableau. `feature local` force le codage sur ce PC. Le pré-vol (`pre-vol --strict`) vérifie avant tout dépôt que les variables, comptes et migrations sont prêts, et qu'aucun ticket ne laisse ses prérequis dans le flou.
 
 ## Créer un projet
 

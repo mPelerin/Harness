@@ -74,7 +74,8 @@ Les documents de cadrage s'écrivent directement sur `preprod`. Le code, jamais 
 6. **Écrire les documents.**
    Utiliser les modèles plus bas. `ux.md` seulement s'il y a des écrans.
    Ajouter les réponses utiles à `docs/decisions.md`, une ligne par décision, datée.
-   Preuve : la liste des fichiers écrits.
+   **Périmètre réduit.** Chaque fois qu'une réponse retire quelque chose (un écran, un réglage, un mode, un parcours), ajouter une ligne datée dans « Retiré du périmètre » de `prd.md` : quoi, pourquoi, et si c'est remis à plus tard. Rien ne disparaît en silence.
+   Preuve : la liste des fichiers écrits, et ce qui a été retiré.
 
 7. **Remplir `AGENTS.md`, puis commiter sur preprod.**
    Chaque `<...>` est remplacé à partir des documents, du code et de `docs/decisions.md`. Aucune nouvelle question.
@@ -93,7 +94,7 @@ Les documents de cadrage s'écrivent directement sur `preprod`. Le code, jamais 
    Preuve : le contrôle vide, `git log --oneline -1` et la liste des fichiers du commit.
 
 8. **Faire relire. POINT D'ARRÊT (porte 1).**
-   Montrer à l'utilisateur le chemin de chaque fichier, `AGENTS.md` compris, et un résumé : nombre de stories, décisions, hypothèses, règles métier.
+   Montrer à l'utilisateur le chemin de chaque fichier, `AGENTS.md` compris, et un résumé : nombre de stories, décisions, hypothèses, règles métier, et ce qui a été retiré du périmètre.
    Demander "go" après sa relecture. Chaque correction est un nouveau commit, puis on remontre.
    Preuve : le "go" de l'utilisateur, visible dans la conversation.
 
@@ -126,8 +127,11 @@ Les documents de cadrage s'écrivent directement sur `preprod`. Le code, jamais 
 ## Hors périmètre
 - <Ce qu'on ne fait pas, et pourquoi.>
 
+## Retiré du périmètre
+- <Date : ce qui a été retiré en cours de cadrage, et pourquoi. « Rien » si rien n'a été retiré.>
+
 ## Points sensibles
-- Argent, droits d'accès, données personnelles, base de données : <lesquels, ou "aucun">.
+- Argent, droits d'accès, données personnelles, base de données, services externes et variables attendues : <lesquels, ou "aucun">.
 
 ## Hypothèses
 - <Ce qui n'a pas été tranché, à vérifier plus tard.>
@@ -169,11 +173,13 @@ C'est fini quand :
 - Le contrôle de `AGENTS.md`, vide.
 - Le "go" de l'utilisateur, puis le commit relu sur GitHub.
 - Le nombre de stories, de décisions et d'hypothèses.
+- Ce qui a été retiré du périmètre, s'il y en a.
 
 ## Interdits
 
 - Poser plusieurs questions dans le même message.
 - Deviner une décision produit. Une réponse absente devient une hypothèse écrite.
+- Réduire un périmètre sans l'écrire dans « Retiré du périmètre ».
 - Écrire sur main. Écrire du code, même sur `preprod`.
 - Pousser en force (`--force`, `--force-with-lease`).
 - Créer des tickets : c'est le rôle du skill tickets.

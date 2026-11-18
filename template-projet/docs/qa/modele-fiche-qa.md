@@ -18,6 +18,7 @@ L'agent la prépare. L'humain la déroule et remplit la colonne Commentaire.
 ## #<numéro> : <titre court>
 
 **À tester à l'écran :** <oui / "Rien à tester à l'écran. Les preuves Machine suffisent.">
+**⛔ À faire avant de tester :** <migration à appliquer, variable à poser, compte à créer, avec la commande ou l'endroit exact. "Aucun" sinon. Jamais une valeur de secret.>
 **Version testée :** demande de fusion #<numéro>, commit <code de 7 caractères>
 
 **Pour tester :**
@@ -50,3 +51,4 @@ Puis ouvrir <adresse locale et page>. Pour revenir : `git switch preprod`.
 - **Avec le mauvais compte.** Au moins une étape par ticket vérifie qu'un compte sans droit ne voit rien.
 - **Colonne Commentaire vide.** C'est la place de l'humain. L'agent ne la remplit pas.
 - **Rien pour l'humain qu'une commande peut prouver.** L'agent lance la commande et met la preuve.
+- **Prérequis en tête.** Une migration, une variable, un compte : en haut de la fiche. Tant que ce n'est pas réglé, la fiche n'est pas prête.
