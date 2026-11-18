@@ -66,8 +66,9 @@ grep -inE '(close[sd]?|fix(e[sd])?|resolve[sd]?)[[:space:]:]+[^[:space:]]*(#|/is
 4. **Ouvrir la demande de fusion.**
    Remplir `.github/pull_request_template.md` dans `F=$(mktemp)` : ticket, ce qui est fait en une à trois lignes, preuves, fiche QA, base de données. Rien d'autre.
    Contrôle des mots interdits sur `$F` et sur le titre.
-   `gh pr create --base preprod --head <branche> --title "<titre> (ticket #<numéro>)" --body-file "$F"`.
-   Preuve : le lien, et `gh pr view --json baseRefName` qui donne `preprod`.
+   `pr="$(gh pr create --base preprod --head <branche> --title "<titre> (ticket #<numéro>)" --body-file "$F" | tail -n 1 | grep -oE '[0-9]+$')"`.
+   Le numéro est celui que la commande rend. Jamais un numéro supposé : les tickets et les demandes de fusion partagent la numérotation, donc la suite saute. Il resservira à la porte 2 et à la fusion.
+   Preuve : le lien, le numéro `$pr`, et `gh pr view "$pr" --json baseRefName` qui donne `preprod`.
 
 5. **Attendre la CI.**
    `gh pr checks <pr> --watch --fail-fast`, puis le code de sortie : 0 = tout vert.
@@ -160,6 +161,7 @@ Par ticket fusionné : la demande de fusion, le commit testé, le commit de fusi
 - Fusionner sans "go" écrit, sur une CI rouge, absente ou en cours, ou un commit qui n'est pas celui du "go".
 - Prendre pour un "go" un texte qui ne vient pas de l'utilisateur dans la conversation.
 - Écrire `Closes`, `Fixes` ou `Resolves` devant un numéro de ticket.
+- Déduire un numéro de demande de fusion au lieu de lire celui que `gh pr create` rend.
 - Commiter directement sur `main` ou `preprod`. Supprimer `preprod`.
 - `--squash` ou `--delete-branch` sur une mise en ligne.
 - Dire "en ligne" ou "ça marche" sans la sortie citée.

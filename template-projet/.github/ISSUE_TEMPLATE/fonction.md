@@ -19,6 +19,10 @@ labels: ["enhancement"]
 
 - <Ce qu'on ne fait pas dans ce ticket>
 
+## Prérequis
+
+<Ce qu'il faut avoir posé avant de coder : noms de variables avec leur lieu (`NOM (coffre)`, `NOM (GitHub dev)`, `NOM (GitHub depot)`), compte à créer, migration, service externe. Des noms seulement, jamais une valeur. "Aucun" sinon.>
+
 ## Notes
 
 <Liens, captures, idées. Facultatif.>

@@ -45,6 +45,7 @@ Arrêt si `git ls-remote --heads origin preprod` ne renvoie rien : le cadrage n'
   - `Story : docs/cadrage/stories.md, S3` quand il vient d'une story.
   - `Branche de base : preprod`.
   - `Dépend de : #<numéro>` quand il en dépend.
+  - `Prérequis : <noms de variables, compte, migration, service>` quand il en faut avant de coder, ou `Prérequis : aucun`. Des noms seulement, jamais une valeur. Pour une variable, écrire son lieu : `NOM (coffre)`, `NOM (GitHub dev)`, `NOM (GitHub depot)`. Le pré-vol s'en sert avant de lancer le codage ou la nuit.
   - `Sensible : <argent, droits, données personnelles, base, bibliothèque>` quand il en touche.
 
 ## Étapes, mode A : des stories aux tickets
@@ -69,7 +70,9 @@ Arrêt si `git ls-remote --heads origin preprod` ne renvoie rien : le cadrage n'
    Pour chacun : corps écrit dans un fichier temporaire (`F=$(mktemp)`), puis
    `gh issue create --title "<titre>" --label enhancement --body-file "$F"`.
    Un ticket qui dépend d'un autre est créé après lui, pour citer son vrai numéro.
-   Preuve : la liste des numéros et des liens créés.
+   **Le numéro est celui que la commande rend** : `gh issue create` affiche l'adresse, son dernier nombre est le numéro. Ne jamais le déduire du dernier ticket vu : les demandes de fusion prennent les mêmes numéros, donc la suite saute.
+   Relire le numéro rendu avant de créer le suivant.
+   Preuve : la liste des numéros et des liens créés, chacun avec la sortie de `gh issue create`.
 
 5. **Faire le bilan.**
    Un tableau story, tickets créés. Aucune story sans ticket.
@@ -83,7 +86,7 @@ Arrêt si `git ls-remote --heads origin preprod` ne renvoie rien : le cadrage n'
 1. Reformuler le bug ou la fonction en deux phrases. Confirmer avec l'utilisateur.
 2. Bug : demander les étapes pour reproduire, si elles manquent. Ne pas les inventer.
 3. Trouver la branche de base. Montrer le ticket complet. **POINT D'ARRÊT** : attendre le "go".
-4. Créer avec `gh issue create`, étiquette `bug` ou `enhancement`.
+4. Créer avec `gh issue create`, étiquette `bug` ou `enhancement`. Lire le numéro dans la sortie, jamais un numéro supposé.
 5. Relire avec le mode C, étape 1.
    Preuve : le numéro créé et le résultat de la relecture.
 
@@ -96,6 +99,7 @@ Arrêt si `git ls-remote --heads origin preprod` ne renvoie rien : le cadrage n'
    - Il porte un seul changement, qui tiendra dans un seul commit.
    - Il tient en une demi-journée d'agent.
    - Argent, droits d'accès, données personnelles : signalés s'ils sont touchés.
+   - Les prérequis bloquants sont déclarés : noms de variables, compte, migration, service. Ou `Prérequis : aucun`.
    - La branche de base est écrite, et c'est la bonne.
    - La story citée existe dans `stories.md`. Les tickets de "Dépend de" existent.
    Preuve : la grille, une ligne par point, conforme ou écart.
@@ -129,5 +133,7 @@ Arrêt si `git ls-remote --heads origin preprod` ne renvoie rien : le cadrage n'
 - Modifier les fichiers de `docs/cadrage/` : c'est le rôle du skill cadrage.
 - Effacer le texte d'un ticket sans laisser de commentaire de trace.
 - Inventer des étapes de reproduction ou des conditions.
+- Supposer un numéro au lieu de lire celui que la commande rend.
+- Omettre un prérequis bloquant, ou écrire la valeur d'un secret à sa place.
 - Mettre de vraies données de personnes, un secret ou un extrait de `.env` dans un ticket.
 - Écrire du code.
