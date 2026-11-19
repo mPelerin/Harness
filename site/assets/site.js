@@ -42,6 +42,36 @@
     cibles.forEach(function (c) { obs.observe(c); });
   }
 
+  // Bouton clair ou sombre. Sans choix enregistré, le site suit le réglage du système.
+  var racine = document.documentElement;
+  var systemeSombre = window.matchMedia("(prefers-color-scheme: dark)");
+  var boutonTheme = document.querySelector(".nav-theme");
+  function sombreActif() {
+    var choix = racine.getAttribute("data-theme");
+    return choix ? choix === "dark" : systemeSombre.matches;
+  }
+  function majBoutonTheme() {
+    if (!boutonTheme) return;
+    var sombre = sombreActif();
+    boutonTheme.setAttribute("data-mode", sombre ? "sombre" : "clair");
+    boutonTheme.setAttribute("aria-label", sombre ? "Passer en mode clair" : "Passer en mode sombre");
+    boutonTheme.setAttribute("title", sombre ? "Mode clair" : "Mode sombre");
+  }
+  if (boutonTheme) {
+    boutonTheme.addEventListener("click", function () {
+      var choix = sombreActif() ? "light" : "dark";
+      racine.setAttribute("data-theme", choix);
+      try { localStorage.setItem("harness-theme", choix); } catch (e) { /* stockage bloqué : le choix vaut pour cette page */ }
+      majBoutonTheme();
+    });
+    if (systemeSombre.addEventListener) systemeSombre.addEventListener("change", majBoutonTheme);
+    majBoutonTheme();
+  }
+
+  // Sur téléphone, les liens défilent : montrer celui de la page en cours.
+  var lienActif = document.querySelector(".nav-liens [aria-current]");
+  if (lienActif) lienActif.parentNode.scrollLeft = lienActif.offsetLeft - lienActif.parentNode.offsetLeft - 8;
+
   // La navigation se resserre quand on défile.
   var nav = document.querySelector(".nav");
   if (nav) {

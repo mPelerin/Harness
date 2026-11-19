@@ -16,7 +16,7 @@ Trois règles font l'essentiel du rendu :
 
 ## Couleurs
 
-Les variables sont dans `assets/style.css`, en haut. Mode clair par défaut, mode sombre suivi automatiquement (`prefers-color-scheme`).
+Les variables sont dans `assets/style.css`, en haut. Le site suit le réglage clair ou sombre du système (`prefers-color-scheme`). Le bouton lune ou soleil de la navigation force l'un des deux : il pose `data-theme` sur `html` et garde le choix dans le navigateur (`harness-theme`). Les variables sombres existent donc deux fois dans le CSS : sous la media query, et sous `:root[data-theme="dark"]`. Une couleur changée doit l'être aux deux endroits.
 
 | Rôle | Clair | Sombre |
 | --- | --- | --- |
@@ -58,7 +58,7 @@ Les polices viennent de Google Fonts. Sans elles, des polices système de la mê
 
 ## Composants
 
-- **Navigation** : pilule flottante en haut, floutée, qui se resserre au défilement. La page en cours est en encre pleine. Sur téléphone, les liens défilent à l'horizontale.
+- **Navigation** : pilule flottante en haut, floutée, qui se resserre au défilement. La page en cours est en encre pleine. À droite, toujours visibles : le lien vers le dépôt GitHub (icône seule sur téléphone) et le bouton clair ou sombre. Sur téléphone, les liens de pages défilent à l'horizontale.
 - **Boutons** : plein encre, plein ocre pour l'appel final, ou lien texte suivi d'un chevron ocre. Tous rétrécissent un peu au clic.
 - **Cartes** : fond carte, bordure fine, badge mono en haut, titre serif, texte gris.
 - **Listes numérotées** : numéro mono ocre 01, 02, lignes pointillées.
