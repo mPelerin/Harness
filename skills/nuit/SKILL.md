@@ -134,7 +134,7 @@ Prérequis Coolify (API activée, adresse autorisée, jeton, source GitHub) : r�
    Preuve : l'état du tableau, les demandes de fusion, et aucune trace d'écriture de code par l'orchestrateur.
 
 6. **Déployer la préprod : une carte du profil de déploiement.**
-   Ce profil est le seul à recevoir `COOLIFY_API_TOKEN`, `PREPROD_LOGIN` et `PREPROD_MOT_DE_PASSE`. L'orchestrateur ne peut ni le deviner ni lire ses secrets : son nom vient de `PROFIL_DEPLOIEMENT` dans `harness.conf`. Clé vide ou absente : **arrêt du déploiement**, le dire.
+   Ce profil est le seul à recevoir `COOLIFY_API_TOKEN` et les secrets de la protection des préprods (jeton Cloudflare Access, ou `PREPROD_LOGIN` et `PREPROD_MOT_DE_PASSE`, voir le skill preprod). L'orchestrateur ne peut ni le deviner ni lire ses secrets : son nom vient de `PROFIL_DEPLOIEMENT` dans `harness.conf`. Clé vide ou absente : **arrêt du déploiement**, le dire.
    Créer la carte du déploiement, parente de toutes les cartes de code :
 
    ```bash
@@ -144,10 +144,10 @@ Prérequis Coolify (API activée, adresse autorisée, jeton, source GitHub) : r�
    ```
 
    Son corps : le dépôt, la branche `preprod`, l'adresse attendue, et « applique le skill preprod, sans inventer de secret ». Le skill commence par contrôler les prérequis Coolify en lecture seule : un prérequis qui manque arrête la carte, avec son nom.
-   L'attendre, et lire sa preuve : le contrôle des prérequis, l'adresse, le 401 sans login, le 200 avec, le commit déployé.
+   L'attendre, et lire sa preuve : le contrôle des prérequis, l'adresse, la préprod fermée sans login (401, ou 302 vers la page de connexion Access), le 200 avec, le commit déployé.
    Preuve : le statut de la carte et sa preuve.
 
-7. **La preuve est dans le skill preprod.** 401 sans login, 200 avec login, commit déployé égal à `origin/preprod`, sinon « Version non vérifiée ». Elle est produite par la carte de l'étape 6, pas par l'orchestrateur.
+7. **La preuve est dans le skill preprod.** Fermée sans login (401, ou 302 vers la page de connexion Access), 200 avec login, commit déployé égal à `origin/preprod`, sinon « Version non vérifiée ». Elle est produite par la carte de l'étape 6, pas par l'orchestrateur.
 
 8. **Prévenir l'utilisateur sur Telegram. Toujours, même si tout a échoué.**
    Le message reste dans la tâche de l'orchestrateur : c'est la seule façon de garantir qu'il part même si une carte échoue.
@@ -179,7 +179,7 @@ Prérequis Coolify (API activée, adresse autorisée, jeton, source GitHub) : r�
 - Le "oui" de l'utilisateur cité, et sur le PC le numéro de la tâche passée à Hermès.
 - Une carte kanban par ticket, avec son profil, sa ligne de raison et sa dépendance.
 - Par ticket fusionné : la demande de fusion, le commit, la CI verte, le ticket encore `OPEN`.
-- La carte de déploiement, la ressource Coolify, l'adresse, le 401 sans login et le 200 avec.
+- La carte de déploiement, la ressource Coolify, l'adresse, le code sans login (401 ou 302) et le 200 avec.
 - Le code de sortie de l'envoi Telegram.
 - La liste de ce qui n'est pas fait ou pas vérifié.
 
