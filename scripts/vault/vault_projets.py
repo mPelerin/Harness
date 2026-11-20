@@ -92,7 +92,7 @@ def generer_projet(racine: Path, nom: str, depot="", ecraser=False):
                 corps += ["## Dans l'ordre de lecture", ""]
                 corps += [f"{k}. [[{nom} - {n[0]}]] : {n[3]}" for k, n in enumerate(s["notes"], 1)]
             if s["dossier"] == "05 Tickets":
-                corps += [DEBUT, "La liste des tickets est générée par `vault_projets.py recap`.", FIN]
+                corps += ["", f"Les tickets et leur statut, à jour depuis GitHub : [[{nom} - GitHub]]."]
             if s["dossier"] == "09 Journal":
                 corps += ["## Comptes rendus", "", "<!-- Une note par séance, modèle « Compte rendu ». -->"]
             texte = frontmatter(fm) + "\n".join(corps) + "\n"
@@ -131,7 +131,7 @@ def note_github(nom):
 
 def note_projet(nom, depot):
     fm = {"type": "projet", "statut": "actif", "phase": "discovery", "depot": depot,
-          "prod": "", "preprod": "", "avancement": 0, "resume": '""',
+          "prod": "", "preprod": "", "resume": '""',
           "suivant": lien(f"{nom} - {SECTIONS[0]['dossier']}")}
     sommaire = [f"- [[{nom} - {s['dossier']}]] : {s['sujet']}" for s in SECTIONS]
     return frontmatter(fm) + "\n".join([
@@ -193,7 +193,7 @@ Huit au plus, noms sans accent pour les requêtes et les agents :
 | `haut` | le sommaire de sa section | lien |
 | `precedent`, `suivant` | le fil de lecture du projet | liens |
 
-La note projet a en plus `phase`, `depot` (propriétaire/dépôt GitHub), `prod`, `preprod` et `avancement` (calculé).
+La note projet a en plus `phase`, `depot` (propriétaire/dépôt GitHub), `prod` et `preprod`. L'avancement est calculé dans la note `<Nom> - GitHub`, générée et jamais versionnée.
 Un ticket a `numero`, `issue` (adresse GitHub) et `branche` à la place de `agent`, `precedent` et `suivant`.
 
 ## Liens
@@ -241,17 +241,15 @@ Les notes encore vides, par projet.
 BASES = {
     "Projets.base": """filters:
   and:
-    - note.type == "projet"
+    - note.type == "suivi"
     - '!file.inFolder("_Modèles")'
 views:
   - type: table
     name: Projets
     order:
-      - file.name
-      - note.phase
+      - note.projet
       - note.avancement
-      - note.statut
-      - note.depot
+      - file.name
 """,
     "Tickets.base": """filters:
   and:
@@ -475,11 +473,6 @@ def bloc_recap(nom, fm, projet_dir):
     l += ["", "### Branches et mises en ligne", "",
           "Bleu : `main`, la production. Vert : `preprod`. Chaque point vert est un ticket fusionné en préprod ; "
           "chaque retour sur la ligne bleue est une mise en ligne.", "", graphe_branches(prs, tickets)]
-    sommaire_t = projet_dir / "05 Tickets" / f"{nom} - 05 Tickets.md"
-    if sommaire_t.exists():
-        liste = "\n".join(f"- {note_ticket(nom, t, projet_dir)} : {STATUTS_TICKET[t['statut']]}" for t in tickets)
-        ecrire(sommaire_t, remplacer_bloc(sommaire_t.read_text(encoding="utf-8"),
-                                          "## Tickets\n\nListe générée depuis GitHub, avec leur statut.\n\n" + liste))
     if sorties:
         der = sorties[-1]
         l += ["", f"Dernière mise en ligne : [PR #{der['number']}]({der['url']}), le {der['mergedAt'][:10]}."]
@@ -502,13 +495,17 @@ def cmd_recap(_):
         try:
             bloc, pct, compte = bloc_recap(f.stem, fm, f.parent)
         except RuntimeError as e:
-            bloc, pct, compte = f"Récap impossible : {e}", fm.get("avancement", 0), {}
+            # GitHub injoignable : on garde le dernier récap tel quel, et on le dit dans le journal
+            print(f"{f.stem} : récap impossible, note GitHub laissée intacte ({str(e).splitlines()[0]})")
+            continue
         note_gh = f.parent / f"{f.stem} - GitHub.md"
         base = note_gh.read_text(encoding="utf-8") if note_gh.exists() else note_github(f.stem)
-        maj_gh = ecrire(note_gh, remplacer_bloc(base, bloc))
-        neuf = re.sub(re.escape(DEBUT) + r".*?" + re.escape(FIN) + r"\n?", "", texte, flags=re.S)
-        neuf = re.sub(r"^avancement:.*$", f"avancement: {pct}", neuf, count=1, flags=re.M)
-        ecrire(f, neuf)
+        neuf_gh = remplacer_bloc(base, bloc)
+        if re.search(r"^avancement:", neuf_gh, re.M):
+            neuf_gh = re.sub(r"^avancement:.*$", f"avancement: {pct}", neuf_gh, count=1, flags=re.M)
+        else:
+            neuf_gh = neuf_gh.replace("\n---\n", f"\navancement: {pct}\n---\n", 1)
+        maj_gh = ecrire(note_gh, neuf_gh)
         print(f"{f.stem} : GitHub {'mis à jour' if maj_gh else 'inchangé'} ({pct} %)")
         lignes_tdb.append(f"| [[{f.stem}]] | {fm.get('phase', '')} | {pct} % | {compte.get('en-revue', 0) + compte.get('en-cours', 0)} | "
                           f"{compte.get('a-faire', 0)} | {compte.get('en-preprod', 0) + compte.get('en-ligne', 0)} | {fm.get('resume', '')} |")
@@ -539,12 +536,12 @@ def cmd_verifier(a):
                 casses.append(f"{p.relative_to(racine)} -> [[{cible}]]")
         fm = lire_fm(texte)
         typ = fm.get("type")
-        attendues = (["type", "statut", "phase", "depot", "avancement"] if typ == "projet"
+        attendues = (["type", "statut", "phase", "depot"] if typ == "projet"
                      else ["projet", "type", "statut", "numero", "issue", "haut"] if typ == "ticket"
                      else ["projet", "type", "resume", "haut"] if typ == "suivi"
                      else ["type", "statut", "resume"] if typ == "methode" or "_Modèles/Notes" in str(p)
                      else PROPRIETES)
-        manque = [k for k in attendues if k not in fm]
+        manque = [] if p.name in ("AGENTS.md", "CLAUDE.md") else [k for k in attendues if k not in fm]  # fichiers de règles, pas des notes
         if manque:
             manquantes.append(f"{p.relative_to(racine)} : {', '.join(manque)}")
         if "_Modèles" not in str(p):
