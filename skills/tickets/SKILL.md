@@ -1,6 +1,6 @@
 ---
 name: tickets
-description: Crée, relit et corrige les tickets GitHub d'un projet. Transforme les user stories de docs/cadrage/stories.md en tickets fins qui traversent toute l'appli, crée un ticket isolé pour un bug ou une petite fonction, ou corrige un ticket flou. À utiliser quand l'utilisateur dit "tickets", "crée les tickets", "découpe en tickets", "crée un ticket", "ouvre une issue", "relis le ticket 12", "corrige le ticket" ou "il y a un bug". Ne pas utiliser pour cadrer une idée floue (cadrage) ni pour réaliser un ticket (feature).
+description: Crée, relit et corrige les tickets GitHub d'un projet. Transforme les user stories de la note Stories du projet (vault) en tickets fins qui traversent toute l'appli, crée un ticket isolé pour un bug ou une petite fonction, ou corrige un ticket flou. À utiliser quand l'utilisateur dit "tickets", "crée les tickets", "découpe en tickets", "crée un ticket", "ouvre une issue", "relis le ticket 12", "corrige le ticket" ou "il y a un bug". Ne pas utiliser pour cadrer une idée floue (cadrage) ni pour réaliser un ticket (feature).
 ---
 
 # Tickets : créer, relire, corriger
@@ -16,7 +16,7 @@ Un ticket sensible le dit dans ses Notes (`Sensible : <quoi>`) : feature attendr
 
 ## Quand l'utiliser
 
-- Des user stories validées dans `docs/cadrage/stories.md`, à transformer en tickets.
+- Des user stories validées dans la note `02 Cadrage/<projet> - Stories.md` du vault, à transformer en tickets.
 - Un bug ou une petite fonction à noter en ticket.
 - Un ticket existant à relire ou à corriger, par exemple quand feature l'a jugé flou.
 
@@ -42,7 +42,7 @@ Arrêt si `git ls-remote --heads origin preprod` ne renvoie rien : le cadrage n'
 - **Le modèle du projet** : `.github/ISSUE_TEMPLATE/fonction.md` ou `bug.md`.
 - **Des conditions vérifiables** : "le bouton Exporter télécharge un fichier CSV", pas "l'export marche bien".
 - **Ses liens, dans les Notes** :
-  - `Story : docs/cadrage/stories.md, S3` quand il vient d'une story.
+  - `Story : <projet> - Stories, S3` quand il vient d'une story.
   - `Branche de base : preprod`.
   - `Dépend de : #<numéro>` quand il en dépend.
   - `Prérequis : <noms de variables, compte, migration, service>` quand il en faut avant de coder, ou `Prérequis : aucun`. Des noms seulement, jamais une valeur. Pour une variable, écrire son lieu : `NOM (coffre)`, `NOM (GitHub dev)`, `NOM (GitHub depot)`. Le pré-vol s'en sert avant de lancer le codage ou la nuit.
@@ -51,7 +51,7 @@ Arrêt si `git ls-remote --heads origin preprod` ne renvoie rien : le cadrage n'
 ## Étapes, mode A : des stories aux tickets
 
 1. **Lire les stories.**
-   `git fetch origin`, puis `git show origin/preprod:docs/cadrage/stories.md`. Lire aussi `prd.md` et `ux.md` du même dossier.
+   Lire la note `02 Cadrage/<projet> - Stories.md` du vault. Lire aussi la note PRD et `03 Design/<projet> - Écrans et états.md`.
    Arrêt si le fichier manque sur GitHub : le cadrage n'est pas passé par la porte 1. Retour au skill cadrage.
    Preuve : la liste des stories, numéro et titre.
 
@@ -101,7 +101,7 @@ Arrêt si `git ls-remote --heads origin preprod` ne renvoie rien : le cadrage n'
    - Argent, droits d'accès, données personnelles : signalés s'ils sont touchés.
    - Les prérequis bloquants sont déclarés : noms de variables, compte, migration, service. Ou `Prérequis : aucun`.
    - La branche de base est écrite, et c'est la bonne.
-   - La story citée existe dans `stories.md`. Les tickets de "Dépend de" existent.
+   - La story citée existe dans la note Stories. Les tickets de "Dépend de" existent.
    Preuve : la grille, une ligne par point, conforme ou écart.
 
 2. **Proposer la correction. POINT D'ARRÊT.**
@@ -130,7 +130,7 @@ Arrêt si `git ls-remote --heads origin preprod` ne renvoie rien : le cadrage n'
 - Fermer un ticket. C'est le rôle du skill livrer, à la main après la fusion dans `preprod`, ou de l'utilisateur.
 - Écrire `Closes`, `Fixes` ou `Resolves` devant un numéro : un ticket ne se ferme jamais tout seul.
 - Créer un ticket qui réunit plusieurs changements indépendants.
-- Modifier les fichiers de `docs/cadrage/` : c'est le rôle du skill cadrage.
+- Modifier les notes de cadrage : c'est le rôle du skill cadrage.
 - Effacer le texte d'un ticket sans laisser de commentaire de trace.
 - Inventer des étapes de reproduction ou des conditions.
 - Supposer un numéro au lieu de lire celui que la commande rend.

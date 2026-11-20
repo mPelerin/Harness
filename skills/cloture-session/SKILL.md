@@ -50,7 +50,7 @@ Prochaine action : <une seule, avec la commande ou la phrase exacte à dire>
    Les dire en tête du rapport. Ne rien pousser, ne rien commiter, ne rien supprimer : c'est le rôle de feature et de livrer.
 
 3. **Relire la session.**
-   Ce qui a été décidé, fait, laissé en suspens. Les décisions qui ne sont pas encore dans `docs/decisions.md` : les lister comme "à écrire dans le prochain ticket".
+   Ce qui a été décidé, fait, laissé en suspens. Les décisions qui ne sont pas encore dans le journal des décisions du projet (vault) : les y écrire.
 
 4. **Écrire la passation.**
    `mkdir -p` du dossier, puis le fichier au format ci-dessus. Phrases courtes, liens et commandes exacts.

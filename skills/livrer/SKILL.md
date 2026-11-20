@@ -47,7 +47,7 @@ grep -inE '(close[sd]?|fix(e[sd])?|resolve[sd]?)[[:space:]:]+[^[:space:]]*(#|/is
 1. **Situer.**
    `git branch --show-current` donne `<numéro>-<mots-courts>`. Arrêt si c'est `main` ou `preprod`.
    `git status --short` vide. `gh issue view <numéro> --json state` donne `OPEN`.
-   `docs/tickets/<numéro>-<mots-courts>/feature.md`, `log.md` et `docs/qa/<numéro>-<mots-courts>.md` existent.
+   La note du ticket (`05 Tickets/<projet> - T<numéro> <titre>.md` dans le vault) existe, avec un plan, un journal et une fiche QA remplis.
    Une demande de fusion est déjà ouverte (`gh pr view --json number,state` donne `OPEN`) : reprendre à l'étape 5.
 
 2. **Contrôler avant l'envoi.**
@@ -108,7 +108,7 @@ Un commit de fusion à la place d'un squash : le signaler en une ligne. Ne rien 
 
 ## Boucle de correction, après le premier push
 
-Un nouveau commit sur la branche, jamais `--amend`, jamais de rebase. Il contient la correction et une ligne datée dans `log.md`.
+Un nouveau commit sur la branche, jamais `--amend`, jamais de rebase. Il contient la correction ; une ligne datée s'ajoute dans le « Journal de l'agent » de la note du ticket.
 Puis verifier, `git push` normal, étape 5. La porte 2 se rejoue : un "go" donné avant une correction ne vaut plus.
 
 ## Étapes, mode mise en ligne
@@ -119,7 +119,7 @@ Puis verifier, `git push` normal, étape 5. La porte 2 se rejoue : un "go" donn�
    Contrôle des mots interdits sur `git log --format=%B origin/main..origin/preprod` : c'est sur main qu'un mot ferme un ticket.
    `gh run list --branch preprod --limit 1` est vert. `deleteBranchOnMerge` vaut `false`.
 
-2. **Préparer la porte 3.** D'après `docs/portes.md` : la base de données change-t-elle, et quoi appliquer avant ; la commande de retour arrière ; le déploiement Coolify est-il activé (`.github/workflows/deploy-coolify.yml`, sans `.desactive`).
+2. **Préparer la porte 3.** D'après `_Méthode/Portes.md` du vault : la base de données change-t-elle, et quoi appliquer avant ; la commande de retour arrière ; le déploiement Coolify est-il activé (`.github/workflows/deploy-coolify.yml`, sans `.desactive`).
 
 3. **Ouvrir la demande de fusion.**
    `gh pr create --base main --head preprod --title "Mise en ligne : <résumé>" --body-file "$F"`, corps `Tickets : #2, #3`, contrôle des mots interdits.

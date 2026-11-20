@@ -54,7 +54,7 @@ Prérequis Coolify (API activée, adresse autorisée, jeton, source GitHub) : r�
 
 1. **Trouver le dépôt et le contrôler.**
    Dans un projet : `git remote get-url origin` donne `<compte>/<dépôt>`. Sinon, le dépôt nommé par l'utilisateur. Aucun des deux : le lui demander.
-   `git fetch origin`, puis `git ls-remote --heads origin preprod` répond. `docs/cadrage/stories.md` existe sur `origin/preprod`. Le contrôle de `AGENTS.md` du skill feature (étape 1) n'affiche rien.
+   `git fetch origin`, puis `git ls-remote --heads origin preprod` répond. La note `02 Cadrage/<projet> - Stories.md` du vault n'est pas vide. Le contrôle de `AGENTS.md` du skill feature (étape 1) n'affiche rien.
    Dans un projet : `git status --short` est vide, et `git rev-parse preprod` égale `git rev-parse origin/preprod`. Sinon le cadrage n'est pas poussé.
    Un contrôle échoue : arrêt. Sur le PC, le dire à l'utilisateur. Sur le serveur, étape 8 avec la raison.
    Demande faite en direct, autre que le « oui » de fin de cadrage : **arrêt**, phrase de refus, skill feature.

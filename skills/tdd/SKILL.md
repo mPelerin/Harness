@@ -18,7 +18,7 @@ Un test qu'on n'a jamais vu échouer ne prouve rien.
 
 ## Quand ne pas l'utiliser
 
-- Changement sans logique : texte d'interface, documentation, fichier de configuration, copie d'un gabarit. Écrire alors dans `log.md` : "tdd sans objet : <raison>".
+- Changement sans logique : texte d'interface, documentation, fichier de configuration, copie d'un gabarit. Écrire alors dans le « Journal de l'agent » de la note du ticket : "tdd sans objet : <raison>".
 - Lancer toute la batterie : skill verifier.
 - Tester l'écran à la main : fiche QA.
 
@@ -28,7 +28,7 @@ Un test qu'on n'a jamais vu échouer ne prouve rien.
    Lire "C'est fini quand" du ticket. En tirer une liste de comportements, un par ligne, du plus simple au plus dur.
    Chaque ligne dit une entrée et un résultat attendu : "un panier vide donne un total de 0".
    Bug : la première ligne est le défaut, avec les étapes pour le reproduire.
-   Preuve : la liste, écrite dans `log.md`.
+   Preuve : la liste, écrite dans le « Journal de l'agent » de la note du ticket.
 
 2. **Écrire un seul test, pour le premier comportement.**
    Le placer à côté du code testé, selon l'usage du projet (profil Next.js : `<nom>.test.ts`, lancé par Vitest).
@@ -58,7 +58,7 @@ Un test qu'on n'a jamais vu échouer ne prouve rien.
 7. **Comportement suivant.** Retour à l'étape 2, jusqu'au bout de la liste.
    Les cas limites ont leur ligne : vide, zéro, valeur négative, texte trop long, double envoi.
 
-8. **Finir.** Ajouter une ligne dans `log.md` par comportement : test, échec vu, réussite vue.
+8. **Finir.** Ajouter une ligne dans le « Journal de l'agent » de la note du ticket par comportement : test, échec vu, réussite vue.
    Les fichiers entrent dans le commit du ticket (`git add <fichier>` puis `git commit --amend --no-edit`).
 
 ## Point d'arrêt
@@ -74,7 +74,7 @@ Pour chaque comportement : le nom du test, la ligne d'échec vue, la ligne de r�
 
 - Écrire le code avant le test.
 - Garder un test jamais vu échouer.
-- Modifier un test pour le faire passer, sauf s'il était faux. Le dire alors dans `log.md`.
+- Modifier un test pour le faire passer, sauf s'il était faux. Le dire alors dans le « Journal de l'agent » de la note du ticket.
 - Ignorer ou désactiver un test (`skip`, `only` laissé en place).
 - Imiter la fonction qu'on teste. Imiter seulement ce qui est hors du projet : réseau, horloge.
 - Mettre de vraies données de personnes dans un test.

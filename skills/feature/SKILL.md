@@ -11,18 +11,18 @@ Transformer un ou plusieurs tickets en demandes de fusion prêtes à tester : un
 L'agent enchaîne seul. L'utilisateur n'intervient qu'à la porte 2, une fois pour tout le lot.
 
 **Règle du commit unique.** Un ticket = un changement = un commit.
-Le code, le test, la fiche QA et le dossier du ticket vont dans ce commit.
-Une branche de ticket ne touche pas à `docs/decisions.md` : deux tickets d'un lot qui y ajoutent chacun une ligne se bloquent à la fusion.
+Le code et le test vont dans ce commit. Les documents vivent dans le vault, hors du dépôt : ils ne sont pas commités.
 
-**Le dossier du ticket.** `docs/tickets/<numéro>-<mots-courts>/` contient :
-- `feature.md` : l'instruction. Le ticket recopié, les réponses aux questions, le plan, et une rubrique "Décisions", une ligne datée chacune.
-- `log.md` : le journal de l'agent. Chaque étape, la commande lancée, son résultat, daté.
+**La note du ticket.** C'est la note du ticket (`05 Tickets/<projet> - T<numéro> <titre>.md` dans le vault), créée avec le modèle « Ticket » si elle n'existe pas. Elle contient :
+- « Le ticket », « Plan » et « Décisions » : l'instruction. Le ticket recopié, les réponses aux questions, le plan, une ligne datée par décision.
+- « Journal de l'agent » : chaque étape, la commande lancée, son résultat, daté.
+- « Fiche QA » : remplie par le skill qa-prep.
 
 **La porte 1 est le "oui" donné à la création du ticket** (skill tickets).
 L'agent ne s'arrête de nouveau avant le code que dans trois cas :
 - une question produit reste sans réponse écrite ;
 - le ticket touche à l'argent, aux droits d'accès, aux données personnelles, au schéma de la base, ou demande une nouvelle bibliothèque ;
-- le code montre que le ticket est déjà fait, ou qu'il contredit une décision écrite (`docs/decisions.md`, ou la rubrique "Décisions" d'un `feature.md`).
+- le code montre que le ticket est déjà fait, ou qu'il contredit une décision écrite (journal des décisions du projet, ou la rubrique "Décisions" d'une note de ticket).
 
 ## Quand l'utiliser
 
@@ -86,7 +86,7 @@ En mode délégation, l'étape 1 et le pré-vol se font ici. Les étapes 2 et 4 
 
 1. **Lire les tickets.**
    Pour chacun : `gh issue view <numéro> --json number,title,body,labels,state`.
-   Lire une fois le AGENTS.md du projet, `docs/decisions.md`, les rubriques "Décisions" de `docs/tickets/*/feature.md`, et `docs/cadrage/` s'il existe.
+   Lire une fois le AGENTS.md du projet, le journal des décisions, les rubriques "Décisions" des notes de `05 Tickets/`, et les notes de cadrage utiles (d'après leur `resume`).
    `git ls-remote --heads origin preprod` doit répondre. Sinon arrêt : le cadrage n'est pas fait.
    `AGENTS.md` de `preprod` rempli. Ce contrôle ne doit rien afficher :
    `git fetch origin && git show origin/preprod:AGENTS.md | awk '/<!--/{c=1} {print (c ? "" : $0)} /-->/{c=0}' | sed -E 's/<(numéro|mots-courts|n)>//g' | grep -nE '<[^>]+>'`
@@ -107,7 +107,7 @@ En mode délégation, l'étape 1 et le pré-vol se font ici. Les étapes 2 et 4 
    L'utilisateur peut répondre "reco" : il prend toutes les recommandations.
    Ajouter dans ce message les tickets sensibles (voir la porte 1) avec leur plan en trois lignes. Ils attendent un "go" écrit.
    Y ajouter aussi les tickets déjà faits ou contraires à une décision, avec leur preuve `chemin:ligne`.
-   Pas de question et rien de sensible : ne pas s'arrêter. Le plan va dans `feature.md`.
+   Pas de question et rien de sensible : ne pas s'arrêter. Le plan va dans la note du ticket.
    Preuve : les réponses de l'utilisateur, ou "aucune question".
 
 4. **Pour chaque ticket, l'un après l'autre : créer la branche.**
@@ -118,7 +118,7 @@ En mode délégation, l'étape 1 et le pré-vol se font ici. Les étapes 2 et 4 
    Preuve : `git branch --show-current`.
 
 5. **Coder, dans un seul commit.** Skill tdd pour tout ce qui a de la logique.
-   Écrire `feature.md` (ticket, réponses, plan, décisions datées) et ouvrir `log.md`.
+   Remplir la note du ticket (ticket, réponses, plan, décisions datées) et tenir son « Journal de l'agent ».
    `git add <fichier>`, un par un, jamais `-A`.
    Premier commit : `git commit -m "<phrase en français> (ticket #<numéro>)"`. Ensuite `git commit --amend --no-edit` à chaque ajout.
    Jamais `Closes`, `Fixes` ni `Resolves` devant un numéro.
@@ -131,7 +131,7 @@ En mode délégation, l'étape 1 et le pré-vol se font ici. Les étapes 2 et 4 
 7. **Relire.** Skill revue. Corriger dans le même commit (`--amend`), puis refaire l'étape 6.
    Preuve : le bilan de revue.
 
-8. **Préparer la fiche QA.** Skill qa-prep. L'ajouter au commit avec `--amend`.
+8. **Préparer la fiche QA.** Skill qa-prep, dans la note du ticket.
    Ne pas relancer verifier ici : livrer le refait sur le commit final, à l'étape 9.
    Preuve : le chemin de la fiche, et le compte toujours à 1.
 

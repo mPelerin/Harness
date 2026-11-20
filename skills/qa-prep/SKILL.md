@@ -23,7 +23,7 @@ Une fiche qui cache une migration à appliquer ou un compte à créer n'est pas 
 
 ## Étapes
 
-1. **Lire.** Le ticket ("C'est fini quand"), `git diff origin/preprod...HEAD`, et `docs/qa/modele-fiche-qa.md`.
+1. **Lire.** Le ticket ("C'est fini quand"), `git diff origin/preprod...HEAD`, et le modèle `_Modèles/Notes/Fiche QA.md` du vault.
    Preuve : la liste des conditions du ticket.
 
 2. **Classer chaque condition.**
@@ -58,9 +58,9 @@ Une fiche qui cache une migration à appliquer ou un compte à créer n'est pas 
    La porte 2 se résume alors à lire les preuves et dire "go".
    Un prérequis humain manquant garde la priorité : la fiche reste bloquée, même sans étape Écran.
 
-8. **Enregistrer.** `docs/qa/<numéro>-<mots-courts>.md`, copié du modèle.
+8. **Enregistrer.** Dans la rubrique « Fiche QA » de la note du ticket (`05 Tickets/<projet> - T<numéro> <titre>.md` dans le vault), recopiée du modèle.
    La colonne Commentaire reste vide.
-   L'ajouter au commit : `git add docs/qa/<fichier>` puis `git commit --amend --no-edit`, si la branche n'est pas encore poussée. Sinon un commit de correction (skill livrer).
+   Rien à commiter : la note vit hors du dépôt.
    Preuve : le chemin, le nombre d'étapes Machine et Écran, et les prérequis humains.
 
 ## Point d'arrêt

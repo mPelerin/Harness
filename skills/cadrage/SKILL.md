@@ -1,6 +1,6 @@
 ---
 name: cadrage
-description: Transforme une idée de projet en documents de cadrage validés (PRD, écrans, user stories) dans docs/cadrage, en posant les questions une à la fois, et remplit le AGENTS.md du projet. Écrit sur la branche preprod, puis s'arrête pour le go de l'utilisateur (porte 1). À utiliser quand l'utilisateur dit "cadrage", "cadre cette idée", "j'ai une idée de projet", "challenge mon idée", "écris le PRD" ou "fais les user stories". Ne pas utiliser pour créer les tickets (tickets), pour réaliser un ticket (feature), ni pour une petite correction qui tient dans un ticket.
+description: Transforme une idée de projet en documents de cadrage validés (PRD, écrans, user stories) dans les notes du projet (vault Obsidian), en posant les questions une à la fois, et remplit le AGENTS.md du projet. Écrit les notes dans le vault et AGENTS.md sur la branche preprod, puis s'arrête pour le go de l'utilisateur (porte 1). À utiliser quand l'utilisateur dit "cadrage", "cadre cette idée", "j'ai une idée de projet", "challenge mon idée", "écris le PRD" ou "fais les user stories". Ne pas utiliser pour créer les tickets (tickets), pour réaliser un ticket (feature), ni pour une petite correction qui tient dans un ticket.
 ---
 
 # Cadrage : de l'idée aux documents de cadrage
@@ -8,13 +8,14 @@ description: Transforme une idée de projet en documents de cadrage validés (PR
 ## But
 
 Sortir d'une idée floue avec des documents de cadrage validés par l'utilisateur.
-Ils vivent dans le projet, dans `docs/cadrage/`, pas dans un ticket.
+Ils vivent dans le dossier du projet, dans le vault Obsidian (`RACINE_PROJETS/<projet>/`, voir `harness.conf`), pas dans un ticket ni dans le dépôt. Le dépôt est le sous-dossier `code/`.
 
-- `prd.md` : le document de besoin. Quel problème, pour qui, ce qui est fait et ce qui ne l'est pas.
-- `ux.md` : les écrans et les parcours. Facultatif si l'appli n'a pas d'écran.
-- `stories.md` : les user stories, numérotées S1, S2... Le skill tickets en fait des tickets.
+- `02 Cadrage/<projet> - PRD.md` : le document de besoin. Quel problème, pour qui, ce qui est fait et ce qui ne l'est pas.
+- `03 Design/<projet> - Écrans et états.md` : les écrans et les parcours. Facultatif si l'appli n'a pas d'écran.
+- `02 Cadrage/<projet> - Stories.md` : les user stories, numérotées S1, S2... Le skill tickets en fait des tickets.
 
-Les réponses qui resserviront vont dans `docs/decisions.md`.
+Les réponses qui resserviront vont dans `07 Décisions/<projet> - Journal des décisions.md`.
+Une note remplie passe en `statut: brouillon`, puis `valide` après la porte 1. Les autres notes du dossier (discovery, design, conception) se remplissent quand l'agent qui les porte (propriété `agent`) est appelé.
 Le cadrage remplit aussi le `AGENTS.md` du projet. C'est lui qui sait tout : sans lui, ce fichier reste un modèle à trous, lu à chaque conversation.
 
 ## Les branches
@@ -30,7 +31,7 @@ Les documents de cadrage s'écrivent directement sur `preprod`. Le code, jamais 
 
 - Une idée de projet ou de grosse fonction, même vague.
 - L'utilisateur veut qu'on challenge une idée avant de la construire.
-- Les documents de `docs/cadrage/` sont à compléter, sur `preprod`.
+- Les notes de cadrage du projet sont à compléter.
 - `AGENTS.md` garde des `<...>` (feature s'arrête et renvoie ici). Seulement l'étape 7, sans nouvelle question.
 
 ## Quand ne pas l'utiliser
@@ -41,8 +42,9 @@ Les documents de cadrage s'écrivent directement sur `preprod`. Le code, jamais 
 ## Étapes
 
 1. **Situer le projet.**
+   Le dossier du projet existe dans le vault, sinon `python3 <harness>/scripts/vault/vault_projets.py nouveau <projet>`. Le reste de l'étape se fait dans `<projet>/code`.
    `git status --short` doit être vide. Puis `git fetch origin`.
-   - `docs/cadrage/prd.md` existe sur main (`git cat-file -e origin/main:docs/cadrage/prd.md`) : le projet est en ligne. **Arrêt.** Le cadrage d'une évolution n'est pas encore défini. Le dire à l'utilisateur.
+   - `origin/main` existe et la note PRD est en `statut: valide` : le projet est en ligne. **Arrêt.** Le cadrage d'une évolution n'est pas encore défini. Le dire à l'utilisateur.
      Exception : seul `AGENTS.md` est à remplir. Aller sur `preprod`, puis directement à l'étape 7.
    - Sinon, `preprod` existe (`git ls-remote --heads origin preprod`) : `git switch preprod && git pull --ff-only`. On complète le cadrage.
    - Sinon : projet neuf.
@@ -56,7 +58,7 @@ Les documents de cadrage s'écrivent directement sur `preprod`. Le code, jamais 
    Preuve : la reformulation, et le "oui" de l'utilisateur.
 
 3. **Lire avant de demander.**
-   Lire le AGENTS.md du projet, `docs/decisions.md`, `docs/cadrage/` s'il existe, le code, et `gh issue list --state open --limit 20`.
+   Lire le AGENTS.md du projet, la note projet, le journal des décisions et les notes de cadrage déjà remplies, le code, et `gh issue list --state open --limit 20`.
    Une question dont la réponse est dans le dépôt ne se pose pas.
    Preuve : la liste de ce qui existe déjà, en `chemin:ligne` ou numéro de ticket.
 
@@ -72,29 +74,28 @@ Les documents de cadrage s'écrivent directement sur `preprod`. Le code, jamais 
    Preuve : chaque décision a une réponse ou est marquée "Hypothèse".
 
 6. **Écrire les documents.**
-   Utiliser les modèles plus bas. `ux.md` seulement s'il y a des écrans.
-   Ajouter les réponses utiles à `docs/decisions.md`, une ligne par décision, datée.
-   **Périmètre réduit.** Chaque fois qu'une réponse retire quelque chose (un écran, un réglage, un mode, un parcours), ajouter une ligne datée dans « Retiré du périmètre » de `prd.md` : quoi, pourquoi, et si c'est remis à plus tard. Rien ne disparaît en silence.
-   Preuve : la liste des fichiers écrits, et ce qui a été retiré.
+   Utiliser les modèles plus bas, dans les notes du vault (le frontmatter de la note reste en place). Écrans seulement s'il y a des écrans.
+   Ajouter les réponses utiles au journal des décisions, une ligne par décision, datée.
+   **Périmètre réduit.** Chaque fois qu'une réponse retire quelque chose (un écran, un réglage, un mode, un parcours), ajouter une ligne datée dans « Retiré du périmètre » du PRD : quoi, pourquoi, et si c'est remis à plus tard. Rien ne disparaît en silence.
+   Preuve : la liste des notes écrites, `vault_projets.py verifier` sans erreur, et ce qui a été retiré.
 
 7. **Remplir `AGENTS.md`, puis commiter sur preprod.**
-   Chaque `<...>` est remplacé à partir des documents, du code et de `docs/decisions.md`. Aucune nouvelle question.
+   Chaque `<...>` est remplacé à partir des notes, du code et du journal des décisions. Aucune nouvelle question.
    - Projet : les deux phrases du PRD. Utilisateurs : la rubrique du PRD.
-   - Documents : `docs/<besoin>.md` devient `docs/cadrage/prd.md`, `ux.md`, `stories.md`.
    - Technologies, rangement : ce qui existe vraiment (`package.json`, les dossiers). Pas encore choisi : "aucune pour l'instant".
    - Règles métier critiques : tirées des Points sensibles et des "C'est fini quand" du PRD, avec leur raison. Aucune : "Aucune pour l'instant. En ajouter une dès qu'une erreur coûterait de l'argent ou de la confiance."
    - `<prénom>` : la valeur `PRENOM` de `~/.config/harness/harness.conf`. `<Piège suivant>` : ligne retirée. Dans le commentaire du haut, garder la ligne de licence et retirer le mode d'emploi.
-   Ce qui manque s'écrit "à définir", et devient une Hypothèse dans `prd.md`.
+   Ce qui manque s'écrit "à définir", et devient une Hypothèse dans le PRD.
    Contrôle, qui ne doit rien afficher :
    ```bash
    awk '/<!--/{c=1} {print (c ? "" : $0)} /-->/{c=0}' AGENTS.md | sed -E 's/<(numéro|mots-courts|n)>//g' | grep -nE '<[^>]+>'
    ```
-   `git add` fichier par fichier, puis un commit en français, par exemple "Cadrage : PRD, écrans, stories et AGENTS.md".
+   `git add AGENTS.md`, puis un commit en français, par exemple "Cadrage : AGENTS.md rempli". Les notes ne sont pas dans le dépôt.
    Ne rien pousser à cette étape.
    Preuve : le contrôle vide, `git log --oneline -1` et la liste des fichiers du commit.
 
 8. **Faire relire. POINT D'ARRÊT (porte 1).**
-   Montrer à l'utilisateur le chemin de chaque fichier, `AGENTS.md` compris, et un résumé : nombre de stories, décisions, hypothèses, règles métier, et ce qui a été retiré du périmètre.
+   Montrer à l'utilisateur le nom de chaque note écrite, `AGENTS.md` compris, et un résumé : nombre de stories, décisions, hypothèses, règles métier, et ce qui a été retiré du périmètre.
    Demander "go" après sa relecture. Chaque correction est un nouveau commit, puis on remontre.
    Preuve : le "go" de l'utilisateur, visible dans la conversation.
 
@@ -107,7 +108,7 @@ Les documents de cadrage s'écrivent directement sur `preprod`. Le code, jamais 
    "Oui", "ok", "c'est bon" : skill nuit, tout de suite. Ce oui est son "go".
    "Non", ou pas de skill `nuit` : "Dites tickets pour créer les tickets à partir des stories."
 
-## Modèle de prd.md
+## Modèle de la note PRD
 
 ```markdown
 # PRD : <nom du projet>
@@ -137,7 +138,7 @@ Les documents de cadrage s'écrivent directement sur `preprod`. Le code, jamais 
 - <Ce qui n'a pas été tranché, à vérifier plus tard.>
 ```
 
-## Modèle de ux.md
+## Modèle de la note Écrans et états
 
 ```markdown
 # Écrans et parcours
@@ -148,7 +149,7 @@ Les documents de cadrage s'écrivent directement sur `preprod`. Le code, jamais 
 - États : vide, chargement, erreur, plein. <Ce qu'on voit dans chacun.>
 ```
 
-## Modèle de stories.md
+## Modèle de la note Stories
 
 ```markdown
 # User stories

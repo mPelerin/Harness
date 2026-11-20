@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
 # nouveau-projet.sh : crée un projet Next.js à partir du gabarit du harness.
 #
-# Ce qu'il fait, dans le dossier courant :
-#   1. crée l'appli avec le générateur officiel de Next.js (version fixée) ;
+# Ce qu'il fait, depuis la racine du vault des projets (le dossier qui contient _Méthode/) :
+#   0. crée la mémoire du projet, <nom>/ (notes du vault), avec scripts/vault/vault_projets.py ;
+#   1. crée l'appli dans <nom>/code avec le générateur officiel de Next.js (version fixée) ;
 #   2. pose par-dessus le socle (template-projet/), le profil (profils/nextjs/) et les MCP (mcp/) ;
 #   3. installe Prettier, Vitest et Lefthook (versions fixées) ;
 #   4. fixe toutes les versions, active les hooks Git, fait le premier commit ;
 #   5. lance la vérification complète et affiche le résultat.
 #
 # Ce qu'il garantit :
-#   - il ne touche à rien en dehors du nouveau dossier ;
-#   - il s'arrête si le dossier existe déjà.
+#   - il ne touche à rien en dehors du dossier <nom>/ ;
+#   - il s'arrête si <nom>/code existe déjà ; des notes déjà présentes dans <nom>/ sont gardées.
 #
 # Usage : nouveau-projet <nom>      exemple : nouveau-projet mon-appli
 
@@ -48,7 +49,13 @@ SOCLE="$DEPOT/template-projet"
 PROFIL="$DEPOT/profils/nextjs"
 [ -d "$SOCLE" ] && [ -d "$PROFIL" ] || { echo "Arrêt : gabarit introuvable dans $DEPOT." >&2; exit 1; }
 
-CIBLE="$PWD/$NOM"
+if [ ! -d "$PWD/_Méthode" ]; then
+  echo "Arrêt : lancez ce script depuis la racine du vault des projets (le dossier qui contient _Méthode/)." >&2
+  exit 1
+fi
+command -v python3 >/dev/null || { echo "Arrêt : python3 est introuvable." >&2; exit 1; }
+PROJET="$PWD/$NOM"
+CIBLE="$PROJET/code"
 if [ -e "$CIBLE" ]; then
   echo "Arrêt : $CIBLE existe déjà. Rien n'a été modifié." >&2
   exit 1
@@ -58,11 +65,20 @@ if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   exit 1
 fi
 
+echo "0/5 Mémoire du projet dans le vault"
+if [ -f "$PROJET/$NOM.md" ]; then
+  VAULT_PROJETS="$PWD" python3 "$DEPOT/scripts/vault/vault_projets.py" completer "$NOM"
+else
+  VAULT_PROJETS="$PWD" python3 "$DEPOT/scripts/vault/vault_projets.py" nouveau "$NOM"
+fi
+
 echo "1/5 Création de l'appli Next.js $V_NEXT"
-npx --yes "create-next-app@$V_NEXT" "$NOM" \
+cd -- "$PROJET"
+npx --yes "create-next-app@$V_NEXT" code \
   --ts --eslint --app --src-dir --tailwind --use-npm \
   --import-alias "@/*" --disable-git --yes
 cd -- "$CIBLE"
+npm pkg set name="$NOM"
 
 echo "2/5 Pose du socle et du profil"
 cp -- .gitignore .gitignore.next
@@ -139,5 +155,6 @@ npm run verifier
 
 echo
 echo "OK : projet créé dans $CIBLE"
+echo "Notes du projet : $PROJET (vault). Code : $CIBLE."
 echo "Le reste de AGENTS.md sera rempli par le skill cadrage. D'abord, relier le dépôt GitHub :"
 echo "  git remote add origin git@github.com:<compte>/$NOM.git && git push -u origin main"

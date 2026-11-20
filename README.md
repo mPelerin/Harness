@@ -51,8 +51,10 @@ harness/
     orchestrateur.sh       dépose une demande chez l'orchestrateur et suit la carte
     pre-vol.sh             liste les blocages humains avant de coder ou de lancer la nuit
     mesurer-mcp.mjs        mesure la place que prend un outil MCP
+    vault/                 le vault Obsidian des projets : modèle, création, récap GitHub, vérification
+  methode/               les portes et la fiche QA, recopiées dans le vault de chaque instance
   skills/                les skills de méthode, plus le skill témoin test-harness
-  template-projet/       le socle commun à tous les projets
+  template-projet/       le socle commun au code de tous les projets (le dépôt <projet>/code)
   profils/nextjs/        le profil TypeScript et Next.js : hooks, CI, Dependabot
   mcp/                   les outils MCP, réglés pour Claude Code et OpenCode
   site/                  le site de présentation, six pages HTML, et son DESIGN.md
@@ -97,7 +99,7 @@ Chaque ligne est un skill. Vous dites le mot, l'agent déroule, et il s'arrête 
 | retro | Transforme une erreur en contrôle ou en règle | Votre "go" avant de toucher au harness |
 | fini, reprends | Écrit la passation, ou repart de la dernière | Nulle part |
 
-Les portes sont détaillées dans `template-projet/docs/portes.md`.
+Les portes sont détaillées dans `methode/portes.md`, recopié dans le vault (`_Méthode/Portes`).
 
 **Déléguer à un orchestrateur.** Si `ORCHESTRATEUR` est rempli dans `harness.conf`, `feature` ne code pas ici. Il ouvre une sous-conversation par ticket. Elle dépose la carte chez l'orchestrateur et la suit, sans bruit. La conversation principale ne garde qu'un tableau. `feature local` force le codage sur ce PC. Le pré-vol (`pre-vol --strict`) vérifie avant tout dépôt que les variables, comptes et migrations sont prêts, et qu'aucun ticket ne laisse ses prérequis dans le flou.
 
