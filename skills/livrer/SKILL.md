@@ -64,7 +64,7 @@ grep -inE '(close[sd]?|fix(e[sd])?|resolve[sd]?)[[:space:]:]+[^[:space:]]*(#|/is
    Preuve : `git ls-remote origin refs/heads/<branche>` égale `git rev-parse HEAD`.
 
 4. **Ouvrir la demande de fusion.**
-   Remplir `.github/pull_request_template.md` dans `F=$(mktemp)` : ticket, ce qui est fait en une à trois lignes, preuves, fiche QA, base de données. Rien d'autre.
+   Remplir `.github/PULL_REQUEST_TEMPLATE.md` dans `F=$(mktemp)` : ticket, ce qui est fait en une à trois lignes, preuves, fiche QA, base de données. Rien d'autre.
    Contrôle des mots interdits sur `$F` et sur le titre.
    `pr="$(gh pr create --base preprod --head <branche> --title "<titre> (ticket #<numéro>)" --body-file "$F" | tail -n 1 | grep -oE '[0-9]+$')"`.
    Le numéro est celui que la commande rend. Jamais un numéro supposé : les tickets et les demandes de fusion partagent la numérotation, donc la suite saute. Il resservira à la porte 2 et à la fusion.

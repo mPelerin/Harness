@@ -11,7 +11,9 @@ Transformer un ou plusieurs tickets en demandes de fusion prêtes à tester : un
 L'agent enchaîne seul. L'utilisateur n'intervient qu'à la porte 2, une fois pour tout le lot.
 
 **Règle du commit unique.** Un ticket = un changement = un commit.
-Le code et le test vont dans ce commit. Les documents vivent dans le vault, hors du dépôt : ils ne sont pas commités.
+Le code, le test et la note du ticket vont dans ce commit. Le dépôt est le dossier du projet : les notes à la racine, l'appli dans `code/`, où se lancent ses commandes.
+Une branche de ticket ne touche pas au journal des décisions : deux tickets d'un lot qui y ajoutent chacun une ligne se bloquent à la fusion.
+Le ticket se travaille dans un worktree (`git worktree add`) : le dossier principal, synchronisé avec Obsidian, reste sur `preprod`.
 
 **La note du ticket.** C'est la note du ticket (`05 Tickets/<projet> - T<numéro> <titre>.md` dans le vault), créée avec le modèle « Ticket » si elle n'existe pas. Elle contient :
 - « Le ticket », « Plan » et « Décisions » : l'instruction. Le ticket recopié, les réponses aux questions, le plan, une ligne datée par décision.
@@ -131,7 +133,7 @@ En mode délégation, l'étape 1 et le pré-vol se font ici. Les étapes 2 et 4 
 7. **Relire.** Skill revue. Corriger dans le même commit (`--amend`), puis refaire l'étape 6.
    Preuve : le bilan de revue.
 
-8. **Préparer la fiche QA.** Skill qa-prep, dans la note du ticket.
+8. **Préparer la fiche QA.** Skill qa-prep, dans la note du ticket. L'ajouter au commit avec `--amend`.
    Ne pas relancer verifier ici : livrer le refait sur le commit final, à l'étape 9.
    Preuve : le chemin de la fiche, et le compte toujours à 1.
 

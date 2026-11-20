@@ -14,7 +14,7 @@ Ce README est remplacé par celui du projet au moment de la création.
 | --- | --- |
 | `AGENTS.md` | Les règles du projet pour l'agent. Le skill cadrage le remplit. |
 | `CLAUDE.md` | Une seule ligne, `@AGENTS.md`, pour que Claude Code lise les mêmes règles qu'OpenCode. |
-| `.github/pull_request_template.md` | Le modèle de demande de fusion : fait, preuves, fiche QA, et le numéro du ticket (sans `Closes #`). |
+| `.github/PULL_REQUEST_TEMPLATE.md` | Le modèle de demande de fusion : fait, preuves, fiche QA, et le numéro du ticket (sans `Closes #`). |
 | `.github/ISSUE_TEMPLATE/fonction.md` | Le modèle de ticket pour une nouvelle fonction. |
 | `.github/ISSUE_TEMPLATE/bug.md` | Le modèle de ticket pour un bug. |
 | `.gitignore` | Empêche les fichiers de secrets `.env` d'entrer dans le dépôt. |

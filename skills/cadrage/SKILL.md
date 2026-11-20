@@ -42,7 +42,7 @@ Les documents de cadrage s'écrivent directement sur `preprod`. Le code, jamais 
 ## Étapes
 
 1. **Situer le projet.**
-   Le dossier du projet existe dans le vault, sinon `python3 <harness>/scripts/vault/vault_projets.py nouveau <projet>`. Le reste de l'étape se fait dans `<projet>/code`.
+   Le dossier du projet existe dans le vault, sinon `python3 <harness>/scripts/vault/vault_projets.py nouveau <projet>`. Le dossier du projet est aussi son dépôt Git (notes à la racine, appli dans `code/`) : le reste de l'étape se fait dans `<projet>/`.
    `git status --short` doit être vide. Puis `git fetch origin`.
    - `origin/main` existe et la note PRD est en `statut: valide` : le projet est en ligne. **Arrêt.** Le cadrage d'une évolution n'est pas encore défini. Le dire à l'utilisateur.
      Exception : seul `AGENTS.md` est à remplir. Aller sur `preprod`, puis directement à l'étape 7.
@@ -90,7 +90,7 @@ Les documents de cadrage s'écrivent directement sur `preprod`. Le code, jamais 
    ```bash
    awk '/<!--/{c=1} {print (c ? "" : $0)} /-->/{c=0}' AGENTS.md | sed -E 's/<(numéro|mots-courts|n)>//g' | grep -nE '<[^>]+>'
    ```
-   `git add AGENTS.md`, puis un commit en français, par exemple "Cadrage : AGENTS.md rempli". Les notes ne sont pas dans le dépôt.
+   `git add` de `AGENTS.md` puis de chaque note écrite, une par une, puis un commit en français, par exemple "Cadrage : PRD, écrans, stories et AGENTS.md".
    Ne rien pousser à cette étape.
    Preuve : le contrôle vide, `git log --oneline -1` et la liste des fichiers du commit.
 

@@ -27,13 +27,14 @@ Les utilisateurs sont <qui>. Le projet sert à <quel résultat concret>.
 
 <!-- POURQUOI : la spécification vit dans la mémoire du projet, pas dans un chat. -->
 
-Ce dépôt est le dossier `code/` du projet. Les documents vivent dans le dossier parent, `../`, qui fait partie du vault Obsidian des projets (`RACINE_PROJETS` de `harness.conf`). On les lit et on les écrit là, jamais dans le dépôt.
+Ce dépôt est le dossier du projet dans le vault Obsidian des projets (`RACINE_PROJETS` de `harness.conf`) : les notes sont à la racine, l'appli dans `code/`.
 
-- `../<projet>.md` : la note projet. Lire d'abord le `resume` des notes, n'ouvrir que celles dont on a besoin.
-- `../07 Décisions/<projet> - Journal des décisions.md` : une décision tranchée ne se rouvre pas sans raison écrite. Les décisions prises pendant un ticket sont dans sa note, rubrique "Décisions".
-- `../02 Cadrage/` : PRD, stories, critères d'acceptation, contraintes. `../03 Design/` : écrans, expérience, identité visuelle, maquette.
-- `../05 Tickets/<projet> - T<numéro> <titre>.md` : une note par ticket, avec le ticket, le plan, les décisions, le journal de l'agent et la fiche QA.
-- `_Méthode/Portes.md` à la racine du vault : les trois portes humaines. L'agent n'en passe aucune seul.
+- `<projet>.md` : la note projet. Lire d'abord le `resume` des notes, n'ouvrir que celles dont on a besoin.
+- `07 Décisions/<projet> - Journal des décisions.md` : une décision tranchée ne se rouvre pas sans raison écrite. Les décisions prises pendant un ticket sont dans sa note, rubrique "Décisions".
+- `02 Cadrage/` : PRD, stories, critères d'acceptation, contraintes. `03 Design/` : écrans, expérience, identité visuelle, maquette.
+- `05 Tickets/<projet> - T<numéro> <titre>.md` : une note par ticket, avec le ticket, le plan, les décisions, le journal de l'agent et la fiche QA.
+- `../_Méthode/Portes.md`, à la racine du vault : les trois portes humaines. L'agent n'en passe aucune seul.
+- `<projet> - GitHub.md` : généré depuis GitHub (avancement, tickets, branches), jamais versionné ni modifié à la main.
 
 ## Technologies
 
@@ -55,8 +56,10 @@ Ajouter une bibliothèque : dire laquelle, pourquoi, son origine et sa version e
 <!-- POURQUOI : l'agent sait où ranger un fichier sans créer de dossier parallèle. -->
 
 ```
-<racine>/
-├── <dossier du code>/   # <rôle>
+<projet>/
+├── <projet>.md, 01 Discovery/ … 09 Journal/   # notes du projet (vault Obsidian)
+├── code/                # l'appli : toutes ses commandes se lancent ici
+│   └── <dossier>/       # <rôle>
 ├── .github/             # modèles de ticket et de demande de fusion, CI
 └── AGENTS.md            # ce fichier
 ```
@@ -68,7 +71,7 @@ Ajouter une bibliothèque : dire laquelle, pourquoi, son origine et sa version e
 - **Langue du code** : <anglais> (variables, fonctions, commentaires).
 - **Langue de l'interface** : français.
 - **Messages de commit** : en français, une phrase qui dit ce que le changement apporte, puis `(ticket #<numéro>)`. Jamais `Closes`, `Fixes` ni `Resolves` devant un numéro.
-- **Un ticket = un changement = un commit.** Le code et le test vont dans ce commit. La note du ticket (plan, journal, fiche QA) vit dans le vault, hors du dépôt : elle est tenue à jour, pas commitée. Jamais deux changements dans un commit : un ticket qui en demande deux est découpé.
+- **Un ticket = un changement = un commit.** Le code, le test et la note du ticket (`05 Tickets/`, avec son journal et sa fiche QA) vont dans ce commit. Une branche de ticket ne touche pas au journal des décisions : deux tickets qui y ajoutent une ligne se bloquent à la fusion. Jamais deux changements dans un commit : un ticket qui en demande deux est découpé.
 - **Avant le push**, chaque ajout se fait avec `git commit --amend`. Contrôle : `git rev-list --count preprod..HEAD` affiche 1.
 - **Après le push**, une correction est un commit de plus sur la branche. La fusion par squash les réunit en un seul.
 - **Jamais de push forcé**, sur aucune branche.
@@ -96,6 +99,7 @@ Ajouter une bibliothèque : dire laquelle, pourquoi, son origine et sa version e
 <!-- POURQUOI : l'agent ne dit pas "les tests passent". Il lance une commande et colle la sortie. -->
 
 ```bash
+cd code
 <commande d'installation>   # installer les bibliothèques
 <commande de lancement>     # lancer en local
 <commande de vérification>  # tout contrôler d'un coup (profil Next.js : npm run verifier)
@@ -131,7 +135,7 @@ Avant de dire "fini" : la commande de vérification passe au vert, et sa derniè
 Les tickets vivent dans les Issues GitHub de ce dépôt. L'agent les lit avec `gh issue view <numéro>`.
 
 - **Un ticket = une branche.** Une conversation neuve par ticket, ou un sous-agent neuf par ticket dans un lot. Nom de branche : `<numéro>-<mots-courts>`, par exemple `12-export-csv`.
-- **Deux branches durables.** `main` = ce qui est en ligne, publié sur le domaine de production. `preprod` = le travail validé, pas encore en ligne, publié sur le domaine de préproduction. La branche par défaut du dépôt GitHub est toujours `main`, jamais `preprod`. Les documents de cadrage vivent dans le vault, hors du dépôt : ils ne dépendent d'aucune branche.
+- **Deux branches durables.** `main` = ce qui est en ligne, publié sur le domaine de production. `preprod` = le travail validé, pas encore en ligne, publié sur le domaine de préproduction. La branche par défaut du dépôt GitHub est toujours `main`, jamais `preprod`. Les notes de cadrage vivent sur `preprod`, comme le code. Travailler un ticket dans un worktree (`git worktree add`), pour que le dossier principal, synchronisé avec Obsidian, reste sur `preprod`.
 - **Chaque branche de ticket part de `preprod` et y revient** par une demande de fusion, après la porte 2. Le ticket y est résolu.
 - **Mise en ligne.** Une demande de fusion de `preprod` vers main, fusion normale (pas squash), après le "go" de <prénom> : c'est la porte 3. Elle peut emporter plusieurs tickets.
 - **Fermer le ticket.** Jamais tout seul. Aucun `Closes #` dans les demandes de fusion ni dans les commits. L'agent ferme le ticket à la main, avec un commentaire, après la fusion dans `preprod` acceptée par <prénom>.

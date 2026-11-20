@@ -166,10 +166,11 @@ _À trier/                     temporaire : documents d'avant le vault, à réin
 <Nom>/<Nom>.md                note projet : en une phrase, phase, sommaire
 <Nom>/<Nom> - GitHub.md       généré : avancement, tickets, branches, mises en ligne
 <Nom>/01 Discovery/ … 09 Journal/
-<Nom>/code/                   le dépôt Git de l'appli, poussé sur GitHub
+<Nom>/                        le dépôt Git du projet, poussé sur GitHub : notes, AGENTS.md, .github/
+<Nom>/code/                   l'appli (package.json, src/…) ; toutes ses commandes se lancent ici
 ```
 
-Le vault est le dossier `RACINE_PROJETS` de `harness.conf`. Ce qui est exclu de GitHub par le `.gitignore` est aussi exclu de la synchro : bibliothèques, builds, base locale, secrets, `.git`.
+Le vault est le dossier `RACINE_PROJETS` de `harness.conf`. Ce qui est exclu de GitHub par le `.gitignore` est aussi exclu de la synchro : bibliothèques, builds, base locale, secrets, `.git`. La note `<Nom> - GitHub` est générée et jamais versionnée. Un agent travaille un ticket dans un worktree, pour que le dossier synchronisé reste sur `preprod`.
 
 ## Nommage
 
@@ -302,6 +303,8 @@ def cmd_modele(_):
     for nom, texte in BASES.items():
         n += ecrire(VAULT / "_Méthode" / nom, texte)
     n += ecrire(VAULT / "00 Accueil.md", ACCUEIL)
+    # vault neuf : un tableau de bord vide, remplacé au premier récap
+    n += ecrire(VAULT / "00 Tableau de bord.md", '---\ntype: methode\nstatut: valide\nresume: "Généré : tous les projets et leur avancement."\n---\n\n# Tableau de bord\n\nRempli par `vault_projets.py recap`.\n', ecraser=False)
     print(f"modèle : {n} fichier(s) écrit(s)")
 
 
@@ -541,7 +544,7 @@ def cmd_verifier(a):
                      else ["projet", "type", "resume", "haut"] if typ == "suivi"
                      else ["type", "statut", "resume"] if typ == "methode" or "_Modèles/Notes" in str(p)
                      else PROPRIETES)
-        manque = [] if p.name in ("AGENTS.md", "CLAUDE.md") else [k for k in attendues if k not in fm]  # fichiers de règles, pas des notes
+        manque = [] if p.name in ("AGENTS.md", "CLAUDE.md", "LICENCES-TIERS.md", "README.md") else [k for k in attendues if k not in fm]  # fichiers de règles, pas des notes
         if manque:
             manquantes.append(f"{p.relative_to(racine)} : {', '.join(manque)}")
         if "_Modèles" not in str(p):

@@ -60,7 +60,7 @@ Une fiche qui cache une migration à appliquer ou un compte à créer n'est pas 
 
 8. **Enregistrer.** Dans la rubrique « Fiche QA » de la note du ticket (`05 Tickets/<projet> - T<numéro> <titre>.md` dans le vault), recopiée du modèle.
    La colonne Commentaire reste vide.
-   Rien à commiter : la note vit hors du dépôt.
+   L'ajouter au commit : `git add` de la note du ticket puis `git commit --amend --no-edit`, si la branche n'est pas encore poussée. Sinon un commit de correction (skill livrer).
    Preuve : le chemin, le nombre d'étapes Machine et Écran, et les prérequis humains.
 
 ## Point d'arrêt
