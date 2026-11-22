@@ -1,139 +1,122 @@
 ---
 name: tickets
-description: Crée, relit et corrige les tickets GitHub d'un projet. Transforme les user stories de la note Stories du projet (vault) en tickets fins qui traversent toute l'appli, crée un ticket isolé pour un bug ou une petite fonction, ou corrige un ticket flou. À utiliser quand l'utilisateur dit "tickets", "crée les tickets", "découpe en tickets", "crée un ticket", "ouvre une issue", "relis le ticket 12", "corrige le ticket" ou "il y a un bug". Ne pas utiliser pour cadrer une idée floue (cadrage) ni pour réaliser un ticket (feature).
+description: Crée, relit et corrige les tickets d'un projet. Transforme les stories du vault en issues GitHub, chacune avec sa note dans 05 Tickets/ copiée du modèle Ticket, dans l'ordre du Plan de travail. Un ticket confié à Hermès part seul chez l'orchestrateur dès que sa note existe. Crée aussi un ticket isolé pour un bug ou une petite fonction, et corrige un ticket flou. À utiliser quand l'utilisateur dit "tickets", "crée les tickets", "découpe en tickets", "crée un ticket", "ouvre une issue", "relis le ticket 12" ou "il y a un bug". Ne pas utiliser pour cadrer (cadrage) ni réaliser un ticket (feature).
 ---
 
-# Tickets : créer, relire, corriger
+# Tickets : découper le travail
 
 ## But
 
-Des tickets GitHub que n'importe quel agent peut réaliser sans deviner.
-Chaque ticket est petit, livrable seul, et finit par des conditions que l'utilisateur peut vérifier.
-**Un ticket = un changement = un commit.** C'est ce skill qui le garantit, en découpant.
-Ce skill n'écrit rien dans le dépôt. Il travaille seulement sur les tickets GitHub.
-**Le "go" de l'utilisateur à la création vaut porte 1** pour les tickets qui ne touchent ni à l'argent, ni aux droits d'accès, ni aux données personnelles, ni à la base, ni à une nouvelle bibliothèque. Feature les code ensuite sans redemander.
-Un ticket sensible le dit dans ses Notes (`Sensible : <quoi>`) : feature attendra un "go" écrit avant de le coder.
+Des tickets que n'importe quel agent réalise sans deviner. Chaque ticket existe deux
+fois : l'issue GitHub, pour la discussion, et la note du vault, qui porte le plan, le
+journal et la fiche QA. **Un ticket = un changement = un commit.**
+Le "go" à la création est la porte 1 du ticket (`_Méthode/Portes.md`). Un ticket
+sensible (argent, droits, données personnelles, base, nouvelle bibliothèque) le dit :
+il attendra un second "go" écrit avant le code.
 
 ## Quand l'utiliser
 
-- Des user stories validées dans la note `02 Cadrage/<projet> - Stories.md` du vault, à transformer en tickets.
-- Un bug ou une petite fonction à noter en ticket.
-- Un ticket existant à relire ou à corriger, par exemple quand feature l'a jugé flou.
+- Les stories sont validées et le dépôt existe.
+- Un bug, une petite fonction, un ticket à relire.
 
 ## Quand ne pas l'utiliser
 
-- Idée floue, sans stories, qui demande plus d'un ticket : skill cadrage.
+- Idée floue qui demande plus d'un ticket : skill cadrage.
 - Réaliser le ticket : skill feature.
 
-## La branche de base
+## Le projet
 
-C'est toujours `preprod`. Les tickets partent de `preprod` et y reviennent. `main` ne reçoit que des mises en ligne.
-Chaque ticket l'écrit dans ses Notes. Feature y crée sa branche.
-Arrêt si `git ls-remote --heads origin preprod` ne renvoie rien : le cadrage n'est pas fait.
+Règles R1 à R4 du skill projet. `gh` se lance à la racine de `BASE`. Pas de dépôt
+(`depot` vide dans la note projet) : **arrêt**, le cadrage n'est pas allé au bout.
+Les notes de ticket s'écrivent dans le vault : c'est ce qui prévient Hermès.
 
 ## Ce qu'est un bon ticket
 
-- **Une tranche verticale** : il traverse toutes les couches utiles (écran, logique, données) pour un petit résultat visible.
-  Exemple de chantier : poser un petit meuble complet, plutôt que tous les caissons de la cuisine puis toutes les portes.
-- **Un seul changement.** Il se dit en une phrase, sans "et aussi". Il donnera un seul commit.
-  Si deux parties pourraient être livrées l'une sans l'autre, ce sont deux tickets.
-  Exemple : "ajouter l'export CSV" et "renommer le menu" font deux tickets, même s'ils sont petits.
-- **Une demi-journée de travail d'agent au plus.** Plus gros : le couper.
-- **Le modèle du projet** : `.github/ISSUE_TEMPLATE/fonction.md` ou `bug.md`.
-- **Des conditions vérifiables** : "le bouton Exporter télécharge un fichier CSV", pas "l'export marche bien".
-- **Ses liens, dans les Notes** :
-  - `Story : <projet> - Stories, S3` quand il vient d'une story.
-  - `Branche de base : preprod`.
-  - `Dépend de : #<numéro>` quand il en dépend.
-  - `Prérequis : <noms de variables, compte, migration, service>` quand il en faut avant de coder, ou `Prérequis : aucun`. Des noms seulement, jamais une valeur. Pour une variable, écrire son lieu : `NOM (coffre)`, `NOM (GitHub dev)`, `NOM (GitHub depot)`. Le pré-vol s'en sert avant de lancer le codage ou la nuit.
-  - `Sensible : <argent, droits, données personnelles, base, bibliothèque>` quand il en touche.
+- Une tranche verticale (écran, logique, données) pour un petit résultat visible.
+- Un seul changement, dit en une phrase sans "et aussi". Une demi-journée d'agent au plus.
+- Des conditions vérifiables : "le bouton Exporter télécharge un CSV", pas "l'export marche".
+- Dans "Le ticket" de la note et dans l'issue : `Dépend de : #<n>`, `Hors périmètre :`,
+  `Sensible : <quoi>` ou `Sensible : non`, `Prérequis : NOM (coffre)`, `NOM (GitHub dev)`,
+  compte, migration, ou `Prérequis : aucun`. Des noms, jamais une valeur. Le pré-vol les lit.
 
 ## Étapes, mode A : des stories aux tickets
 
-1. **Lire les stories.**
-   Lire la note `02 Cadrage/<projet> - Stories.md` du vault. Lire aussi la note PRD et `03 Design/<projet> - Écrans et états.md`.
-   Arrêt si le fichier manque sur GitHub : le cadrage n'est pas passé par la porte 1. Retour au skill cadrage.
-   Preuve : la liste des stories, numéro et titre.
+1. **Lire**, dans `02 Cadrage/` et `04 Conception/` : Stories (la matière), Priorités et
+   **Plan de travail** (l'ordre, les lots, les dépendances), **Specs** (les tâches déjà
+   découpées), **Sécurité** (ce qui rend un ticket sensible). Arrêt si Stories est vide.
+   Preuve : les stories, numéro et titre, et les lots du plan.
 
-2. **Lire le code et les tickets ouverts.** `gh issue list --state open --limit 30`.
-   Repérer ce qui existe déjà et les tickets en double.
-   Preuve : la liste de ce qui existe, en `chemin:ligne` ou numéro de ticket.
+2. **Lire les issues ouvertes.** `gh issue list --state open --limit 30`. Repérer les
+   doublons. Preuve : la liste.
 
-3. **Proposer le découpage. POINT D'ARRÊT.**
-   Un tableau : ordre, titre, story, résultat visible, dépend de, conditions "C'est fini quand".
-   Une story peut donner plusieurs tickets. Chaque condition de chaque story est couverte par au moins un ticket : le dire, story par story.
-   Chaque ligne du tableau porte un seul changement. Une ligne qui en contient deux est coupée avant de montrer le tableau.
-   Attendre le "go". Corriger et remontrer tant que l'utilisateur demande des changements.
-   Preuve : le tableau, et le "go" de l'utilisateur.
+3. **Ticket socle.** Si `AGENTS.md` dit "à définir" sous Commandes de vérification, le
+   premier ticket est le socle, d'après **Contraintes techniques** : installer la pile
+   écrite là, rien de plus ; écrire la commande `verifier` dans `AGENTS.md` ; ajouter la
+   CI (`.github/workflows/ci.yml`, qui lance cette commande dans `code/`) ; activer les
+   hooks du harness. Tous les autres tickets en dépendent.
 
-4. **Créer les tickets, dans l'ordre des dépendances.**
-   Pour chacun : corps écrit dans un fichier temporaire (`F=$(mktemp)`), puis
-   `gh issue create --title "<titre>" --label enhancement --body-file "$F"`.
-   Un ticket qui dépend d'un autre est créé après lui, pour citer son vrai numéro.
-   **Le numéro est celui que la commande rend** : `gh issue create` affiche l'adresse, son dernier nombre est le numéro. Ne jamais le déduire du dernier ticket vu : les demandes de fusion prennent les mêmes numéros, donc la suite saute.
-   Relire le numéro rendu avant de créer le suivant.
-   Preuve : la liste des numéros et des liens créés, chacun avec la sortie de `gh issue create`.
+4. **Proposer le découpage. POINT D'ARRÊT.** Un tableau : ordre, titre, story, lot,
+   résultat visible, dépend de, sensible, conditions. Chaque condition de chaque story est
+   couverte. Une ligne à deux changements est coupée avant de montrer.
+   Puis la question : "go hermes" (Hermès les réalise dès la création), ou "go" (feature,
+   ici). Preuve : le tableau, et la réponse.
 
-5. **Faire le bilan.**
-   Un tableau story, tickets créés. Aucune story sans ticket.
-   Annoncer : "Tickets créés. Dites feature tout, ou feature et des numéros (feature 2 3 4)."
-   Preuve : le tableau, avec les liens.
+5. **Créer issue puis note, ticket par ticket, dans l'ordre des dépendances.**
+   Une dépendance est créée avant, pour citer son vrai numéro.
+   ```bash
+   F=$(mktemp); # corps : besoin, conditions, Dépend de, Hors périmètre, Sensible, Prérequis
+   gh issue create --title "<titre>" --label enhancement --body-file "$F"
+   ```
+   Le numéro est le dernier nombre de l'adresse rendue. Jamais un numéro déduit : les
+   demandes de fusion prennent la même suite. Puis ajouter au corps la ligne
+   `Note : <Nom>/05 Tickets/<Nom> - T<n> <titre>.md` et `gh issue edit <n> --body-file "$F"`.
+   Copier `_Modèles/Notes/Ticket.md` en `05 Tickets/<Nom> - T<n> <titre court>.md`.
+   Propriétés : `projet`, `type: ticket`, `statut: a-faire`, `agent: hermes` ou
+   `agent: local` (le mode nuit écrit `agent: hermes-nuit`), `numero`, `issue`, `branche: ""`, `resume`,
+   `haut: "[[<Nom> - 05 Tickets]]"`, `source` (la story, ou la spec qui l'a produit).
+   Remplir "Le ticket" comme l'issue. **La note se crée en dernier** : avec
+   `agent: hermes`, son apparition lance l'orchestrateur.
+   Preuve : par ticket, le lien de l'issue et le chemin de la note.
 
-6. **Relire ce qui a été créé.** Mode C, étape 1, sur chaque ticket.
+6. **Bilan.** Tableau story, tickets, notes. Aucune story sans ticket.
+   "Tickets créés." Puis, en local : "Dites feature tout, ou feature et des numéros."
+   Avec Hermès : "L'orchestrateur les reçoit dans la minute."
+
+7. **Relire** chaque ticket avec le mode C, étape 1.
 
 ## Étapes, mode B : un ticket isolé
 
-1. Reformuler le bug ou la fonction en deux phrases. Confirmer avec l'utilisateur.
-2. Bug : demander les étapes pour reproduire, si elles manquent. Ne pas les inventer.
-3. Trouver la branche de base. Montrer le ticket complet. **POINT D'ARRÊT** : attendre le "go".
-4. Créer avec `gh issue create`, étiquette `bug` ou `enhancement`. Lire le numéro dans la sortie, jamais un numéro supposé.
-5. Relire avec le mode C, étape 1.
-   Preuve : le numéro créé et le résultat de la relecture.
+1. Reformuler en deux phrases, confirmer. Bug : demander les étapes de reproduction.
+2. Montrer le ticket complet. POINT D'ARRÊT : "go" ou "go hermes".
+3. Créer comme au mode A, étape 5. Étiquette `bug` ou `enhancement`. `source` : la note
+   qui a motivé le ticket, ou la note projet.
+4. Relire, mode C. Preuve : le numéro créé et la relecture.
 
 ## Étapes, mode C : relire et corriger
 
-1. **Relire.** `gh issue view <numéro> --json number,title,body,labels,state`, puis passer la grille :
-   - Le besoin dit qui, quoi, pour quel résultat.
-   - Chaque condition de "C'est fini quand" est vérifiable par l'utilisateur.
-   - Le hors-périmètre est écrit, même "rien".
-   - Il porte un seul changement, qui tiendra dans un seul commit.
-   - Il tient en une demi-journée d'agent.
-   - Argent, droits d'accès, données personnelles : signalés s'ils sont touchés.
-   - Les prérequis bloquants sont déclarés : noms de variables, compte, migration, service. Ou `Prérequis : aucun`.
-   - La branche de base est écrite, et c'est la bonne.
-   - La story citée existe dans la note Stories. Les tickets de "Dépend de" existent.
-   Preuve : la grille, une ligne par point, conforme ou écart.
-
-2. **Proposer la correction. POINT D'ARRÊT.**
-   Montrer l'ancien texte et le nouveau, rubrique par rubrique.
-   Trop gros, ou plusieurs changements : proposer de le couper. Le ticket d'origine garde le premier changement, les autres deviennent des tickets neufs qui le citent.
-   Preuve : le "go" de l'utilisateur.
-
-3. **Corriger.** `gh issue edit <numéro> --body-file "$F"`.
-   Puis `gh issue comment <numéro> --body "Ticket corrigé : <ce qui a changé, en une phrase>."`, pour garder la trace.
-   Preuve : `gh issue view <numéro>` relu après la modification.
+1. **Relire.** `gh issue view <n> --json number,title,body,labels,state`, et la note.
+   Grille : qui, quoi, pour quoi ; conditions vérifiables ; hors-périmètre écrit ; un seul
+   changement ; une demi-journée ; sensible signalé ; prérequis déclarés ; la story citée
+   existe ; les "Dépend de" existent. Preuve : une ligne par point.
+2. **Proposer la correction. POINT D'ARRÊT.** Ancien et nouveau, rubrique par rubrique.
+   Trop gros : couper, le ticket d'origine garde le premier changement.
+3. **Corriger.** `gh issue edit <n> --body-file "$F"`, la même correction dans la note,
+   puis `gh issue comment <n> --body "Ticket corrigé : <en une phrase>."`.
+   Preuve : l'issue et la note relues.
 
 ## Point d'arrêt
 
-- Rien n'est créé ni modifié sur GitHub sans "go".
-- Ticket fermé : ne pas le modifier. En créer un neuf qui le cite.
+- Rien n'est créé ni modifié sans "go". Ticket fermé : en créer un neuf qui le cite.
 
 ## Preuve attendue
 
-- Les numéros et liens des tickets créés ou corrigés.
-- Leur relecture après coup, sur GitHub.
-- En mode A : chaque story reliée à au moins un ticket.
+Les numéros et liens des issues, les chemins des notes, la relecture. Mode A : chaque
+story reliée à au moins un ticket, l'ordre tiré du Plan de travail.
 
 ## Interdits
 
-- Créer ou modifier un ticket sans "go".
-- Fermer un ticket. C'est le rôle du skill livrer, à la main après la fusion dans `preprod`, ou de l'utilisateur.
-- Écrire `Closes`, `Fixes` ou `Resolves` devant un numéro : un ticket ne se ferme jamais tout seul.
-- Créer un ticket qui réunit plusieurs changements indépendants.
-- Modifier les notes de cadrage : c'est le rôle du skill cadrage.
-- Effacer le texte d'un ticket sans laisser de commentaire de trace.
-- Inventer des étapes de reproduction ou des conditions.
-- Supposer un numéro au lieu de lire celui que la commande rend.
-- Omettre un prérequis bloquant, ou écrire la valeur d'un secret à sa place.
-- Mettre de vraies données de personnes, un secret ou un extrait de `.env` dans un ticket.
-- Écrire du code.
+- Créer ou modifier sans "go". Fermer un ticket : c'est livrer.
+- Écrire `Closes`, `Fixes` ou `Resolves` devant un numéro.
+- Supposer un numéro. Créer la note avant l'issue.
+- Réinventer la note au lieu de copier le modèle.
+- Écrire la valeur d'un secret, ou de vraies données de personnes. Écrire du code.

@@ -17,13 +17,15 @@ Ce skill ne modifie rien.
 
 ## Quand ne pas l'utiliser
 
-- L'utilisateur demande "le mot de contrôle du harness", sans le mot "skill". C'est la règle test du fichier AGENTS.md qui répond, pas ce skill.
+- L'utilisateur demande "le mot de contrôle du harness", sans le mot "skill".
+  C'est la règle test du fichier AGENTS.md qui répond, pas ce skill.
 
 ## Étapes
 
 1. Annoncer en une phrase que le skill test-harness est chargé.
 2. Donner le mot de contrôle du skill test : rabot-17
-3. Donner le chemin du fichier SKILL.md lu. Si l'agent ne le connaît pas, écrire "chemin inconnu".
+3. Donner le chemin du fichier SKILL.md lu. Si l'agent ne le connaît pas, écrire
+   "chemin inconnu".
 
 ## Point d'arrêt
 
@@ -40,4 +42,5 @@ La réponse contient trois éléments :
 
 ## Interdits
 
-- Ne jamais donner le mot de contrôle de mémoire. Il doit venir de ce fichier, lu dans la session en cours.
+- Ne jamais donner le mot de contrôle de mémoire. Il doit venir de ce fichier, lu dans
+  la session en cours.

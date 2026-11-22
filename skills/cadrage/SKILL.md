@@ -1,189 +1,152 @@
 ---
 name: cadrage
-description: Transforme une idée de projet en documents de cadrage validés (PRD, écrans, user stories) dans les notes du projet (vault Obsidian), en posant les questions une à la fois, et remplit le AGENTS.md du projet. Écrit les notes dans le vault et AGENTS.md sur la branche preprod, puis s'arrête pour le go de l'utilisateur (porte 1). À utiliser quand l'utilisateur dit "cadrage", "cadre cette idée", "j'ai une idée de projet", "challenge mon idée", "écris le PRD" ou "fais les user stories". Ne pas utiliser pour créer les tickets (tickets), pour réaliser un ticket (feature), ni pour une petite correction qui tient dans un ticket.
+description: Remplit la mémoire du projet dans le vault, phase par phase (Discovery, Cadrage, Design, Conception), une phase par session, à partir des notes du classeur. À la fin, crée le dépôt GitHub à la racine du dossier projet (notes et code/), avec README, .gitignore et AGENTS.md, sans aucune bibliothèque, après le go de la porte 1. À utiliser quand l'utilisateur dit "cadrage", "cadre cette idée", "challenge mon idée", "continuer le cadrage", "écris le PRD" ou "on cadre le projet". Ne pas utiliser pour créer le classeur (projet), les tickets (tickets) ni coder (feature).
 ---
 
-# Cadrage : de l'idée aux documents de cadrage
+# Cadrage : remplir la mémoire, phase par phase
 
 ## But
 
-Sortir d'une idée floue avec des documents de cadrage validés par l'utilisateur.
-Ils vivent dans le dossier du projet, dans le vault Obsidian (`RACINE_PROJETS/<projet>/`, voir `harness.conf`), pas dans un ticket ni dans le dépôt. Le dépôt est le sous-dossier `code/`.
-
-- `02 Cadrage/<projet> - PRD.md` : le document de besoin. Quel problème, pour qui, ce qui est fait et ce qui ne l'est pas.
-- `03 Design/<projet> - Écrans et états.md` : les écrans et les parcours. Facultatif si l'appli n'a pas d'écran.
-- `02 Cadrage/<projet> - Stories.md` : les user stories, numérotées S1, S2... Le skill tickets en fait des tickets.
-
-Les réponses qui resserviront vont dans `07 Décisions/<projet> - Journal des décisions.md`.
-Une note remplie passe en `statut: brouillon`, puis `valide` après la porte 1. Les autres notes du dossier (discovery, design, conception) se remplissent quand l'agent qui les porte (propriété `agent`) est appelé.
-Le cadrage remplit aussi le `AGENTS.md` du projet. C'est lui qui sait tout : sans lui, ce fichier reste un modèle à trous, lu à chaque conversation.
-
-## Les branches
-
-Le projet a deux branches qui durent, jamais trois : `main` et `preprod`.
-- `main` = ce qui est en ligne, publié sur `DOMAINE_PROD`. Rien ne s'y écrit directement.
-- `preprod` = le travail validé, pas encore en ligne, publié sur `DOMAINE_PREPROD` derrière un login. Elle naît de `main` et ne disparaît jamais.
-- `main` est **toujours** la branche par défaut du dépôt GitHub. Un dépôt neuf pousse `main` en premier : GitHub prend la première branche poussée comme défaut, et une seule.
-Chaque fusion de `preprod` vers main est une porte 3, donc une mise en ligne.
-Les documents de cadrage s'écrivent directement sur `preprod`. Le code, jamais : il passe par une branche de ticket.
+Un projet cadré sans rien oublier. Les notes du classeur sont la référence. On les
+remplit dans l'ordre, une phase par session. À la fin, le dépôt naît à la racine du
+dossier projet : il emporte toutes les notes, et `code/` reste vide jusqu'au ticket socle.
 
 ## Quand l'utiliser
 
-- Une idée de projet ou de grosse fonction, même vague.
-- L'utilisateur veut qu'on challenge une idée avant de la construire.
-- Les notes de cadrage du projet sont à compléter.
-- `AGENTS.md` garde des `<...>` (feature s'arrête et renvoie ici). Seulement l'étape 7, sans nouvelle question.
+- Le classeur existe et des notes sont `a-faire`.
+- Feature ou nuit renvoient ici parce que `AGENTS.md` a des trous `<...>` : étape 7
+  seulement, sans nouvelle question.
 
 ## Quand ne pas l'utiliser
 
-- L'idée tient en un seul ticket clair : skill tickets, mode B.
-- Le projet est déjà en ligne : voir l'arrêt de l'étape 1.
+- Pas de classeur : skill projet.
+- La note projet a `prod` rempli : le projet est en ligne. **Arrêt**, le cadrage d'une
+  évolution n'est pas encore défini. Le dire.
+
+## Les phases et qui écrit
+
+Le champ `phase` de la note projet dit où reprendre. Chaque note porte un `agent` :
+remplir la note avec le regard de ce rôle (ex. `cfo` pour Coûts : chiffres et seuil de
+rentabilité). Sur Hermès, une carte par note, assignée à ce profil.
+
+| Phase | Notes, dans l'ordre du modèle |
+| --- | --- |
+| 01 Discovery | Idée brute, Problème et opportunité, Utilisateurs et personas, Entretiens, Recherche et existant, Hypothèses et risques, Synthèse discovery |
+| 02 Cadrage | Pilotage, PRD, Priorités, Stories, Contraintes techniques, Juridique et données, Coûts, Critères d'acceptation |
+| 03 Design | Inspirations, Expérience (UX), Écrans et états, Identité visuelle (UI), Thèmes, Maquettes |
+| 04 Conception | Architecture, Données, Sécurité, Specs, Plan de travail |
+
+`a-faire` devient `brouillon` quand la note est remplie, `valide` quand l'utilisateur l'a
+relue. Une note sans objet prend `obsolete`, avec la raison écrite dedans.
 
 ## Étapes
 
-1. **Situer le projet.**
-   Le dossier du projet existe dans le vault, sinon `python3 <harness>/scripts/vault/vault_projets.py nouveau <projet>`. Le dossier du projet est aussi son dépôt Git (notes à la racine, appli dans `code/`) : le reste de l'étape se fait dans `<projet>/`.
-   `git status --short` doit être vide. Puis `git fetch origin`.
-   - `origin/main` existe et la note PRD est en `statut: valide` : le projet est en ligne. **Arrêt.** Le cadrage d'une évolution n'est pas encore défini. Le dire à l'utilisateur.
-     Exception : seul `AGENTS.md` est à remplir. Aller sur `preprod`, puis directement à l'étape 7.
-   - Sinon, `preprod` existe (`git ls-remote --heads origin preprod`) : `git switch preprod && git pull --ff-only`. On complète le cadrage.
-   - Sinon : projet neuf.
-     - Dossier pas encore dépôt : `git init -b main`, un premier commit (README, `.gitignore`, le gabarit du projet), puis `gh repo create <compte>/<dépôt> --private --source=. --push`. `main` est poussée en premier, donc GitHub la prend comme branche par défaut. Enfin `git switch -c preprod`.
-     - Dépôt existant avec `main` mais sans `preprod` : `git switch main && git pull --ff-only && git switch -c preprod`.
-   Preuve : `git branch --show-current` affiche `preprod`, et `gh repo view <compte>/<dépôt> --json defaultBranchRef` affiche `main`.
+1. **Situer** (règle R1 du skill projet). Lire la note projet et le `resume` des notes de
+   la phase. Lister celles qui sont `a-faire`, comme la vue `Documents à faire.base`.
+   Preuve : le chemin, la phase, la liste des notes avec leur statut.
 
-2. **Reformuler l'idée.**
-   La redire en deux phrases : qui, fait quoi, pour quel résultat.
-   Confirmer la reformulation avant de continuer.
-   Preuve : la reformulation, et le "oui" de l'utilisateur.
+2. **Décider où on en est.** Phase complète quand toutes ses notes sont `valide` ou
+   `obsolete` : passer à la suivante. Jamais deux phases dans la même session.
+   Preuve : "phase X : n notes validées, m à faire".
 
-3. **Lire avant de demander.**
-   Lire le AGENTS.md du projet, la note projet, le journal des décisions et les notes de cadrage déjà remplies, le code, et `gh issue list --state open --limit 20`.
-   Une question dont la réponse est dans le dépôt ne se pose pas.
-   Preuve : la liste de ce qui existe déjà, en `chemin:ligne` ou numéro de ticket.
+3. **Au premier passage, reformuler l'idée** en deux phrases : qui, fait quoi, pour quel
+   résultat. Attendre le "oui". Preuve : la reformulation et le "oui".
 
-4. **Dresser l'arbre des décisions.**
-   Lister les décisions à prendre, dans l'ordre où elles dépendent les unes des autres.
-   Penser à : le plus petit résultat utile, les cas d'échec, les comptes et les droits, les données personnelles, l'argent, les écrans, ce qu'on ne fait pas.
-   Preuve : la liste numérotée, montrée en une fois, courte.
+4. **Remplir les notes, une par une, dans l'ordre.** Lire la note, puis poser les
+   questions qui manquent. Une question par message, choix courts, "Recommandé" en
+   premier, la raison en une phrase. Après dix questions, proposer d'arrêter : le reste
+   devient "Hypothèses". La note Idée brute s'écrit avec les mots de l'utilisateur.
+   Livrables répétitifs, copiés de `_Modèles/Notes` :
+   - Atelier : `<Nom> - Atelier AAAA-MM-JJ <sujet>` dans `01 Discovery/`.
+   - Entretien : `<Nom> - Entretien AAAA-MM-JJ <rôle>` dans `01 Discovery/`, lié depuis
+     Entretiens.
+   - Décision lourde : `<Nom> - Décision AAAA-MM-JJ <sujet>` dans `07 Décisions/`,
+     liée dans la colonne Détail du journal des décisions.
+   Chaque réponse qui tranche : une ligne datée au journal des décisions.
+   Preuve : chaque note remplie, passée à `brouillon`.
 
-5. **Questionner, une décision à la fois.**
-   Une seule question par message, des choix courts, "Recommandé" en premier, la raison en une phrase.
-   Une réponse peut ouvrir de nouvelles branches : les ajouter à l'arbre.
-   Après dix questions, proposer de s'arrêter. Le reste devient "Hypothèse".
-   Preuve : chaque décision a une réponse ou est marquée "Hypothèse".
+5. **Règles de contenu.** Les personnes sont des rôles ou des prénoms inventés, jamais de
+   vraies personnes.
+   - Discovery : sources datées, au moins trois opportunités dans l'arbre des
+     opportunités (un problème en haut, une branche par piste), la synthèse dit "on y
+     va, on change, ou on arrête".
+   - Cadrage : le PRD reprend la synthèse et tient une rubrique "Retiré du périmètre",
+     une ligne datée par retrait. Stories numérotées S1, S2, chacune avec des conditions
+     vérifiables. **Pilotage** : les profils Hermès appelés, dans l'ordre, une raison par
+     profil sauté ; l'orchestrateur le lit avant de répartir.
+     **Contraintes techniques** : le type d'appli (landing, web, Android, Android et web,
+     service sans écran) d'après les appareils des personas, puis la pile, chaque
+     bibliothèque avec rôle, origine et version. Pas de pile par défaut. Le ticket
+     socle l'installe, rien de plus. **Critères d'acceptation** : vérifiables par
+     commande ou par geste ; ils deviennent les règles métier de `AGENTS.md`.
+   - Design : sauter la phase si l'appli n'a pas d'écran, raison dans chaque note.
+     Contrastes mesurés. Écrans et états liste les six états de chaque écran.
+   - Conception : Architecture (frontières, modes de panne), Données (schéma, durée de
+     conservation), Sécurité (points d'entrée, données sensibles : ce qui rendra un
+     ticket `Sensible`), Specs (découpées en tâches), Plan de travail (lots,
+     dépendances, chemin critique : le skill tickets en tire l'ordre).
+   Preuve : les notes remplies, et les "sans objet" avec leur raison.
 
-6. **Écrire les documents.**
-   Utiliser les modèles plus bas, dans les notes du vault (le frontmatter de la note reste en place). Écrans seulement s'il y a des écrans.
-   Ajouter les réponses utiles au journal des décisions, une ligne par décision, datée.
-   **Périmètre réduit.** Chaque fois qu'une réponse retire quelque chose (un écran, un réglage, un mode, un parcours), ajouter une ligne datée dans « Retiré du périmètre » du PRD : quoi, pourquoi, et si c'est remis à plus tard. Rien ne disparaît en silence.
-   Preuve : la liste des notes écrites, `vault_projets.py verifier` sans erreur, et ce qui a été retiré.
+6. **Fin de session. POINT D'ARRÊT.** Montrer les notes, demander la relecture. Relue :
+   `valide`. Phase complète : mettre `phase` à jour dans la note projet.
+   Preuve : les statuts relus, la valeur de `phase`, et `vault_projets.py verifier <Nom>`
+   (commande de l'étape 4 du skill projet) sans lien cassé.
 
-7. **Remplir `AGENTS.md`, puis commiter sur preprod.**
-   Chaque `<...>` est remplacé à partir des notes, du code et du journal des décisions. Aucune nouvelle question.
-   - Projet : les deux phrases du PRD. Utilisateurs : la rubrique du PRD.
-   - Technologies, rangement : ce qui existe vraiment (`package.json`, les dossiers). Pas encore choisi : "aucune pour l'instant".
-   - Règles métier critiques : tirées des Points sensibles et des "C'est fini quand" du PRD, avec leur raison. Aucune : "Aucune pour l'instant. En ajouter une dès qu'une erreur coûterait de l'argent ou de la confiance."
-   - `<prénom>` : la valeur `PRENOM` de `~/.config/harness/harness.conf`. `<Piège suivant>` : ligne retirée. Dans le commentaire du haut, garder la ligne de licence et retirer le mode d'emploi.
-   Ce qui manque s'écrit "à définir", et devient une Hypothèse dans le PRD.
-   Contrôle, qui ne doit rien afficher :
+7. **Conception complète : porte 1.** Montrer le récapitulatif (phrase, utilisateurs,
+   nombre de stories, contraintes, points sensibles, retraits du périmètre) et les cases
+   "Porte 1" de `_Méthode/Portes.md` encore vides. Puis : "Je crée le dépôt à la racine
+   de `<Nom>`, avec les notes, README, .gitignore et AGENTS.md. Rien d'autre. Dites go."
+   Sans ce go, rien ne se crée. Preuve : le récapitulatif, le "go" écrit.
+
+8. **Créer le dépôt**, hors du vault (règle R3), puis le pousser :
    ```bash
-   awk '/<!--/{c=1} {print (c ? "" : $0)} /-->/{c=0}' AGENTS.md | sed -E 's/<(numéro|mots-courts|n)>//g' | grep -nE '<[^>]+>'
+   BASE="$HOME/.local/share/harness/depots/$NOM"
+   COMPTE=$(sed -n 's/^COMPTE_GITHUB=//p' ~/.config/harness/harness.conf | tail -n 1)
+   mkdir -p "$BASE" && cp -r "$PROJET/." "$BASE/" && rm -f "$BASE/$NOM - GitHub.md"
+   cd "$BASE" && git init -b main && mkdir -p code && touch code/.gitkeep
    ```
-   `git add` de `AGENTS.md` puis de chaque note écrite, une par une, puis un commit en français, par exemple "Cadrage : PRD, écrans, stories et AGENTS.md".
-   Ne rien pousser à cette étape.
-   Preuve : le contrôle vide, `git log --oneline -1` et la liste des fichiers du commit.
+   Écrire à la racine :
+   - `README.md` : la phrase du projet, et "les documents sont les notes de ce dossier".
+   - `.gitignore` : `<Nom> - GitHub.md`, `.env*` (sauf `.env.example`), et selon le type
+     d'appli `code/node_modules/` et `code/.next/` (web), `code/build/` et
+     `code/.gradle/` (Android).
+   - `AGENTS.md`, ce squelette exact, chaque `<...>` rempli depuis les notes :
+     `# <Nom>` ; `## Projet` (la phrase) ; `## Utilisateurs` ; `## Où sont les documents`
+     (un lien par section `01` à `09`) ; `## Commandes de vérification` ("à définir :
+     ticket socle") ; `## Règles métier critiques` (depuis Critères d'acceptation) ;
+     `## Pièges connus` ("aucun pour l'instant").
+   - `CLAUDE.md` : une ligne, `@AGENTS.md`.
+   Contrôle, qui ne doit rien afficher :
+   `awk '/<!--/{c=1} {print (c ? "" : $0)} /-->/{c=0}' AGENTS.md | grep -nE '<[^>]+>'`
+   Puis `git add -- .` (le `.gitignore` fait le tri, vérifié par `git status --short`),
+   commit "Premier commit : notes du cadrage, AGENTS.md, README",
+   `gh repo create "$COMPTE/<dépôt>" --private --source=. --push`,
+   `gh repo view "$COMPTE/<dépôt>" --json defaultBranchRef` affiche `main`,
+   `git switch -c preprod && git push -u origin preprod`.
+   Écrire `depot: <compte>/<dépôt>` dans la note projet du vault. Le service mémoire du
+   serveur rattache alors le dossier du vault à ce dépôt.
+   Preuve : l'adresse, `git ls-remote origin preprod` égal à `git rev-parse HEAD`.
 
-8. **Faire relire. POINT D'ARRÊT (porte 1).**
-   Montrer à l'utilisateur le nom de chaque note écrite, `AGENTS.md` compris, et un résumé : nombre de stories, décisions, hypothèses, règles métier, et ce qui a été retiré du périmètre.
-   Demander "go" après sa relecture. Chaque correction est un nouveau commit, puis on remontre.
-   Preuve : le "go" de l'utilisateur, visible dans la conversation.
-
-9. **Pousser et passer la main.**
-   `git push -u origin preprod`, puis `git ls-remote --heads origin preprod`. Jamais de push forcé.
-   Si la branche par défaut n'est pas `main` : `gh repo edit <compte>/<dépôt> --default-branch main`.
-   Preuve : le code du commit affiché par `git ls-remote`, égal à celui de `git rev-parse HEAD`, et `gh repo view <compte>/<dépôt> --json defaultBranchRef` qui affiche `main`.
-   Annoncer "Cadrage poussé sur preprod.".
-   Si un skill `nuit` est installé, proposer le mode nuit en une seule question : "Voulez-vous lancer le mode nuit ? Oui, ou non."
-   "Oui", "ok", "c'est bon" : skill nuit, tout de suite. Ce oui est son "go".
-   "Non", ou pas de skill `nuit` : "Dites tickets pour créer les tickets à partir des stories."
-
-## Modèle de la note PRD
-
-```markdown
-# PRD : <nom du projet>
-
-## Problème
-<Ce qui ne va pas aujourd'hui, pour qui, en deux ou trois phrases.>
-
-## Utilisateurs
-<Qui s'en sert. Un rôle par ligne.>
-
-## Ce que ça fait
-- <Parcours : l'utilisateur fait ceci, il obtient cela.>
-
-## C'est fini quand
-- [ ] <Condition que l'utilisateur peut vérifier lui-même.>
-
-## Hors périmètre
-- <Ce qu'on ne fait pas, et pourquoi.>
-
-## Retiré du périmètre
-- <Date : ce qui a été retiré en cours de cadrage, et pourquoi. « Rien » si rien n'a été retiré.>
-
-## Points sensibles
-- Argent, droits d'accès, données personnelles, base de données, services externes et variables attendues : <lesquels, ou "aucun">.
-
-## Hypothèses
-- <Ce qui n'a pas été tranché, à vérifier plus tard.>
-```
-
-## Modèle de la note Écrans et états
-
-```markdown
-# Écrans et parcours
-
-## <Nom de l'écran>
-- Sert à : <une phrase>.
-- On y arrive par : <écran ou action>.
-- États : vide, chargement, erreur, plein. <Ce qu'on voit dans chacun.>
-```
-
-## Modèle de la note Stories
-
-```markdown
-# User stories
-
-## S1 : <titre court>
-En tant que <rôle>, je veux <action>, pour <résultat>.
-C'est fini quand :
-- [ ] <Condition vérifiable>
-```
+9. **Passer la main.** "Cadrage terminé, dépôt créé. Dites tickets." Si le skill nuit
+   est installé, une seule question : "Voulez-vous lancer le mode nuit ? Oui, ou non."
 
 ## Point d'arrêt
 
-- Étape 1 : arrêt si le projet est déjà en ligne, ou si le dossier n'est pas propre.
-- Étape 2 : pas de suite sans reformulation confirmée.
-- Étape 7 : arrêt si le contrôle de `AGENTS.md` affiche encore une ligne.
-- Étape 8 : rien n'est poussé sans "go".
-- Étape 9 : le mode nuit, s'il est installé, ne part pas sans "oui".
+- Étape 3 : pas de suite sans reformulation confirmée.
+- Étape 6 : aucune note ne passe `valide` sans relecture.
+- Étape 7 : le dépôt ne se crée pas sans le "go" de la porte 1.
 
 ## Preuve attendue
 
-- Les chemins des documents, et le commit sur `preprod`.
-- Le contrôle de `AGENTS.md`, vide.
-- Le "go" de l'utilisateur, puis le commit relu sur GitHub.
-- Le nombre de stories, de décisions et d'hypothèses.
-- Ce qui a été retiré du périmètre, s'il y en a.
+Les notes et leurs statuts, la valeur de `phase`, les retraits du périmètre. Pour le
+dépôt : l'adresse, le contrôle `AGENTS.md` vide, `main` par défaut, `preprod` poussée.
 
 ## Interdits
 
-- Poser plusieurs questions dans le même message.
-- Deviner une décision produit. Une réponse absente devient une hypothèse écrite.
-- Réduire un périmètre sans l'écrire dans « Retiré du périmètre ».
-- Écrire sur main. Écrire du code, même sur `preprod`.
-- Pousser en force (`--force`, `--force-with-lease`).
-- Créer des tickets : c'est le rôle du skill tickets.
-- Mettre de vraies données de personnes dans un document. Des exemples inventés.
-- Ajouter une bibliothèque sans dire son origine et sa version.
-- `git add -A`. `--no-verify`.
+- Remplir deux phases dans la même session. Plusieurs questions dans un message.
+- Deviner une décision produit. Réduire le périmètre sans l'écrire.
+- Ajouter une bibliothèque, un socle ou du code au dépôt.
+- Écrire dans `_Modèles/`, `_Méthode/`, `_À trier/` ou dans les blocs générés.
+- Recopier une information d'une autre note au lieu de la lier.
+- Mettre de vraies données de personnes.
+- Lancer `git` dans le dossier du vault de ce PC. Pousser en force. Créer des tickets.
