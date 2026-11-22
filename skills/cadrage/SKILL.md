@@ -1,6 +1,6 @@
 ---
 name: cadrage
-description: Remplit la mémoire du projet dans le vault, phase par phase (Discovery, Cadrage, Design, Conception), une phase par session, à partir des notes du classeur. À la fin, crée le dépôt GitHub à la racine du dossier projet (notes et code/), avec README, .gitignore et AGENTS.md, sans aucune bibliothèque, après le go de la porte 1. À utiliser quand l'utilisateur dit "cadrage", "cadre cette idée", "challenge mon idée", "continuer le cadrage", "écris le PRD" ou "on cadre le projet". Ne pas utiliser pour créer le classeur (projet), les tickets (tickets) ni coder (feature).
+description: Remplit la mémoire du projet dans le vault, phase par phase (Discovery, Cadrage, Design, Conception), une phase par session, à partir des notes du classeur. Dès le premier entretien si demandé, prépare GitHub. À la fin, complète le dépôt à la racine du dossier projet (notes et code/), avec README, .gitignore et AGENTS.md, sans aucune bibliothèque, après le go de la porte 1. À utiliser quand l'utilisateur dit "cadrage", "cadre cette idée", "challenge mon idée", "continuer le cadrage", "écris le PRD" ou "on cadre le projet". Ne pas utiliser pour créer le classeur (projet), les tickets (tickets) ni coder (feature).
 ---
 
 # Cadrage : remplir la mémoire, phase par phase
@@ -50,7 +50,22 @@ relue. Une note sans objet prend `obsolete`, avec la raison écrite dedans.
    Preuve : "phase X : n notes validées, m à faire".
 
 3. **Au premier passage, reformuler l'idée** en deux phrases : qui, fait quoi, pour quel
-   résultat. Attendre le "oui". Preuve : la reformulation et le "oui".
+   résultat. L’agent pose une question à la fois et rédige lui-même les notes à partir des réponses.
+   Une fois le nom et le compte confirmés, proposer l’initialisation GitHub. Sur accord :
+   - Créer le dépôt privé hors du vault, avec README et les modèles d’issue et de PR de
+     `template-projet/.github/`. Pousser le premier commit sur `main`, puis créer et
+     pousser `preprod` depuis ce commit. Vérifier que la branche par défaut est `main`.
+   - Créer un GitHub Project privé avec `gh project create --owner <compte> --title <nom>`,
+     puis `gh project link <numéro> --owner <compte> --repo <compte>/<dépôt>`.
+     Noter immédiatement son URL et son numéro dans Pilotage et renseigner `depot`
+     dans la note projet. Si interrompu, retrouver le dépôt et le Project existants
+     avant de poursuivre. Une permission Projects manquante est signalée.
+   - Inclure le workflow `methode/controles-depot.yml` sous `.github/workflows/`
+     avant le premier push. Vérifier le résultat dans Actions. Le ticket socle ajoutera
+     ensuite les tests de l’application selon la pile choisie.
+   - Prévoir une vue Tableau par statut et une vue Liste par priorité dans le Project.
+     Vérifier les vues disponibles dans GitHub avant d’annoncer leur création.
+   Preuve : URL du dépôt, branches distantes, Project lié et résultat du contrôle.
 
 4. **Remplir les notes, une par une, dans l'ordre.** Lire la note, puis poser les
    questions qui manquent. Une question par message, choix courts, "Recommandé" en
@@ -94,11 +109,14 @@ relue. Une note sans objet prend `obsolete`, avec la raison écrite dedans.
 
 7. **Conception complète : porte 1.** Montrer le récapitulatif (phrase, utilisateurs,
    nombre de stories, contraintes, points sensibles, retraits du périmètre) et les cases
-   "Porte 1" de `_Méthode/Portes.md` encore vides. Puis : "Je crée le dépôt à la racine
+   "Porte 1" de `_Méthode/Portes.md` encore vides. Si GitHub est déjà initialisé, proposer de finaliser le cadrage dans le dépôt existant. Sinon : "Je crée le dépôt à la racine
    de `<Nom>`, avec les notes, README, .gitignore et AGENTS.md. Rien d'autre. Dites go."
    Sans ce go, rien ne se crée. Preuve : le récapitulatif, le "go" écrit.
 
-8. **Créer le dépôt**, hors du vault (règle R3), puis le pousser :
+8. **Finaliser le dépôt de cadrage.** Si le dépôt existe depuis le premier entretien,
+   reprendre sa branche `preprod` dans `BASE`, compléter les fichiers ci-dessous et
+   pousser seulement le cadrage. Réutiliser son Project et ses branches. Les commandes
+   de création qui suivent concernent uniquement un dépôt encore absent :
    ```bash
    BASE="$HOME/.local/share/harness/depots/$NOM"
    COMPTE=$(sed -n 's/^COMPTE_GITHUB=//p' ~/.config/harness/harness.conf | tail -n 1)
@@ -134,7 +152,7 @@ relue. Une note sans objet prend `obsolete`, avec la raison écrite dedans.
 
 - Étape 3 : pas de suite sans reformulation confirmée.
 - Étape 6 : aucune note ne passe `valide` sans relecture.
-- Étape 7 : le dépôt ne se crée pas sans le "go" de la porte 1.
+- Au premier entretien, la création du dépôt exige l’accord explicite de l’utilisateur. La porte 1 valide ensuite le contenu du cadrage.
 
 ## Preuve attendue
 

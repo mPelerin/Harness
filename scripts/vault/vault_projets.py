@@ -255,6 +255,8 @@ views:
     "Tickets.base": """filters:
   and:
     - note.type == "ticket"
+    - '!file.inFolder("_Modèles")'
+    - '!file.inFolder("_À trier")'
 views:
   - type: table
     name: Tickets par statut
@@ -265,6 +267,7 @@ views:
       - file.name
       - note.projet
       - note.numero
+      - note.execution
       - note.branche
 """,
     "Documents à faire.base": """filters:
@@ -517,7 +520,7 @@ def cmd_recap(_):
            "# Tableau de bord", "", f"*Généré le {dt.datetime.now():%Y-%m-%d %H:%M} par `vault_projets.py recap`.*", "",
            "| Projet | Phase | Avancement | En cours | À faire | Faits | En une phrase |",
            "| --- | --- | --- | --- | --- | --- | --- |", *lignes_tdb, "",
-           "Vue détaillée : ![[Projets.base]]", ""]
+           "Vue détaillée : ![[Projets.base]]", "", "## Tickets du coffre", "", "![[Tickets.base]]", ""]
     print(f"tableau de bord : {'mis à jour' if ecrire(VAULT / '00 Tableau de bord.md', chr(10).join(tdb)) else 'inchangé'}")
 
 

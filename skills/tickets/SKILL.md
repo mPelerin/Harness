@@ -1,6 +1,6 @@
 ---
 name: tickets
-description: Crée, relit et corrige les tickets d'un projet. Transforme les stories du vault en issues GitHub, chacune avec sa note dans 05 Tickets/ copiée du modèle Ticket, dans l'ordre du Plan de travail. Un ticket confié à Hermès part seul chez l'orchestrateur dès que sa note existe. Crée aussi un ticket isolé pour un bug ou une petite fonction, et corrige un ticket flou. À utiliser quand l'utilisateur dit "tickets", "crée les tickets", "découpe en tickets", "crée un ticket", "ouvre une issue", "relis le ticket 12" ou "il y a un bug". Ne pas utiliser pour cadrer (cadrage) ni réaliser un ticket (feature).
+description: Crée, relit et corrige les tickets d'un projet. Transforme les stories du vault en issues GitHub, chacune avec sa note dans 05 Tickets/ copiée du modèle Ticket, dans l'ordre du Plan de travail. Un ticket confié à Hermès part seul chez l'orchestrateur quand sa note porte le feu vert. Crée aussi un ticket isolé pour un bug ou une petite fonction, et corrige un ticket flou. À utiliser quand l'utilisateur dit "tickets", "crée les tickets", "découpe en tickets", "crée un ticket", "ouvre une issue", "relis le ticket 12" ou "il y a un bug". Ne pas utiliser pour cadrer (cadrage) ni réaliser un ticket (feature).
 ---
 
 # Tickets : découper le travail
@@ -17,7 +17,7 @@ il attendra un second "go" écrit avant le code.
 ## Quand l'utiliser
 
 - Les stories sont validées et le dépôt existe.
-- Un bug, une petite fonction, un ticket à relire.
+- Un bug, une petite fonction, un ticket à relire. « Lance le ticket N » : retrouver sa note et son issue, vérifier le numéro et les prérequis, puis écrire `execution: À exécuter` dans le coffre. Si le numéro est ambigu, demander lequel.
 
 ## Quand ne pas l'utiliser
 
@@ -58,8 +58,7 @@ Les notes de ticket s'écrivent dans le vault : c'est ce qui prévient Hermès.
 4. **Proposer le découpage. POINT D'ARRÊT.** Un tableau : ordre, titre, story, lot,
    résultat visible, dépend de, sensible, conditions. Chaque condition de chaque story est
    couverte. Une ligne à deux changements est coupée avant de montrer.
-   Puis la question : "go hermes" (Hermès les réalise dès la création), ou "go" (feature,
-   ici). Preuve : le tableau, et la réponse.
+   « Go » valide la création en attente. « Lance N » autorise uniquement ce ticket. Preuve : le tableau, et la réponse.
 
 5. **Créer issue puis note, ticket par ticket, dans l'ordre des dépendances.**
    Une dépendance est créée avant, pour citer son vrai numéro.
@@ -74,13 +73,16 @@ Les notes de ticket s'écrivent dans le vault : c'est ce qui prévient Hermès.
    Propriétés : `projet`, `type: ticket`, `statut: a-faire`, `agent: hermes` ou
    `agent: local` (le mode nuit écrit `agent: hermes-nuit`), `numero`, `issue`, `branche: ""`, `resume`,
    `haut: "[[<Nom> - 05 Tickets]]"`, `source` (la story, ou la spec qui l'a produit).
-   Remplir "Le ticket" comme l'issue. **La note se crée en dernier** : avec
-   `agent: hermes`, son apparition lance l'orchestrateur.
+   Rédiger la note complète avec `execution: En attente`. Ajouter l’issue au GitHub Project lié
+   (`gh project item-add <numéro-projet> --owner <compte> --url <issue>`).
+   Après relecture, seul un accord explicite sur le ticket ou le lot permet de passer à
+   `execution: À exécuter`. L’utilisateur peut aussi changer cette valeur dans Obsidian.
+   Une note ancienne sans cette propriété reste en attente.
    Preuve : par ticket, le lien de l'issue et le chemin de la note.
 
 6. **Bilan.** Tableau story, tickets, notes. Aucune story sans ticket.
    "Tickets créés." Puis, en local : "Dites feature tout, ou feature et des numéros."
-   Avec Hermès : "Le serveur transmet chaque ticket après publication de sa note sur preprod."
+   Avec Hermès : "Le serveur transmet les tickets autorisés dès réception de leur note dans le coffre."
 
 7. **Relire** chaque ticket avec le mode C, étape 1.
 

@@ -56,17 +56,26 @@ son worktree `ARBRE`. La note du ticket se lit et s'écrit **dans `ARBRE`** :
    la carte, elle ne se devine pas. Preuve : les réponses, ou "aucune question".
 
 4. **Pour chaque ticket, un worktree.**
+   Hermès relit le feu vert dans le coffre. Retrouver d’abord la branche de cette issue
+   et son worktree en cas de reprise. Exécuter la création suivante seulement pour un ticket neuf.
    ```bash
    git -C "$BASE" fetch origin
    ARBRE="$HOME/.local/share/harness/worktrees/$NOM/<n>-<mots-courts>"
    git -C "$BASE" worktree add -b "<n>-<mots-courts>" "$ARBRE" origin/preprod
    ```
-   Sur une carte Hermès, vérifier dans cet arbre que la révision de cadrage transmise
-   est incluse (`git merge-base --is-ancestor "$REVISION" HEAD`, depuis `ARBRE`).
-   Relire la note versionnée, ses critères et ses sources. Si la note a changé depuis
-   cette révision, vérifier son affectation et son accord avant de coder.
-   Révision absente, note manquante ou accord retiré : bloquer la carte.
+   Sur carte Hermès, la note synchronisée indiquée dans la carte fait foi. Avant
+   d’ouvrir la branche, relire son numéro, son affectation et `execution: À exécuter`.
+   Une autorisation absente ou retirée arrête la carte. Hermès crée lui-même le
+   worktree du ticket. En reprise, retrouver celui de la même branche et de la même
+   issue avec `git worktree list`, sans créer une deuxième branche. Reporter la note
+   autorisée du coffre dans le même chemin relatif de l’arbre si la copie Git manque
+   ou est ancienne. Conserver tout journal de travail déjà présent lors d’une reprise.
    Dans la note du ticket (dans `ARBRE`) : `branche`, et `statut: en-cours`.
+   Mettre la branche et le statut en cours dans la note de suivi du coffre
+   (champ `branche` : nom exact de la branche) et le statut En cours sur l’item de
+   l’issue dans GitHub Projects. À l’ouverture de la PR, reporter son lien et passer
+   en revue dans le coffre et le Project. Une mise à jour GitHub échouée est à réessayer
+   sur le même item ; elle ne donne jamais de feu vert à Hermès.
    Preuve : `git -C "$ARBRE" branch --show-current`.
 
 5. **Coder, dans un seul commit.** Avant de coder, remplir dans la note "## Plan" et

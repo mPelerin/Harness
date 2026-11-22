@@ -59,7 +59,7 @@ rien chercher d'autre. Le `agent` de la note dit l'autorisation :
      --parent <cette carte> --workspace "dir:<projet>" \
      --idempotency-key "code-<Nom>-<n>" --body-file <fichier> "Code #<n> : <titre>"
    ```
-   Corps : le chemin de la note du ticket et la révision publiée de preprod fournie par la carte parente ; "skill feature, règles R1 à R4 du skill
+   Corps : le chemin de la note du ticket synchronisée et le numéro de l’issue ; "skill feature, règles R1 à R4 du skill
    projet, travail dans un worktree, jamais dans le dossier du vault" ; "ne touche jamais
    à `main`" ; selon `agent`, "arrête-toi à la porte 2" ou "fusionne en squash après CI
    verte avec `--match-head-commit`, sans fermer le ticket" ; "une question produit
@@ -78,7 +78,7 @@ rien chercher d'autre. Le `agent` de la note dit l'autorisation :
 2. **Sur le PC, passer la main.** `ssh -n "$HOTE_SSH_SERVEUR" 'sudo -H hermes-nuit <compte>/<dépôt>'`.
    "Hermès a pris la main. Vous recevrez l'adresse sur Telegram." Ne rien coder ici.
 3. **Sur le serveur, créer les tickets** par le skill tickets, mode A, sans arrêt au
-   découpage (le "oui" vaut ce go), chaque note avec `agent: hermes-nuit`. Le
+   découpage (le "oui" vaut ce go), chaque note avec `agent: hermes-nuit` et `execution: À exécuter` après validation du lot. Le
    déclencheur dépose une carte par note : rien à créer à la main.
    Preuve : `gh issue list --state open`, les notes, une carte "Ticket #" par note.
 4. **Surveiller** jusqu'à ce que toutes les cartes soient `done` ou `blocked`.

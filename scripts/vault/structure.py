@@ -501,6 +501,8 @@ MODELES_NOTES = {
 projet: "[[PROJET]]"
 type: ticket
 statut: a-faire
+agent: hermes
+execution: En attente
 numero:
 issue:
 branche:
