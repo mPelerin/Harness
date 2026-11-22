@@ -101,7 +101,7 @@ Chaque ligne est un skill. Vous dites le mot, l'agent déroule, et il s'arrête 
 
 Les portes sont détaillées dans `methode/portes.md`, recopié dans le vault (`_Méthode/Portes`).
 
-**Déléguer à un orchestrateur.** Si `ORCHESTRATEUR` est rempli dans `harness.conf`, `feature` ne code pas ici. Il ouvre une sous-conversation par ticket. Elle dépose la carte chez l'orchestrateur et la suit, sans bruit. La conversation principale ne garde qu'un tableau. `feature local` force le codage sur ce PC. Le pré-vol (`pre-vol --strict`) vérifie avant tout dépôt que les variables, comptes et migrations sont prêts, et qu'aucun ticket ne laisse ses prérequis dans le flou.
+**Confier un ticket à Hermès.** L’agent rédige la note dans le coffre et crée l’issue GitHub. Le modèle démarre avec `execution: En attente`. Pour lancer le travail, dites « lance le ticket 12 » à l’agent ou passez la note à `execution: À exécuter`. La veille de l’instance lit cette propriété après synchronisation. Hermès ouvre la branche du ticket depuis `preprod`, puis la demande de fusion. Le récap GitHub reporte la branche et la revue dans la note autorisée. Accueil et Tableau de bord affichent la vue des tickets. Le mode nuit garde son accord distinct.
 
 ## Créer un projet
 
