@@ -80,7 +80,7 @@ Les notes de ticket s'écrivent dans le vault : c'est ce qui prévient Hermès.
 
 6. **Bilan.** Tableau story, tickets, notes. Aucune story sans ticket.
    "Tickets créés." Puis, en local : "Dites feature tout, ou feature et des numéros."
-   Avec Hermès : "L'orchestrateur les reçoit dans la minute."
+   Avec Hermès : "Le serveur transmet chaque ticket après publication de sa note sur preprod."
 
 7. **Relire** chaque ticket avec le mode C, étape 1.
 

@@ -497,9 +497,10 @@ def cmd_recap(_):
         fm = lire_fm(texte)
         try:
             bloc, pct, compte = bloc_recap(f.stem, fm, f.parent)
-        except RuntimeError as e:
+        except (RuntimeError, OSError, subprocess.TimeoutExpired, json.JSONDecodeError) as e:
             # GitHub injoignable : on garde le dernier récap tel quel, et on le dit dans le journal
-            print(f"{f.stem} : récap impossible, note GitHub laissée intacte ({str(e).splitlines()[0]})")
+            print(f"{f.stem} : récap impossible, note GitHub laissée intacte ({type(e).__name__})")
+            lignes_tdb.append(f"| [[{f.stem}]] | {fm.get('phase', '')} | Actualisation impossible | — | — | — | {fm.get('resume', '')} |")
             continue
         note_gh = f.parent / f"{f.stem} - GitHub.md"
         base = note_gh.read_text(encoding="utf-8") if note_gh.exists() else note_github(f.stem)
@@ -524,6 +525,8 @@ def cmd_recap(_):
 
 def cmd_verifier(a):
     racine = Path(a.dossier) if a.dossier else VAULT
+    if not racine.is_dir():
+        sys.exit(f"Dossier à vérifier introuvable : {racine}")
     ignores = lambda p: (p.relative_to(racine).parts == ("AGENTS.md",)
                          or any(x.startswith(".") or x in ("code", "_À trier", "node_modules") for x in p.relative_to(racine).parts))
     notes = [p for p in racine.rglob("*.md") if not ignores(p)]
@@ -544,6 +547,15 @@ def cmd_verifier(a):
                      else ["projet", "type", "resume", "haut"] if typ == "suivi"
                      else ["type", "statut", "resume"] if typ == "methode" or "_Modèles/Notes" in str(p)
                      else PROPRIETES)
+        # Les notes ajoutées en séance suivent les modèles courts (CR, décision,
+        # entretien, atelier), sans le fil de lecture des notes du classeur.
+        projet = p.parent.parent.name
+        if p.parent.name in {section["dossier"] for section in SECTIONS} and typ in ("journal", "decision", "discovery"):
+            titres = {titre for _, titre, _ in parcours(projet)}
+            if p.stem not in titres:
+                attendues = ["projet", "type", "statut", "resume", "haut"]
+        if "source" in fm and "precedent" in attendues:
+            attendues = ["source" if k == "precedent" else k for k in attendues]
         manque = [] if p.name in ("AGENTS.md", "CLAUDE.md", "LICENCES-TIERS.md", "README.md") else [k for k in attendues if k not in fm]  # fichiers de règles, pas des notes
         if manque:
             manquantes.append(f"{p.relative_to(racine)} : {', '.join(manque)}")

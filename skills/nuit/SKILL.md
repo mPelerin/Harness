@@ -59,7 +59,7 @@ rien chercher d'autre. Le `agent` de la note dit l'autorisation :
      --parent <cette carte> --workspace "dir:<projet>" \
      --idempotency-key "code-<Nom>-<n>" --body-file <fichier> "Code #<n> : <titre>"
    ```
-   Corps : le chemin de la note du ticket ; "skill feature, règles R1 à R4 du skill
+   Corps : le chemin de la note du ticket et la révision publiée de preprod fournie par la carte parente ; "skill feature, règles R1 à R4 du skill
    projet, travail dans un worktree, jamais dans le dossier du vault" ; "ne touche jamais
    à `main`" ; selon `agent`, "arrête-toi à la porte 2" ou "fusionne en squash après CI
    verte avec `--match-head-commit`, sans fermer le ticket" ; "une question produit

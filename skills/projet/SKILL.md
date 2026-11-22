@@ -110,7 +110,7 @@ l'utilisateur tranche.
    Arrêt si `_Modèles/Projet` manque : le modèle a bougé, ne rien improviser.
 
 4. **Contrôler.** `grep -rn "PROJET" "$VAULT/$NOM"` n'affiche rien, et
-   `VAULT_PROJETS="$VAULT" python3 "$HARNESS/scripts/vault/vault_projets.py" verifier "$NOM"`
+   `VAULT_PROJETS="$VAULT" python3 "$HARNESS/scripts/vault/vault_projets.py" verifier "$VAULT/$NOM"`
    ne signale ni lien cassé ni propriété manquante. Preuve : les deux sorties.
 
 5. **Remplir la note projet.** `phase: discovery`, `depot: ""`, `prod: ""`,

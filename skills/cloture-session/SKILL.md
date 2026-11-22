@@ -63,7 +63,7 @@ Prochaine action : <une seule, avec la commande ou la phrase exacte à dire>
    Propriétés : `projet`, `type: journal`, `statut: valide`, `resume`, `haut: "[[<Nom> - 09 Journal]]"`,
    `source: "[[<Nom>]]"`.
    Remplir : Ce qui a été fait. Ce qui a été décidé, chaque décision aussi reportée au
-   journal des décisions. Ce qui reste.
+   journal des décisions. Ce qui reste, la prochaine action exacte et tout accord encore attendu.
    Une décision lourde prend sa propre note depuis `_Modèles/Notes/Décision.md`, dans
    `07 Décisions/`, liée dans la colonne Détail.
    Puis mettre à jour la note projet si la `phase` a changé pendant la session.
@@ -82,7 +82,7 @@ Prochaine action : <une seule, avec la commande ou la phrase exacte à dire>
 
 1. Lire la passation la plus récente :
    `ls -1 ~/.local/share/harness/passations/<nom-du-dépôt>/ | tail -n 1`.
-   Aucune : le dire, et faire seulement l'étape 2.
+   Si elle manque sur cette machine, poursuivre avec le compte rendu partagé et le commentaire du ticket.
 2. Relever l'état réel, comme à l'étape 1.
 3. Lire `<Nom> - GitHub` (récap généré) et le dernier compte rendu de `09 Journal/`,
    et comparer avec l'état réel. Ce qui a changé depuis : le dire.

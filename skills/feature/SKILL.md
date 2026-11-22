@@ -61,6 +61,11 @@ son worktree `ARBRE`. La note du ticket se lit et s'écrit **dans `ARBRE`** :
    ARBRE="$HOME/.local/share/harness/worktrees/$NOM/<n>-<mots-courts>"
    git -C "$BASE" worktree add -b "<n>-<mots-courts>" "$ARBRE" origin/preprod
    ```
+   Sur une carte Hermès, vérifier dans cet arbre que la révision de cadrage transmise
+   est incluse (`git merge-base --is-ancestor "$REVISION" HEAD`, depuis `ARBRE`).
+   Relire la note versionnée, ses critères et ses sources. Si la note a changé depuis
+   cette révision, vérifier son affectation et son accord avant de coder.
+   Révision absente, note manquante ou accord retiré : bloquer la carte.
    Dans la note du ticket (dans `ARBRE`) : `branche`, et `statut: en-cours`.
    Preuve : `git -C "$ARBRE" branch --show-current`.
 
