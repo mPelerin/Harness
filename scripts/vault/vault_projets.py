@@ -9,7 +9,7 @@
 
 La structure d'un projet vit dans structure.py, seul endroit à modifier.
 """
-import argparse, collections, datetime as dt, json, os, re, subprocess, sys
+import argparse, collections, datetime as dt, json, os, re, subprocess, sys, tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -359,6 +359,7 @@ def statuts_tickets(depot):
         fusion = sorted([p for p in liees if p["state"] == "MERGED"], key=lambda p: p["mergedAt"])
         t = {"n": n, "titre": i["title"], "url": i["url"], "labels": [l["name"] for l in i["labels"]],
              "pr": fusion[-1] if fusion else next((p for p in liees if p["state"] == "OPEN"), None)}
+        t["branche"] = next((b for b in sorted(branches) if b.startswith(f"{n}-")), "")
         if fusion:
             p = fusion[-1]
             sortie = next((s for s in sorties if s["mergedAt"] >= p["mergedAt"]), None)
@@ -441,7 +442,7 @@ def note_ticket(nom, t, projet_dir):
 def bloc_recap(nom, fm, projet_dir):
     depot = fm.get("depot", "")
     if not depot or "/" not in depot:
-        return "Pas de dépôt GitHub renseigné (propriété `depot`).", 0, {}
+        return "Pas de dépôt GitHub renseigné (propriété `depot`).", 0, {}, []
     tickets, prs, sorties = statuts_tickets(depot)
     compte = collections.Counter(t["statut"] for t in tickets)
     actifs = [t for t in tickets if t["statut"] != "ferme"]
@@ -482,13 +483,61 @@ def bloc_recap(nom, fm, projet_dir):
     if sorties:
         der = sorties[-1]
         l += ["", f"Dernière mise en ligne : [PR #{der['number']}]({der['url']}), le {der['mergedAt'][:10]}."]
-    return "\n".join(l), pct, compte
+    return "\n".join(l), pct, compte, tickets
 
 
 def remplacer_bloc(texte, bloc):
     if DEBUT in texte and FIN in texte:
         return re.sub(re.escape(DEBUT) + r".*?" + re.escape(FIN), lambda _: f"{DEBUT}\n{bloc}\n{FIN}", texte, flags=re.S)
     return texte.rstrip() + f"\n\n{DEBUT}\n{bloc}\n{FIN}\n"
+
+
+def actualiser_notes_autorisees(dossier, tickets):
+    """Reporter le suivi GitHub sans recopier le contenu de la branche de code."""
+    par_issue = {t["url"]: t for t in tickets}
+    for note in dossier.glob("*.md"):
+        if note.is_symlink():
+            continue
+        original = note.read_bytes()
+        texte = original.decode("utf-8")
+        fm = lire_fm(texte)
+        ticket = par_issue.get(fm.get("issue"))
+        if not ticket or fm.get("type") != "ticket" or fm.get("numero") != str(ticket["n"]):
+            continue
+        if fm.get("execution") != "À exécuter" or fm.get("statut") not in ("a-faire", "en-cours", "en-revue"):
+            continue
+        statut = {"en-cours": "en-cours", "en-revue": "en-revue", "en-preprod": "valide",
+                  "en-ligne": "valide", "ferme": "obsolete"}.get(ticket["statut"])
+        if not statut:
+            continue
+        entete, fin, corps = texte.partition("\n---\n")
+        if not fin:
+            continue
+        pr = ticket.get("pr")
+        champs = {"statut": statut}
+        branche = pr["headRefName"] if pr else ticket.get("branche")
+        if branche:
+            champs["branche"] = json.dumps(branche, ensure_ascii=False)
+        if pr:
+            champs["pr"] = pr["url"]
+        for cle, valeur in champs.items():
+            motif = rf"^{cle}:.*$"
+            if re.search(motif, entete, re.M):
+                entete = re.sub(motif, lambda _: f"{cle}: {valeur}", entete, flags=re.M)
+            else:
+                entete += f"\n{cle}: {valeur}"
+        resultat = (entete + fin + corps).encode("utf-8")
+        if resultat == original:
+            continue
+        with tempfile.NamedTemporaryFile(dir=dossier, prefix=".suivi-", delete=False) as fichier:
+            temp = Path(fichier.name)
+            fichier.write(resultat)
+        try:
+            temp.chmod(note.stat().st_mode & 0o777)
+            if note.read_bytes() == original:
+                temp.replace(note)
+        finally:
+            temp.unlink(missing_ok=True)
 
 
 def cmd_recap(_):
@@ -499,12 +548,13 @@ def cmd_recap(_):
         texte = f.read_text(encoding="utf-8")
         fm = lire_fm(texte)
         try:
-            bloc, pct, compte = bloc_recap(f.stem, fm, f.parent)
+            bloc, pct, compte, tickets = bloc_recap(f.stem, fm, f.parent)
         except (RuntimeError, OSError, subprocess.TimeoutExpired, json.JSONDecodeError) as e:
             # GitHub injoignable : on garde le dernier récap tel quel, et on le dit dans le journal
             print(f"{f.stem} : récap impossible, note GitHub laissée intacte ({type(e).__name__})")
             lignes_tdb.append(f"| [[{f.stem}]] | {fm.get('phase', '')} | Actualisation impossible | — | — | — | {fm.get('resume', '')} |")
             continue
+        actualiser_notes_autorisees(f.parent / "05 Tickets", tickets)
         note_gh = f.parent / f"{f.stem} - GitHub.md"
         base = note_gh.read_text(encoding="utf-8") if note_gh.exists() else note_github(f.stem)
         neuf_gh = remplacer_bloc(base, bloc)
