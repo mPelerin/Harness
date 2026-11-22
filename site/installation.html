@@ -5,19 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Harness : l'installation</title>
 <meta name="description" content="Installer le harness sur votre PC, prouver qu'il est lu, puis créer un projet qui l'utilise.">
-<script>(function (d) { d.classList.add("js"); try { var t = localStorage.getItem("harness-theme"); if (t === "light" || t === "dark") d.setAttribute("data-theme", t); } catch (e) {} })(document.documentElement)</script>
+<script>(function (d) { try { var t = localStorage.getItem("harness-theme"); if (t === "light" || t === "dark") d.setAttribute("data-theme", t); } catch (e) {} })(document.documentElement)</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&amp;display=swap">
 <link rel="stylesheet" href="assets/style.css">
 <script src="assets/site.js" defer></script>
 </head>
 <body>
 <a class="saut" href="#contenu">Aller au contenu</a>
 <nav class="nav" aria-label="Pages du site">
-  <div class="nav-pilule">
-    <a class="nav-logo" href="index.html">Harness<span>.</span></a>
-    <div class="nav-liens">
+  <div class="nav-interieur">
+    <a class="nav-logo" href="index.html"><span class="marque" aria-hidden="true"></span>Harness</a>
+    <div class="nav-liens" id="pages">
       <a href="index.html">Vue d'ensemble</a>
       <a href="methode.html">Méthode</a>
       <a href="installation.html" aria-current="page">Installation</a>
@@ -26,13 +26,14 @@
       <a href="github.html">GitHub</a>
     </div>
     <div class="nav-actions">
+      <button class="nav-menu" type="button" aria-expanded="false" aria-controls="pages" hidden>Menu</button>
       <a class="nav-depot" href="https://github.com/mPelerin/harness" rel="noopener" aria-label="Le dépôt du harness sur GitHub"><svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>Dépôt</span></a>
-      <button class="nav-theme" type="button" aria-label="Changer de mode"><svg class="lune" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="soleil" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+      <button class="nav-theme" type="button" hidden aria-label="Changer de mode"><svg class="lune" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="soleil" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
     </div>
   </div>
 </nav>
 
-<main id="contenu">
+<main id="contenu" tabindex="-1">
   <header class="hero">
     <div class="conteneur" data-decale="0.1">
       <span class="etiquette apparait">L'installation</span>
@@ -42,11 +43,10 @@
         <a class="bouton" href="https://github.com/mPelerin/harness" rel="noopener">Ouvrir le dépôt sur GitHub</a>
         <a class="lien-fleche" href="#recuperer">Récupérer le moteur</a>
       </div>
-      <div class="ligne-degrade apparait"></div>
     </div>
   </header>
 
-  <section style="padding-top:24px">
+  <section>
     <div class="conteneur">
       <div class="titre-section">
         <span class="etiquette apparait">Avant de commencer</span>
@@ -139,12 +139,28 @@ bash scripts/verifier-install.sh</code></pre>
     </div>
   </section>
 
+  <section id="creer-projet">
+    <div class="conteneur">
+      <div class="titre-section">
+        <p class="etiquette">Démarrer un projet</p>
+        <h2>Du classeur au premier ticket technique</h2>
+      </div>
+      <ol class="frise">
+        <li><h3>Ouvrir le classeur</h3><p>Depuis le coffre Projets, ouvrez une session d’agent et demandez-lui de lancer le skill <code>projet</code>. Il crée les notes à partir des modèles. Dans Obsidian, ouvrez la note principale du projet.</p></li>
+        <li><h3>Commencer le cadrage</h3><p>Dites "cadrage". L’agent pose les questions et rédige les notes. Au premier entretien, il peut préparer GitHub avec votre accord.</p></li>
+        <li><h3>Créer le socle au bon moment</h3><p>Après validation du cadrage et autorisation du ticket socle, l’agent installe la technologie choisie dans <code>code/</code> et met en place les tests automatiques.</p></li>
+      </ol>
+      <p class="sous-titre">La commande <code>nouveau-projet</code> reste le raccourci du gabarit Next.js. Le parcours par le coffre laisse le choix de la technologie au cadrage.</p>
+      <div class="boutons"><a class="lien-fleche" href="methode.html#memoire">Voir le fonctionnement du coffre</a></div>
+    </div>
+  </section>
+
   <section>
     <div class="conteneur">
       <div class="titre-section">
-        <span class="etiquette apparait">Créer un projet</span>
+        <span class="etiquette apparait">Gabarit Next.js</span>
         <h2 class="masque"><span>Une commande, <em>cinq étapes</em>.</span></h2>
-        <p class="sous-titre apparait">Le nom s'écrit en minuscules, chiffres et tirets. La commande s'arrête si le dossier existe déjà, et ne touche à rien en dehors.</p>
+        <p class="sous-titre apparait">Ce raccourci installe le profil Next.js. Le nom s’écrit en minuscules, avec des chiffres ou des tirets.</p>
       </div>
       <div class="apparait"><pre><code>nouveau-projet mon-appli</code></pre></div>
       <ol class="frise" data-decale="0.08" style="margin-top:32px">
@@ -152,7 +168,7 @@ bash scripts/verifier-install.sh</code></pre>
         <li class="apparait"><span class="etiquette">2 sur 5</span><h3>Poser le socle et le profil</h3><p>Le gabarit commun, le profil TypeScript et Next.js, et les fichiers des outils MCP pour les deux agents.</p></li>
         <li class="apparait"><span class="etiquette">3 sur 5</span><h3>Installer les outils de contrôle</h3><p>Prettier (mise en forme), Vitest (tests) et Lefthook (hooks Git), chacun à une version fixée.</p></li>
         <li class="apparait"><span class="etiquette">4 sur 5</span><h3>Fixer les versions et faire le premier commit</h3><p>Chaque plage de version comme <code>^5</code> est remplacée par la version réellement installée. Les hooks sont activés.</p></li>
-        <li class="apparait"><span class="etiquette">5 sur 5</span><h3>Lancer la vérification complète</h3><p>Le projet finit par <code>OK</code>. Il ne reste qu'à le relier à GitHub et à dire "cadrage".</p></li>
+        <li class="apparait"><span class="etiquette">5 sur 5</span><h3>Lancer la vérification complète</h3><p>Le projet finit par <code>OK</code>. Le gabarit est prêt à être vérifié dans votre environnement.</p></li>
       </ol>
     </div>
   </section>
@@ -237,7 +253,7 @@ gh repo view &lt;compte&gt;/mon-appli --json defaultBranchRef</code></pre>
 <footer class="pied">
   <div class="conteneur pied-grille">
     <div>
-      <b>Harness<span style="color:var(--accent)">.</span></b>
+      <b>Harness</b>
       <p>Des règles, des skills et une méthode pour les agents IA de code. Écrit une fois, lu par Claude Code et OpenCode.</p>
       <p class="mono">Les portes humaines sont adaptées de kit-agents-ia (Mathis Gorvien, licence MIT).</p>
     </div>
