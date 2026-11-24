@@ -61,8 +61,9 @@ L'agent ne les règle jamais. Un prérequis manque : **arrêt**, avec son nom.
    curl -sS -o /dev/null -w '%{http_code}' \
      -H "Authorization: Bearer $COOLIFY_API_TOKEN" http://127.0.0.1:8000/api/v1/teams/current
    ```
-   200 : tout va bien. Autre code : relancer sans `-o /dev/null`, citer le message,
-   s'arrêter. Preuve : le code HTTP.
+   200 : poursuivre. Autre code : s'arrêter et communiquer le code HTTP. Si un
+   diagnostic est nécessaire, résumer la cause après avoir filtré les adresses,
+   identifiants et valeurs sensibles du résultat. Garder le corps brut côté serveur.
 
 3. **Adresse.** `https://<dépôt en minuscules>.<DOMAINE_PREPROD>`, sauf adresse écrite
    dans la note projet. Le DNS n'est pas à toucher.

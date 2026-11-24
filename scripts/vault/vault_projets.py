@@ -187,7 +187,12 @@ _À trier/                     temporaire : documents d'avant le vault, à réin
 <Nom>/code/                   l'appli (package.json, src/…) ; toutes ses commandes se lancent ici
 ```
 
-Le vault est le dossier `RACINE_PROJETS` de `harness.conf`. Ce qui est exclu de GitHub par le `.gitignore` est aussi exclu de la synchro : bibliothèques, builds, base locale, secrets, `.git`. La note `<Nom> - GitHub` est générée et jamais versionnée. Un agent travaille un ticket dans un worktree, pour que le dossier synchronisé reste sur `preprod`.
+Le vault est le dossier `RACINE_PROJETS` de `harness.conf`. Le `.gitignore` règle les
+exclusions de Git. Configurer séparément les exclusions de l'outil de synchronisation
+pour les bibliothèques, les builds, la base locale, `.git` et les fichiers de secrets.
+Vérifier ces exclusions avant d'activer la synchronisation sur chaque machine.
+La note `<Nom> - GitHub` est générée et jamais versionnée. Un agent travaille un
+ticket dans un worktree pour que le dossier synchronisé reste sur `preprod`.
 
 ## Nommage
 
