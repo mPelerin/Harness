@@ -2,7 +2,7 @@
 
 # Modèle de fiche QA
 
-Une fiche par ticket. Copiez ce fichier sous le nom `<numéro>-<mots-courts>.md`, dans ce même dossier.
+Une fiche par ticket, dans la rubrique « Fiche QA » de la note du ticket (`05 Tickets/` du projet, dans le vault).
 L'agent la prépare. L'humain la déroule et remplit la colonne Commentaire.
 
 **Qui teste quoi.**

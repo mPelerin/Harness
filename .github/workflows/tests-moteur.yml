@@ -1,0 +1,22 @@
+name: Tests du moteur
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  tests-moteur:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Vérifier les scripts shell
+        run: |
+          for script in scripts/*.sh; do
+            bash -n "$script"
+          done
+      - name: Tester le moteur
+        run: python3 -m unittest discover -s tests -v

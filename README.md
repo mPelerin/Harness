@@ -51,8 +51,10 @@ harness/
     orchestrateur.sh       dépose une demande chez l'orchestrateur et suit la carte
     pre-vol.sh             liste les blocages humains avant de coder ou de lancer la nuit
     mesurer-mcp.mjs        mesure la place que prend un outil MCP
+    vault/                 le vault Obsidian des projets : modèle, création, récap GitHub, vérification
+  methode/               les portes et la fiche QA, recopiées dans le vault de chaque instance
   skills/                les skills de méthode, plus le skill témoin test-harness
-  template-projet/       le socle commun à tous les projets
+  template-projet/       le socle commun au code de tous les projets (le dépôt <projet>/code)
   profils/nextjs/        le profil TypeScript et Next.js : hooks, CI, Dependabot
   mcp/                   les outils MCP, réglés pour Claude Code et OpenCode
   site/                  le site de présentation, six pages HTML, et son DESIGN.md
@@ -75,7 +77,11 @@ Ce que fait l'installeur :
 - il relie `~/.config/harness` au dossier `config/` de votre instance ;
 - il génère les règles des agents : `AGENTS.md` du moteur, puis votre `profil.md` ;
 - il relie les skills du moteur, puis ceux de l'instance, dans `~/.claude/skills/` ;
-- il relie les commandes `nouveau-projet`, `orchestrateur` et `pre-vol` dans `~/.local/bin/`.
+- il relie les commandes `nouveau-projet`, `orchestrateur`, `pre-vol` et `verifier-revue-hermes` dans `~/.local/bin/`.
+
+Si le dossier du coffre diffère d'une machine à l'autre, indiquez `RACINE_PROJETS` dans
+`~/.config/harness-local/harness.conf`. L'outil du coffre lit cette valeur avant la
+configuration partagée. `VAULT_PROJETS` reste prioritaire pour un essai ponctuel.
 
 Il ne supprime jamais rien. Ce qui gêne est mis de côté dans un dossier daté (`DOSSIER_SAUVEGARDES` de `harness.conf`, sinon `~/.local/state/harness/sauvegardes/`).
 
@@ -89,7 +95,8 @@ Chaque ligne est un skill. Vous dites le mot, l'agent déroule, et il s'arrête 
 
 | Vous dites | Ce que fait l'agent | Où il s'arrête |
 | --- | --- | --- |
-| cadrage | Pose les questions, écrit le PRD, les écrans, les stories, remplit AGENTS.md | Porte 1 : votre "go" après relecture |
+| projet | Crée le classeur du projet dans le coffre Obsidian | Classeur créé et vérifié |
+| cadrage | Charge le profil de la phase, mène l'entretien et remplit ses notes | Relecture à chaque phase, puis porte 1 après Conception |
 | tickets | Découpe les stories en tickets GitHub | Votre "go" sur le découpage |
 | feature tout | Code chaque ticket avec ses tests, vérifie, relit, prépare la fiche QA, ouvre la demande de fusion | Porte 2 : un seul tableau pour tout le lot |
 | go tout | Fusionne dans `preprod`, ferme les tickets à la main | Nulle part |
@@ -97,17 +104,42 @@ Chaque ligne est un skill. Vous dites le mot, l'agent déroule, et il s'arrête 
 | retro | Transforme une erreur en contrôle ou en règle | Votre "go" avant de toucher au harness |
 | fini, reprends | Écrit la passation, ou repart de la dernière | Nulle part |
 
-Les portes sont détaillées dans `template-projet/docs/portes.md`.
+Les portes sont détaillées dans `methode/portes.md`, recopié dans le vault (`_Méthode/Portes`).
 
-**Déléguer à un orchestrateur.** Si `ORCHESTRATEUR` est rempli dans `harness.conf`, `feature` ne code pas ici. Il ouvre une sous-conversation par ticket. Elle dépose la carte chez l'orchestrateur et la suit, sans bruit. La conversation principale ne garde qu'un tableau. `feature local` force le codage sur ce PC. Le pré-vol (`pre-vol --strict`) vérifie avant tout dépôt que les variables, comptes et migrations sont prêts, et qu'aucun ticket ne laisse ses prérequis dans le flou.
+**Confier un ticket à Hermès.** L’agent rédige la note dans le coffre et crée l’issue GitHub. Le modèle démarre avec `execution: En attente`. Pour lancer le travail, dites « lance le ticket 12 » à l’agent ou passez la note à `execution: À exécuter`. La veille de l’instance lit cette propriété après synchronisation. Hermès ouvre la branche du ticket depuis `preprod`, puis la demande de fusion. Le récap GitHub reporte la branche et la revue dans la note autorisée. Accueil et Tableau de bord affichent la vue des tickets. Le mode nuit garde son accord distinct.
 
 ## Créer un projet
+
+### Classeur Obsidian
+
+Configurez `RACINE_PROJETS` dans votre instance. Pour initialiser un nouveau
+coffre, lancez depuis le dossier du moteur :
+
+```bash
+python3 scripts/vault/vault_projets.py modele
+```
+
+Ouvrez le dossier du coffre dans Obsidian. Lancez le skill `projet` depuis sa
+racine. Le générateur crée un classeur avec un `agent.md` dans chacun des
+dossiers Discovery, Cadrage, Design et Conception. Chaque nouvelle conversation
+de cadrage lit le profil de la phase en cours. Le skill prévoit des choix
+multiples et du texte libre, avec le formulaire interactif si l'interface le permet.
+
+Pour activer le titrage automatique dans Claude Code après l'installation des
+skills :
+
+```bash
+python3 skills/cadrage/scripts/titre.py --installer
+```
+
+### Gabarit Next.js
 
 ```bash
 nouveau-projet mon-appli
 ```
 
-La commande crée l'appli Next.js, pose le gabarit, les hooks et les outils MCP, puis lance la vérification complète. Ensuite, dites "cadrage" à l'agent.
+La commande crée l'appli Next.js, pose le gabarit, les hooks et les outils MCP,
+puis lance la vérification complète.
 
 ## Les deux mots de contrôle
 

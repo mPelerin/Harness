@@ -4,7 +4,7 @@ Certains fichiers de ce gabarit sont adaptés de **kit-agents-ia**.
 
 - Source : https://github.com/MaaatGrv/kit-agents-ia
 - Version lue : commit `ec3840e`.
-- Fichiers concernés : `AGENTS.md`, `.github/pull_request_template.md`, `docs/qa/modele-fiche-qa.md`.
+- Fichiers concernés : `AGENTS.md`, `.github/PULL_REQUEST_TEMPLATE.md`. Les portes et la fiche QA, adaptées du même kit, sont dans `methode/` du harness, avec leur notice.
 
 La licence MIT demande de garder la notice ci-dessous avec les copies. Ne supprimez pas ce fichier.
 
