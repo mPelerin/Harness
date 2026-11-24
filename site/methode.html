@@ -5,19 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Harness : la méthode</title>
 <meta name="description" content="La méthode complète du harness : les skills dans l'ordre, les trois portes humaines, et les habitudes qui rendent le travail plus propre.">
-<script>(function (d) { d.classList.add("js"); try { var t = localStorage.getItem("harness-theme"); if (t === "light" || t === "dark") d.setAttribute("data-theme", t); } catch (e) {} })(document.documentElement)</script>
+<script>(function (d) { try { var t = localStorage.getItem("harness-theme"); if (t === "light" || t === "dark") d.setAttribute("data-theme", t); } catch (e) {} })(document.documentElement)</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&amp;display=swap">
 <link rel="stylesheet" href="assets/style.css">
 <script src="assets/site.js" defer></script>
 </head>
 <body>
 <a class="saut" href="#contenu">Aller au contenu</a>
 <nav class="nav" aria-label="Pages du site">
-  <div class="nav-pilule">
-    <a class="nav-logo" href="index.html">Harness<span>.</span></a>
-    <div class="nav-liens">
+  <div class="nav-interieur">
+    <a class="nav-logo" href="index.html"><span class="marque" aria-hidden="true"></span>Harness</a>
+    <div class="nav-liens" id="pages">
       <a href="index.html">Vue d'ensemble</a>
       <a href="methode.html" aria-current="page">Méthode</a>
       <a href="installation.html">Installation</a>
@@ -26,23 +26,39 @@
       <a href="github.html">GitHub</a>
     </div>
     <div class="nav-actions">
+      <button class="nav-menu" type="button" aria-expanded="false" aria-controls="pages" hidden>Menu</button>
       <a class="nav-depot" href="https://github.com/mPelerin/harness" rel="noopener" aria-label="Le dépôt du harness sur GitHub"><svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>Dépôt</span></a>
-      <button class="nav-theme" type="button" aria-label="Changer de mode"><svg class="lune" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="soleil" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+      <button class="nav-theme" type="button" hidden aria-label="Changer de mode"><svg class="lune" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="soleil" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
     </div>
   </div>
 </nav>
 
-<main id="contenu">
+<main id="contenu" tabindex="-1">
   <header class="hero">
     <div class="conteneur" data-decale="0.1">
       <span class="etiquette apparait">La méthode</span>
       <h1 class="apparait">De l'idée en ligne, <em>sans sauter</em> d'étape.</h1>
       <p class="hero-texte apparait">La méthode tient en une suite de skills. Chacun fait une chose, la prouve, puis passe la main au suivant. Entre eux, trois portes où rien n'avance sans vous.</p>
-      <div class="ligne-degrade apparait"></div>
     </div>
   </header>
 
-  <section style="padding-top:24px">
+  <section id="memoire">
+    <div class="conteneur">
+      <div class="titre-section">
+        <p class="etiquette">La mémoire du projet</p>
+        <h2>Un coffre Obsidian pour garder le fil</h2>
+      </div>
+      <p class="sous-titre">Un coffre est un dossier de notes synchronisé. Chaque projet a son classeur. Les modèles donnent une place au besoin, aux décisions, aux écrans, aux tickets et aux preuves de test.</p>
+      <div class="grille g3">
+        <article class="carte"><h3>Vous parlez, l’agent rédige</h3><p>Au premier entretien, il ouvre le classeur et reformule votre idée. Il avance une phase à la fois : découverte, cadrage, design et conception technique. Vous relisez les notes entre les phases.</p></article>
+        <article class="carte"><h3>Vous retrouvez le contexte</h3><p>Accueil et Tableau de bord montrent les tickets et leur autorisation. En reprise, l’agent lit le journal de la dernière session et les notes utiles avant de vous poser une question.</p></article>
+        <article class="carte"><h3>Le projet garde son historique</h3><p>Les notes vivent à la racine du dépôt, avec le code dans <code>code/</code>. Le coffre synchronisé fait circuler les notes. GitHub conserve leur historique, les tickets et les revues.</p></article>
+      </div>
+      <div class="boutons"><a class="lien-fleche" href="github.html#premier-entretien">Voir ce qui est préparé sur GitHub</a></div>
+    </div>
+  </section>
+
+  <section>
     <div class="conteneur">
       <div class="titre-section">
         <span class="etiquette apparait">Le circuit</span>
@@ -50,9 +66,9 @@
         <p class="sous-titre apparait">Les points pleins sont les portes. Une porte est un point d'arrêt : l'agent prépare, propose et prouve, puis il attend votre "go" écrit.</p>
       </div>
       <ol class="frise" data-decale="0.08">
-        <li class="apparait"><span class="etiquette">cadrage</span><h3>Transformer l'idée en documents</h3><p>L'agent reformule, puis pose ses questions une à la fois. Il écrit <code>docs/cadrage/</code> : le PRD (ce que fait le produit, pour qui, ce qui est hors périmètre), les écrans et les user stories. Il remplit le <code>AGENTS.md</code> du projet et commite sur <code>preprod</code>.</p></li>
+        <li class="apparait"><span class="etiquette">cadrage</span><h3>Transformer l'idée en documents</h3><p>L’agent pose une question à la fois et rédige les notes du coffre. Il complète les règles du projet dans <code>AGENTS.md</code>, à partir des décisions et des critères validés.</p></li>
         <li class="apparait porte"><span class="etiquette">Porte 1 : décider</span><h3>Vous relisez, vous dites "go"</h3><p>Tant que le cadrage n'est pas validé, aucune ligne de code n'est écrite.</p></li>
-        <li class="apparait"><span class="etiquette">tickets</span><h3>Découper en tickets fins</h3><p>Chaque story devient un ou plusieurs tickets GitHub qui traversent toute l'appli, de l'écran à la base. Chacun dit ce qui est fini, ce qui est hors périmètre et ce qu'il faut préparer avant de coder.</p></li>
+        <li class="apparait"><span class="etiquette">tickets</span><h3>Découper en tickets fins</h3><p>Chaque story devient un ou plusieurs tickets GitHub qui traversent toute l'appli, de l'écran à la base. Chaque note précise le résultat attendu, les dépendances et les prérequis. Elle reste <strong>En attente</strong> jusqu’au feu vert.</p></li>
         <li class="apparait"><span class="etiquette">feature</span><h3>Coder le lot, ticket après ticket</h3><p>Pour chaque ticket : une branche, le code en partant des tests, la vérification, la relecture, la fiche QA, puis la demande de fusion jusqu'à la CI verte. Les questions qui restent arrivent en un seul message, au début.</p></li>
         <li class="apparait porte"><span class="etiquette">Porte 2 : tester</span><h3>Un seul tableau pour tout le lot</h3><p>Vous testez à l'écran avec la fiche QA, puis vous dites "go tout" ou "go 2 4". L'agent fusionne chaque ticket dans <code>preprod</code> et le ferme à la main.</p></li>
         <li class="apparait porte"><span class="etiquette">Porte 3 : mettre en ligne</span><h3>Fusionner preprod sur main</h3><p>Votre "go mise en ligne", et rien d'autre. L'agent prouve ensuite que la bonne version est en ligne, pas seulement que le site répond.</p></li>
@@ -72,6 +88,7 @@
           <tbody>
             <tr><td>cadrage</td><td>Pose les questions, écrit le PRD, les écrans, les stories, remplit AGENTS.md</td><td>Porte 1 : votre "go" après relecture</td></tr>
             <tr><td>tickets</td><td>Découpe les stories en tickets GitHub</td><td>Votre "go" sur le découpage</td></tr>
+            <tr><td>lance le ticket 12</td><td>Autorise ce ticket dans Obsidian. Hermès le prend après synchronisation.</td><td>Demande de fusion et test à la porte 2.</td></tr>
             <tr><td>feature tout</td><td>Code chaque ticket avec ses tests, vérifie, relit, prépare la fiche QA, ouvre la demande de fusion</td><td>Porte 2 : un seul tableau pour le lot</td></tr>
             <tr><td>go tout</td><td>Fusionne dans preprod, ferme les tickets à la main</td><td>Nulle part</td></tr>
             <tr><td>mets en ligne</td><td>Prépare la fusion de preprod vers main</td><td>Porte 3 : votre "go mise en ligne"</td></tr>
@@ -88,7 +105,7 @@
       <div class="titre-section">
         <span class="etiquette apparait">Les trois portes</span>
         <h2 class="masque"><span>Chaque porte a <em>sa raison</em>.</span></h2>
-        <p class="sous-titre apparait">Elles viennent d'erreurs réelles. Une case que vous ne pouvez pas cocher veut dire "on n'ouvre pas encore". La liste complète est dans <code>docs/portes.md</code> de chaque projet.</p>
+        <p class="sous-titre apparait">Elles viennent d'erreurs réelles. Une case que vous ne pouvez pas cocher veut dire "on n'ouvre pas encore". La liste complète est dans la note <code>_Méthode/Portes.md</code> du coffre.</p>
       </div>
       <div class="grille g3" data-decale="0.1">
         <article class="carte apparait"><span class="pastille">Porte 1</span><h3>Décider, avant le code</h3><p>Le ticket dit ce qu'on fait et ce qu'on ne fait pas. Ses critères de fin sont des phrases que vous pouvez vérifier vous-même. Les tests ne savent pas ce que "fini" veut dire pour vous.</p></article>
@@ -127,11 +144,12 @@
     <div class="conteneur">
       <div class="titre-section">
         <span class="etiquette apparait">Les skills</span>
-        <h2 class="masque"><span>Treize fiches de travail.</span></h2>
+        <h2 class="masque"><span>Les fiches de travail.</span></h2>
         <p class="sous-titre apparait">Un skill est un dossier avec un fichier <code>SKILL.md</code>. Sa description dit ce qu'il fait et quand l'utiliser : c'est elle qui le déclenche.</p>
       </div>
       <div class="grille g3" data-decale="0.04">
-        <article class="carte apparait"><span class="pastille">cadrage</span><p>De l'idée aux documents validés : PRD, écrans, stories, AGENTS.md du projet.</p></article>
+        <article class="carte apparait"><span class="pastille">projet</span><p>Prépare le classeur Obsidian et donne à chaque note sa place.</p></article>
+        <article class="carte apparait"><span class="pastille">cadrage</span><p>Rédige les notes du classeur à partir de vos réponses et prépare les règles du projet.</p></article>
         <article class="carte apparait"><span class="pastille">tickets</span><p>Crée, relit et corrige les tickets GitHub, à partir des stories ou pour un bug isolé.</p></article>
         <article class="carte apparait"><span class="pastille">feature</span><p>Réalise un lot de tickets d'affilée et s'arrête une fois, à la porte 2.</p></article>
         <article class="carte apparait"><span class="pastille">tdd</span><p>Un comportement à la fois, en partant d'un test qui échoue.</p></article>
@@ -189,7 +207,7 @@
 <footer class="pied">
   <div class="conteneur pied-grille">
     <div>
-      <b>Harness<span style="color:var(--accent)">.</span></b>
+      <b>Harness</b>
       <p>Des règles, des skills et une méthode pour les agents IA de code. Écrit une fois, lu par Claude Code et OpenCode.</p>
       <p class="mono">Les portes humaines sont adaptées de kit-agents-ia (Mathis Gorvien, licence MIT).</p>
     </div>
