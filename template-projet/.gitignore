@@ -9,3 +9,6 @@ Thumbs.db
 
 # Captures et journaux de Playwright MCP
 .playwright-mcp/
+
+# Généré depuis GitHub par le récap du vault : jamais versionné
+*- GitHub.md

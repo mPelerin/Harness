@@ -255,6 +255,7 @@ echo "Commandes du harness"
 relier "$DEPOT/scripts/nouveau-projet.sh" "$HOME/.local/bin/nouveau-projet"
 relier "$DEPOT/scripts/orchestrateur.sh" "$HOME/.local/bin/orchestrateur"
 relier "$DEPOT/scripts/pre-vol.sh" "$HOME/.local/bin/pre-vol"
+relier "$DEPOT/scripts/verifier-revue-hermes.py" "$HOME/.local/bin/verifier-revue-hermes"
 echo
 
 echo "Bilan : $crees lien(s) à créer ou créés, $deja_bons déjà bon(s), $sauvegardes élément(s) mis de côté."

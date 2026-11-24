@@ -5,19 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Harness : vue d'ensemble</title>
 <meta name="description" content="Le harness : des règles, des skills et une méthode pour travailler avec des agents IA de code, de l'idée à la mise en ligne.">
-<script>(function (d) { d.classList.add("js"); try { var t = localStorage.getItem("harness-theme"); if (t === "light" || t === "dark") d.setAttribute("data-theme", t); } catch (e) {} })(document.documentElement)</script>
+<script>(function (d) { try { var t = localStorage.getItem("harness-theme"); if (t === "light" || t === "dark") d.setAttribute("data-theme", t); } catch (e) {} })(document.documentElement)</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&amp;display=swap">
 <link rel="stylesheet" href="assets/style.css">
 <script src="assets/site.js" defer></script>
 </head>
 <body>
 <a class="saut" href="#contenu">Aller au contenu</a>
 <nav class="nav" aria-label="Pages du site">
-  <div class="nav-pilule">
-    <a class="nav-logo" href="index.html">Harness<span>.</span></a>
-    <div class="nav-liens">
+  <div class="nav-interieur">
+    <a class="nav-logo" href="index.html"><span class="marque" aria-hidden="true"></span>Harness</a>
+    <div class="nav-liens" id="pages">
       <a href="index.html" aria-current="page">Vue d'ensemble</a>
       <a href="methode.html">Méthode</a>
       <a href="installation.html">Installation</a>
@@ -26,47 +26,42 @@
       <a href="github.html">GitHub</a>
     </div>
     <div class="nav-actions">
+      <button class="nav-menu" type="button" aria-expanded="false" aria-controls="pages" hidden>Menu</button>
       <a class="nav-depot" href="https://github.com/mPelerin/harness" rel="noopener" aria-label="Le dépôt du harness sur GitHub"><svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>Dépôt</span></a>
-      <button class="nav-theme" type="button" aria-label="Changer de mode"><svg class="lune" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="soleil" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+      <button class="nav-theme" type="button" hidden aria-label="Changer de mode"><svg class="lune" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="soleil" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
     </div>
   </div>
 </nav>
 
-<main id="contenu">
-  <header class="hero">
-    <div class="conteneur hero-centre" data-decale="0.1">
-      <span class="etiquette apparait">Vue d'ensemble</span>
-      <h1 class="apparait">Vos agents de code, <em>tenus</em> par une méthode.</h1>
-      <p class="hero-texte apparait">Le harness est une boîte à outils pour travailler avec des agents IA qui écrivent du code. Il leur donne les mêmes règles, la même méthode et les mêmes garde-fous, de l'idée jusqu'à la mise en ligne. Vous gardez les décisions. Eux font le travail, et prouvent ce qu'ils disent.</p>
-      <div class="boutons apparait">
+<main id="contenu" tabindex="-1">
+  <header class="hero hero-photo">
+    <img class="hero-image" src="assets/atelier-harness.webp" width="1536" height="1024" alt="" fetchpriority="high">
+    <div class="conteneur hero-contenu">
+      <p class="etiquette">Développer avec des agents IA</p>
+      <h1>Vos agents de code, une méthode commune.</h1>
+      <p class="hero-texte">Cadrez votre logiciel dans Obsidian, confiez les tickets à vos agents et validez le résultat avant la mise en ligne.</p>
+      <div class="boutons">
         <a class="bouton" href="methode.html">Lire la méthode</a>
-        <a class="lien-fleche" href="installation.html">Installer le harness</a>
-      </div>
-      <div class="ligne-degrade apparait"></div>
-      <div class="pile apparait" aria-label="Exemples de messages d'un agent">
-        <article class="carte">
-          <div class="meta"><span class="etiquette">Porte 2</span><span>lot de 3 tickets</span></div>
-          <p>Les trois tickets sont prêts. Déroulez la fiche QA, puis dites "go tout" ou "go 2 4".</p>
-          <span class="pastille">exemple</span>
-        </article>
-        <article class="carte">
-          <div class="meta"><span class="etiquette">Preuve</span><span>commit a1b2c3d</span></div>
-          <p>npm run verifier, code de sortie 0. La CI est toute verte.</p>
-          <span class="pastille">exemple</span>
-        </article>
-        <article class="carte">
-          <div class="meta"><span class="etiquette">Rétro</span><span>erreur vue deux fois</span></div>
-          <p>Un contrôle automatique bloque maintenant cette erreur avant le commit.</p>
-          <span class="pastille">exemple</span>
-        </article>
-        <article class="carte">
-          <div class="meta"><span class="etiquette">Mode nuit</span><span>7 h 02</span></div>
-          <p>Quatre tickets fusionnés dans preprod. L'adresse de préprod répond, derrière un login.</p>
-          <span class="pastille">exemple</span>
-        </article>
+        <a class="bouton bouton-secondaire" href="installation.html">Installer le Harness</a>
       </div>
     </div>
   </header>
+
+  <section>
+    <div class="conteneur">
+      <div class="titre-section">
+        <span class="etiquette apparait">Pour aller plus loin</span>
+        <h2><span>Explorer le Harness</span></h2>
+      </div>
+      <div class="grille g3 grille-guides" data-decale="0.08">
+        <a class="carte carte-lien apparait" href="methode.html"><h3>La méthode complète</h3><p>Du premier entretien au test de la préprod, avec les trois validations.</p><span class="lien-fleche">Lire</span></a>
+        <a class="carte carte-lien apparait" href="installation.html"><h3>L'installation</h3><p>Brancher le harness sur votre PC, puis créer un projet qui l'utilise.</p><span class="lien-fleche">Lire</span></a>
+        <a class="carte carte-lien apparait" href="opencode.html"><h3>OpenCode</h3><p>Le deuxième agent, et comment il lit les mêmes règles que Claude Code.</p><span class="lien-fleche">Lire</span></a>
+        <a class="carte carte-lien apparait" href="hermes.html"><h3>Hermès</h3><p>Le feu vert dans Obsidian, les agents spécialisés et le mode nuit.</p><span class="lien-fleche">Lire</span></a>
+        <a class="carte carte-lien apparait" href="github.html"><h3>GitHub</h3><p>Le dépôt, le tableau Projects, les branches et les vérifications automatiques.</p><span class="lien-fleche">Lire</span></a>
+      </div>
+    </div>
+  </section>
 
   <section>
     <div class="conteneur">
@@ -93,9 +88,9 @@
   <section>
     <div class="conteneur">
       <div class="chiffres" data-decale="0.1">
-        <div class="chiffre apparait"><b data-compte="13">13</b><span>skills de méthode</span></div>
-        <div class="chiffre apparait"><b data-compte="3">3</b><span>portes humaines</span></div>
-        <div class="chiffre apparait"><b data-compte="2">2</b><span>agents, un seul jeu de règles</span></div>
+        <div class="chiffre apparait"><b>14</b><span>skills de méthode</span></div>
+        <div class="chiffre apparait"><b>3</b><span>portes humaines</span></div>
+        <div class="chiffre apparait"><b>2</b><span>agents, un seul jeu de règles</span></div>
         <div class="chiffre apparait"><b>0</b><span>secret dans le dépôt</span></div>
       </div>
     </div>
@@ -109,8 +104,8 @@
         <p class="sous-titre apparait">Chaque étape est un skill. Vous dites le mot, l'agent déroule, et il s'arrête là où une décision vous revient.</p>
       </div>
       <ol class="numerotee" data-decale="0.06">
-        <li class="apparait"><div><h3>Il cadre votre idée</h3><p>Une question à la fois, puis un PRD (la description du produit), les écrans et les user stories. Rien n'est codé avant votre "go".</p></div></li>
-        <li class="apparait"><div><h3>Il découpe en tickets</h3><p>Des tickets GitHub fins, qui traversent toute l'appli, avec ce qui est hors périmètre et les prérequis à régler avant de coder.</p></div></li>
+        <li class="apparait"><div><h3>Il cadre votre idée</h3><p>L’agent vous pose les questions et rédige le besoin, les écrans et les critères de réussite dans le coffre Obsidian. Vous validez le cadrage.</p></div></li>
+        <li class="apparait"><div><h3>Il découpe en tickets</h3><p>Une issue GitHub et une note Obsidian par tâche. Vous donnez le départ au ticket choisi depuis sa note, ou en demandant à l’agent de le lancer.</p></div></li>
         <li class="apparait"><div><h3>Il code en partant des tests</h3><p>Un test qui échoue d'abord, puis le plus petit code qui le fait passer. Un ticket donne un seul commit.</p></div></li>
         <li class="apparait"><div><h3>Il vérifie, relit et prépare votre test</h3><p>Il lance les contrôles et cite la sortie. Il relit sous plusieurs angles. Il écrit une fiche QA qui ne vous laisse que ce qui se voit à l'écran.</p></div></li>
         <li class="apparait"><div><h3>Il livre sans passer une porte à votre place</h3><p>Demande de fusion vers preprod, CI verte, puis il attend votre "go". La mise en ligne sur main demande un autre "go".</p></div></li>
@@ -172,15 +167,26 @@
   <section>
     <div class="conteneur">
       <div class="titre-section">
-        <span class="etiquette apparait">Pour aller plus loin</span>
-        <h2 class="masque"><span>Cinq pages, un sujet chacune.</span></h2>
+        <p class="etiquette">En pratique</p>
+        <h2>Ce que vous rend un agent</h2>
       </div>
-      <div class="grille g3" data-decale="0.08">
-        <a class="carte carte-lien apparait" href="methode.html"><span class="pastille">01</span><h3>La méthode complète</h3><p>Les skills dans l'ordre, les trois portes, et tout ce qui rend le travail plus propre.</p><span class="lien-fleche">Lire</span></a>
-        <a class="carte carte-lien apparait" href="installation.html"><span class="pastille">02</span><h3>L'installation</h3><p>Brancher le harness sur votre PC, puis créer un projet qui l'utilise.</p><span class="lien-fleche">Lire</span></a>
-        <a class="carte carte-lien apparait" href="opencode.html"><span class="pastille">03</span><h3>OpenCode</h3><p>Le deuxième agent, et comment il lit les mêmes règles que Claude Code.</p><span class="lien-fleche">Lire</span></a>
-        <a class="carte carte-lien apparait" href="hermes.html"><span class="pastille">04</span><h3>Hermès</h3><p>L'orchestrateur du serveur : il répartit le travail la nuit, sans jamais coder.</p><span class="lien-fleche">Lire</span></a>
-        <a class="carte carte-lien apparait" href="github.html"><span class="pastille">05</span><h3>GitHub</h3><p>Branches, tickets, demandes de fusion, CI et garde-fous avant chaque push.</p><span class="lien-fleche">Lire</span></a>
+      <div class="grille g4 exemples" aria-label="Exemples de messages d'un agent">
+        <article class="carte">
+          <div class="meta"><span class="etiquette">Porte 2</span><span>lot de 3 tickets</span></div>
+          <p>Les trois tickets sont prêts. Déroulez la fiche QA, puis dites "go tout" ou "go 2 4".</p>
+        </article>
+        <article class="carte">
+          <div class="meta"><span class="etiquette">Preuve</span><span>commit a1b2c3d</span></div>
+          <p>npm run verifier, code de sortie 0. La CI est toute verte.</p>
+        </article>
+        <article class="carte">
+          <div class="meta"><span class="etiquette">Rétro</span><span>erreur vue deux fois</span></div>
+          <p>Un contrôle automatique bloque maintenant cette erreur avant le commit.</p>
+        </article>
+        <article class="carte">
+          <div class="meta"><span class="etiquette">Mode nuit</span><span>7 h 02</span></div>
+          <p>Quatre tickets fusionnés dans preprod. L'adresse de préprod répond, derrière un login.</p>
+        </article>
       </div>
     </div>
   </section>
@@ -201,7 +207,7 @@
 <footer class="pied">
   <div class="conteneur pied-grille">
     <div>
-      <b>Harness<span style="color:var(--accent)">.</span></b>
+      <b>Harness</b>
       <p>Des règles, des skills et une méthode pour les agents IA de code. Écrit une fois, lu par Claude Code et OpenCode.</p>
       <p class="mono">Les portes humaines sont adaptées de kit-agents-ia (Mathis Gorvien, licence MIT).</p>
     </div>

@@ -7,7 +7,7 @@
 Ticket : #<numéro du ticket>
 
 **Base :** preprod. Fusion par squash.
-**Dossier du ticket :** `docs/tickets/<numéro>-<mots-courts>/`
+**Note du ticket :** `05 Tickets/<projet> - T<numéro> <titre>` dans le vault
 
 ### Fait
 
@@ -24,4 +24,4 @@ Aucun changement / <fichier>, à appliquer **avant** la fusion.
 
 ### Fiche QA
 
-`docs/qa/<numéro>-<mots-courts>.md` (à tester à l'écran : <oui / non>)
+Rubrique « Fiche QA » de la note du ticket (à tester à l'écran : <oui / non>)

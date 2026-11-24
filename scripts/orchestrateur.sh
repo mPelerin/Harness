@@ -7,6 +7,7 @@
 #   orchestrateur.sh deposer-demande --ticket N --depot compte/depot --titre "..." --corps FICHIER
 #   orchestrateur.sh etat CARTE
 #   orchestrateur.sh suivre CARTE --depot compte/depot --ticket N [--interval 120] [--max 14400]
+# Pour une demande créée avant la clé stable par dépôt et ticket, reprendre son identifiant avec suivre.
 #
 # Codes de sortie :
 #   0  la carte est finie
@@ -90,7 +91,7 @@ cmd_deposer() {
   [ -f "$corps" ] || { echo "Arrêt : corps introuvable : $corps" >&2; exit 1; }
 
   local cle sortie id
-  cle="feature-$(printf '%s' "$depot" | tr '/' '-')-$ticket-$(date +%F)"
+  cle="feature:${depot,,}:$ticket"
   sortie="$(chez_orchestrateur "kanban create --json --assignee orchestrator --idempotency-key $(citer "$cle") --body-file - $(citer "$titre")" < "$corps")" || {
     echo "Arrêt : le dépôt de la demande a échoué." >&2
     printf '%s\n' "$sortie" >&2
