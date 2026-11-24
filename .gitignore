@@ -4,3 +4,6 @@ harness.conf
 .env.*
 # Binaire de gitleaks téléchargé par la CI.
 /gitleaks
+
+# Python : fichiers compilés
+__pycache__/

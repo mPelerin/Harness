@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
 # nouveau-projet.sh : crée un projet Next.js à partir du gabarit du harness.
 #
-# Ce qu'il fait, dans le dossier courant :
-#   1. crée l'appli avec le générateur officiel de Next.js (version fixée) ;
-#   2. pose par-dessus le socle (template-projet/), le profil (profils/nextjs/) et les MCP (mcp/) ;
+# Ce qu'il fait, depuis la racine du vault des projets (le dossier qui contient _Méthode/) :
+#   0. crée la mémoire du projet, <nom>/ (notes du vault), avec scripts/vault/vault_projets.py ;
+#   1. crée l'appli dans <nom>/code ; le dépôt Git est <nom>/ (notes + code/) avec le générateur officiel de Next.js (version fixée) ;
+#   2. pose le socle (template-projet/) et la partie racine du profil à la racine du projet, la partie code du profil dans code/, les MCP à la racine ;
 #   3. installe Prettier, Vitest et Lefthook (versions fixées) ;
 #   4. fixe toutes les versions, active les hooks Git, fait le premier commit ;
 #   5. lance la vérification complète et affiche le résultat.
 #
 # Ce qu'il garantit :
-#   - il ne touche à rien en dehors du nouveau dossier ;
-#   - il s'arrête si le dossier existe déjà.
+#   - il ne touche à rien en dehors du dossier <nom>/ ;
+#   - il s'arrête si <nom>/code existe déjà ; des notes déjà présentes dans <nom>/ sont gardées.
 #
 # Usage : nouveau-projet <nom>      exemple : nouveau-projet mon-appli
 
@@ -48,7 +49,13 @@ SOCLE="$DEPOT/template-projet"
 PROFIL="$DEPOT/profils/nextjs"
 [ -d "$SOCLE" ] && [ -d "$PROFIL" ] || { echo "Arrêt : gabarit introuvable dans $DEPOT." >&2; exit 1; }
 
-CIBLE="$PWD/$NOM"
+if [ ! -d "$PWD/_Méthode" ]; then
+  echo "Arrêt : lancez ce script depuis la racine du vault des projets (le dossier qui contient _Méthode/)." >&2
+  exit 1
+fi
+command -v python3 >/dev/null || { echo "Arrêt : python3 est introuvable." >&2; exit 1; }
+PROJET="$PWD/$NOM"
+CIBLE="$PROJET/code"
 if [ -e "$CIBLE" ]; then
   echo "Arrêt : $CIBLE existe déjà. Rien n'a été modifié." >&2
   exit 1
@@ -58,25 +65,35 @@ if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   exit 1
 fi
 
+echo "0/5 Mémoire du projet dans le vault"
+if [ -f "$PROJET/$NOM.md" ]; then
+  VAULT_PROJETS="$PWD" python3 "$DEPOT/scripts/vault/vault_projets.py" completer "$NOM"
+else
+  VAULT_PROJETS="$PWD" python3 "$DEPOT/scripts/vault/vault_projets.py" nouveau "$NOM"
+fi
+
 echo "1/5 Création de l'appli Next.js $V_NEXT"
-npx --yes "create-next-app@$V_NEXT" "$NOM" \
+cd -- "$PROJET"
+npx --yes "create-next-app@$V_NEXT" code \
   --ts --eslint --app --src-dir --tailwind --use-npm \
   --import-alias "@/*" --disable-git --yes
 cd -- "$CIBLE"
+npm pkg set name="$NOM"
 
 echo "2/5 Pose du socle et du profil"
-cp -- .gitignore .gitignore.next
-cp -r -- "$SOCLE/." .
-cp -r -- "$PROFIL/." .
-cp -- "$DEPOT/mcp/claude/projet.mcp.json" .mcp.json
-cp -- "$DEPOT/mcp/opencode/opencode.json" opencode.json
-mv -- .gitignore.next .gitignore
+# Le dépôt est le dossier du projet : socle, .github et règles à la racine, appli dans code/.
 printf '\n# Captures et journaux de Playwright MCP\n.playwright-mcp/\n' >> .gitignore
 printf '\n# Le modèle des variables, lui, entre dans le dépôt\n!.env.example\n' >> .gitignore
+cp -r -- "$PROFIL/code/." .
+cp -r -- "$SOCLE/." "$PROJET/"
+cp -r -- "$PROFIL/racine/." "$PROJET/"
+rm -f -- "$PROJET/README.md"   # le README du gabarit décrit le gabarit ; celui du projet va dans code/
+cp -- "$DEPOT/mcp/claude/projet.mcp.json" "$PROJET/.mcp.json"
+cp -- "$DEPOT/mcp/opencode/opencode.json" "$PROJET/opencode.json"
 cat > README.md <<FIN
 # $NOM
 
-Projet créé avec le gabarit du harness. Les règles pour les agents sont dans \`AGENTS.md\`.
+Projet créé avec le gabarit du harness. Le dépôt est le dossier du projet : les notes (vault Obsidian) à la racine, l'appli ici, dans \`code/\`. Les règles pour les agents sont dans \`../AGENTS.md\`.
 
 \`\`\`bash
 npm run dev        # lancer en local
@@ -86,7 +103,7 @@ npm run verifier   # tout contrôler d'un coup
 ## Après un clone sur un autre PC
 
 \`\`\`bash
-npm ci && npx lefthook install
+cd code && npm ci && npx lefthook install
 \`\`\`
 
 La seconde commande active les hooks Git, c'est-à-dire les contrôles lancés avant chaque commit et chaque push.
@@ -98,8 +115,8 @@ sed -i \
   -e "s|^<commande d'installation>  |npm ci                    |" \
   -e "s|^<commande de lancement>    |npm run dev               |" \
   -e "s|^<commande de vérification> |npm run verifier          |" \
-  AGENTS.md
-if grep -q '^<commande' AGENTS.md || ! grep -q '^npm run verifier ' AGENTS.md; then
+  "$PROJET/AGENTS.md"
+if grep -q '^<commande' "$PROJET/AGENTS.md" || ! grep -q '^npm run verifier ' "$PROJET/AGENTS.md"; then
   echo "Arrêt : la rubrique des commandes de AGENTS.md n'a pas pu être remplie." >&2
   exit 1
 fi
@@ -129,15 +146,15 @@ fs.writeFileSync("package.json", JSON.stringify(p, null, 2) + "\n");
 '
 npm install
 npx prettier --write . >/dev/null
-git init -q -b main
+git -C "$PROJET" init -q -b main
 npx lefthook install
-git add .
-git commit -q -m "Premier commit : gabarit du harness"
+git -C "$PROJET" add .
+git -C "$PROJET" commit -q -m "Premier commit : gabarit du harness et notes du projet"
 
 echo "5/5 Vérification complète"
 npm run verifier
 
 echo
-echo "OK : projet créé dans $CIBLE"
+echo "OK : projet créé dans $PROJET (dépôt Git : notes à la racine, appli dans code/)"
 echo "Le reste de AGENTS.md sera rempli par le skill cadrage. D'abord, relier le dépôt GitHub :"
 echo "  git remote add origin git@github.com:<compte>/$NOM.git && git push -u origin main"

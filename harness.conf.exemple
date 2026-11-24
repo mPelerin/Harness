@@ -19,6 +19,10 @@ HOTE_SSH_SERVEUR=
 # Nom de la commande de l'orchestrateur qui reçoit les cartes (son outil en ligne de commande).
 # Vide : feature code sur ce PC. Rempli : feature délègue les tickets et suit les cartes.
 ORCHESTRATEUR=
+# Renseigner le relecteur pour rendre obligatoire la revue séparée des tickets Hermès.
+RELECTEUR_HERMES=
+FOURNISSEUR_CODE_HERMES=
+FOURNISSEUR_REVUE_HERMES=
 # Nom du projet dans Coolify.
 PROJET_COOLIFY=
 # Nom de la source GitHub dans Coolify (l'application GitHub reliée à Coolify).
@@ -33,3 +37,6 @@ PROFIL_DEPLOIEMENT=
 FICHIER_DOPPLER=
 # Facultatif : où l'installeur met de côté ce qui gêne. Vide : ~/.local/state/harness/sauvegardes
 DOSSIER_SAUVEGARDES=
+# Racine du vault Obsidian des projets, sur le serveur : un dossier par projet, le code dans <projet>/code.
+# Lue par scripts/vault/vault_projets.py (récap GitHub, vérification). Vide : le dossier courant.
+RACINE_PROJETS=

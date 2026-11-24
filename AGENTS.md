@@ -21,6 +21,21 @@ L'installeur ajoute à la suite le profil de l'utilisateur : son prénom, sa fa�
 - Séparer le vérifié, l'hypothèse et la recommandation.
 - Une nouvelle idée va dans le parking à idées. L'utilisateur décide si on la lance.
 
+## Changer de conversation
+
+- En échange avec l'utilisateur, à la fin d'une phase ou d'un skill utilisé comme
+  étape principale, terminer par un court prompt de reprise prêt à copier. La
+  conversation suivante commence dans le dossier du projet avec ce prompt.
+- Indiquer dans le prompt le projet et son dossier exact, le prochain skill et
+  son point de reprise, les notes ou liens utiles et tout accord encore attendu.
+  Utiliser les références vérifiées. Garder les secrets hors du prompt. En début
+  de reprise, relire ces références et vérifier l'état avant d'agir.
+- S'arrêter après le prompt. Un feu vert encore attendu doit venir de l'utilisateur
+  dans la nouvelle conversation. Les contrôles utilisés à l'intérieur d'un skill
+  et les cartes Hermès continuent selon leur propre procédure.
+- Dans Claude Code, faire copier le prompt avant de suggérer `/clear`. Sur une
+  autre interface, indiquer d'ouvrir une nouvelle conversation dans le projet.
+
 ## Déployer sur le serveur
 
 - Autorisé : créer et déployer une nouvelle appli dans son propre conteneur, via Coolify.

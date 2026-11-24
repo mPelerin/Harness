@@ -18,7 +18,7 @@ Cadrage ➡️ PORTE 1 ➡️ tickets ➡️ [ par ticket : code ➡️ PORTE 2 
           go écrit                                     tester     ticket fermé à la main      preprod vers main
 ```
 
-- La porte 1 du cadrage est votre "go" écrit après lecture de `docs/cadrage/`.
+- La porte 1 du cadrage est votre "go" écrit après lecture des notes de cadrage du projet (`02 Cadrage/` et `03 Design/` dans le vault).
 - La porte 1 d'un ticket est votre "go" à sa création. L'agent ne redemande avant le code que s'il lui reste une question, ou si le ticket est sensible : argent, droits d'accès, données personnelles, base de données, nouvelle bibliothèque.
 - Plusieurs tickets se font d'affilée. La porte 2 arrive une fois pour tout le lot : "go tout", ou "go 2 4".
 - Après la porte 2, l'agent fusionne le ticket dans `preprod`, puis le ferme à la main. Rien n'est en ligne.
@@ -58,7 +58,7 @@ Cadrage ➡️ PORTE 1 ➡️ tickets ➡️ [ par ticket : code ➡️ PORTE 2 
 - [ ] S'il y a des comptes, j'ai vérifié avec de vrais comptes de test que l'un ne voit pas les données de l'autre.
 - [ ] S'il y a une base de données, le changement a tourné sur une vraie base, pas seulement dans des tests qui l'imitent.
 - [ ] La demande de fusion vise `preprod` et cite le bon ticket : `Ticket : #<numéro>`, sans `Closes`.
-- [ ] Le dossier `docs/tickets/<numéro>-<mots-courts>/` contient `feature.md` et `log.md`.
+- [ ] La note du ticket (`05 Tickets/<Projet> - T<numéro> …` dans le vault) contient le plan, le journal de l'agent et la fiche QA.
 - [ ] La branche porte un seul changement. Au premier envoi, elle avait un seul commit. La fusion se fera par squash.
 - [ ] `gh pr checks` est tout vert.
 

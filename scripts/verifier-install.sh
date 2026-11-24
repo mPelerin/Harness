@@ -357,6 +357,8 @@ fi
 controler_lien "$DEPOT/scripts/nouveau-projet.sh" "$HOME/.local/bin/nouveau-projet"
 controler_lien "$DEPOT/scripts/orchestrateur.sh" "$HOME/.local/bin/orchestrateur"
 controler_lien "$DEPOT/scripts/pre-vol.sh" "$HOME/.local/bin/pre-vol"
+controler_lien "$DEPOT/scripts/verifier-revue-hermes.py" "$HOME/.local/bin/verifier-revue-hermes"
+test -x "$DEPOT/scripts/verifier-revue-hermes.py" || grave "verifier-revue-hermes.py n'est pas exécutable."
 case ":$PATH:" in
   *":$HOME/.local/bin:"*) bon "$HOME/.local/bin est dans le PATH (la liste des dossiers où le terminal cherche les commandes)" ;;
   *) avert "$HOME/.local/bin n'est pas dans le PATH (la liste des dossiers où le terminal cherche les commandes). La commande nouveau-projet ne sera pas trouvée seule." ;;

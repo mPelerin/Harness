@@ -1,184 +1,157 @@
 ---
 name: feature
-description: Réalise un ou plusieurs tickets GitHub d'affilée, sans arrêt inutile. Lit les tickets et le code, pose en un seul message les questions qui restent, code chaque ticket dans un seul commit, vérifie, relit, prépare la fiche QA, puis enchaîne avec livrer jusqu'à la demande de fusion et la CI verte. S'arrête une fois, à la porte 2, avec un tableau unique. Si ORCHESTRATEUR est rempli dans harness.conf, il délègue : une sous-conversation par ticket dépose la carte et la suit, et la conversation principale ne montre qu'un tableau. À utiliser quand l'utilisateur dit "feature", "feature 12", "feature 2 3 4", "feature tout", "feature local 12", "prends le ticket 12", "enchaîne les tickets" ou "fais les tickets ouverts". Ne pas utiliser pour une idée sans ticket (cadrage), pour écrire ou corriger un ticket (tickets), ni pour une mise en ligne (livrer).
+description: Réalise un ou plusieurs tickets d'affilée. Lit la note du ticket et l'issue, travaille dans un worktree du dépôt (notes et code ensemble), écrit plan, décisions et journal dans la note du ticket, code dans code/, vérifie, relit, prépare la fiche QA, puis livre jusqu'à la porte 2 avec un tableau unique. Sert aussi aux agents codeurs de Hermès, sur leur carte. À utiliser quand l'utilisateur dit "feature", "feature 12", "feature 2 3 4", "feature tout", "prends le ticket 12" ou "enchaîne les tickets", ou quand une carte kanban le demande. Ne pas utiliser pour une idée sans ticket (cadrage), écrire ou corriger un ticket (tickets), ni mettre en ligne (livrer).
 ---
 
 # Feature : réaliser des tickets d'affilée
 
 ## But
 
-Transformer un ou plusieurs tickets en demandes de fusion prêtes à tester : un commit par ticket, CI verte, fiche QA prête.
-L'agent enchaîne seul. L'utilisateur n'intervient qu'à la porte 2, une fois pour tout le lot.
+Des demandes de fusion prêtes à tester : un commit par ticket, CI verte, fiche QA prête.
+L'utilisateur n'intervient qu'à la porte 2, une fois pour le lot.
+**Un ticket = un changement = un commit**, qui contient le code et la note du ticket.
 
-**Règle du commit unique.** Un ticket = un changement = un commit.
-Le code, le test, la fiche QA et le dossier du ticket vont dans ce commit.
-Une branche de ticket ne touche pas à `docs/decisions.md` : deux tickets d'un lot qui y ajoutent chacun une ligne se bloquent à la fusion.
-
-**Le dossier du ticket.** `docs/tickets/<numéro>-<mots-courts>/` contient :
-- `feature.md` : l'instruction. Le ticket recopié, les réponses aux questions, le plan, et une rubrique "Décisions", une ligne datée chacune.
-- `log.md` : le journal de l'agent. Chaque étape, la commande lancée, son résultat, daté.
-
-**La porte 1 est le "oui" donné à la création du ticket** (skill tickets).
-L'agent ne s'arrête de nouveau avant le code que dans trois cas :
-- une question produit reste sans réponse écrite ;
-- le ticket touche à l'argent, aux droits d'accès, aux données personnelles, au schéma de la base, ou demande une nouvelle bibliothèque ;
-- le code montre que le ticket est déjà fait, ou qu'il contredit une décision écrite (`docs/decisions.md`, ou la rubrique "Décisions" d'un `feature.md`).
+La porte 1 est le "go" donné à la création du ticket. On ne s'arrête avant le code que
+si une question produit reste ouverte, si le ticket est sensible sans "go" écrit, ou si
+le code montre qu'il est déjà fait ou qu'il contredit une décision écrite.
 
 ## Quand l'utiliser
 
-- L'utilisateur donne un ou plusieurs numéros : c'est le lot.
-- "feature tout" : le lot est `gh issue list --state open --limit 30`, dans l'ordre des dépendances. Le montrer en une ligne, puis continuer.
-- Pas de numéro : proposer le plus petit ticket ouvert, et attendre.
+- Des numéros : c'est le lot. "feature tout" : les tickets ouverts dont la note a
+  `agent: local`, dans l'ordre des dépendances. Pas de numéro : proposer le plus petit.
+- Une carte kanban de Hermès qui cite un ticket.
 
 ## Quand ne pas l'utiliser
 
-- Idée sans ticket : skill cadrage, puis tickets.
-- Ticket flou, sans "C'est fini quand" vérifiable : skill tickets d'abord.
-- Mettre en ligne (`preprod` vers main) : skill livrer, mode mise en ligne.
+- Ticket sans "C'est fini quand" vérifiable : skill tickets.
+- Ticket `agent: hermes` lancé en local : Hermès l'a déjà. Le dire, ne pas le prendre.
 
-## Mode délégation
+## Le projet
 
-**Quand il s'applique.**
-```bash
-sed -n 's/^ORCHESTRATEUR=//p' ~/.config/harness/harness.conf | tail -n 1
-```
-Une valeur : délégation. Vide ou absente : mode local, les étapes normales.
-"feature local 12" ou "feature local tout" force le mode local, sans lire la clé.
-
-**Principe.** La conversation principale ne code pas. Elle reste un registre.
-Chaque ticket part dans une **sous-conversation neuve** : l'outil de sous-agent de l'agent, un brief court, rien d'autre.
-Les tickets indépendants partent en arrière-plan. Un ticket qui "Dépend de" un autre attend le retour de celui-ci.
-Pas d'outil de sous-agent : le dire, et proposer « feature local ». Ne pas coder ici à la place.
-
-**Pré-vol, avant tout dépôt.** `pre-vol <numéros> --strict` (code 1 : il reste un blocage, ou un ticket ne déclare rien).
-Un ticket bloqué n'est pas déposé, il est mis "à préparer" dans le tableau.
-Tout ticket qui réclame une variable, un compte, une migration ou un service le déclare dans "Prérequis" (skill tickets).
-
-**Ticket sensible.** Argent, droits d'accès, données personnelles, base, nouvelle bibliothèque : il part seulement si le go écrit est dans la conversation. Sans ce go, il n'est pas déposé, et le tableau le dit. Jamais de go supposé.
-
-**Le brief du sous-agent, neuf lignes.**
-> Ticket #N, dépôt compte/dépôt, branche de base `preprod`. Ne touche jamais à `main`.
-> Tu ne codes pas : tu déposes et tu suis.
-> Écris le corps de la demande : ticket, dépôt, base `preprod`, jamais `main`, go écrit si le ticket est sensible.
-> Pour Hermès, dans ce corps : « Tu ne codes pas. Choisis l'agent (écran, données, droits, CI, défaut). Crée une carte enfant avec `--parent <cette carte>`, skills feature et tdd, dont le corps reprend le ticket, la base `preprod` et l'interdiction de `main`. Elle code, pousse et ouvre la demande de fusion vers `preprod`, sans fusionner. »
-> Dépose : `orchestrateur deposer-demande --ticket N --depot compte/dépôt --titre "Ticket #N : titre" --corps FICHIER`.
-> Suis : `orchestrateur suivre CARTE --depot compte/dépôt --ticket N`.
-> Tu absorbes l'attente : kanban, états, relances, CI. Jamais de code, de diff ni de journal.
-> Tu ne réponds qu'une fois, à la fin.
-> `ticket #N, demande de fusion #P, CI verte` ou `ticket #N, bloqué : motif de cinq mots`.
-
-**Le tableau, seule sortie de la conversation principale.**
-
-| Ticket | Agent | Demande de fusion | État |
-| --- | --- | --- | --- |
-
-Il se remplit au fil des retours. Tant qu'une sous-conversation n'a pas rendu sa ligne, la sienne reste "en cours".
-Puis s'arrêter. Ne pas attendre les cartes ici, ne pas relancer soi-même.
-
-## Skills appelés
-
-En mode local : tdd (étape 5), verifier (étape 6), revue (étape 7), qa-prep (étape 8), livrer (étape 9).
-En mode délégation : aucun. Le travail se fait sur le serveur.
+Règles R1 à R4 du skill projet. `BASE` est le dépôt de cette machine. Chaque ticket a
+son worktree `ARBRE`. La note du ticket se lit et s'écrit **dans `ARBRE`** :
+`$ARBRE/05 Tickets/<Nom> - T<n> <titre>.md`. L'appli se lance dans `$ARBRE/code`.
 
 ## Étapes
 
-En mode délégation, l'étape 1 et le pré-vol se font ici. Les étapes 2 et 4 à 9 ne se font pas ici. Le tableau de suivi remplace l'étape 10.
+1. **Lire les tickets.** `gh issue view <n> --json number,title,body,labels,state`, la
+   note du ticket, `AGENTS.md`, le journal des décisions, et le `resume` des notes de
+   `04 Conception/`. Ouvrir Architecture, Données ou Sécurité seulement si le ticket les
+   touche. Contrôles, dans `BASE` :
+   `test -n "$(git ls-remote --heads origin preprod)"`, et rien ne s'affiche avec
+   `git show origin/preprod:AGENTS.md | awk '/<!--/{c=1} {print (c ? "" : $0)} /-->/{c=0}' | grep -nE '<[^>]+>'`.
+   Sinon arrêt, "dites cadrage". Ranger le lot selon "Dépend de" : dépendance encore
+   ouverte, le ticket attend. `gh pr list --state open --json number,headRefName` : un
+   ticket qui a déjà sa demande de fusion attend à la porte 2. Une carte Hermès de reprise
+   qui cite cette demande et une correction reprend l'arbre existant. Écarter, sans bloquer
+   le reste, un ticket fermé, flou ou multiple : "à passer par tickets".
+   Preuve : le lot, dans l'ordre, chaque ticket en une phrase.
 
-1. **Lire les tickets.**
-   Pour chacun : `gh issue view <numéro> --json number,title,body,labels,state`.
-   Lire une fois le AGENTS.md du projet, `docs/decisions.md`, les rubriques "Décisions" de `docs/tickets/*/feature.md`, et `docs/cadrage/` s'il existe.
-   `git ls-remote --heads origin preprod` doit répondre. Sinon arrêt : le cadrage n'est pas fait.
-   `AGENTS.md` de `preprod` rempli. Ce contrôle ne doit rien afficher :
-   `git fetch origin && git show origin/preprod:AGENTS.md | awk '/<!--/{c=1} {print (c ? "" : $0)} /-->/{c=0}' | sed -E 's/<(numéro|mots-courts|n)>//g' | grep -nE '<[^>]+>'`
-   Une ligne s'affiche : arrêt. "AGENTS.md n'est pas rempli. Dites cadrage : il le remplit à partir des documents, sans nouvelle question."
-   Ranger le lot dans l'ordre des "Dépend de".
-   Un ticket dont la dépendance est encore `OPEN` est mis **en attente** : sa branche partirait de `preprod` sans le code dont il a besoin. Il se fait après le "go" de sa dépendance (étape 10).
-   `gh pr list --state open --json number,headRefName` : un ticket qui a déjà une demande de fusion ouverte (branche `<numéro>-...`) est écarté. Il attend déjà à la porte 2.
-   Écarter, sans bloquer le reste : ticket fermé, sans "C'est fini quand" vérifiable, ou qui réunit plusieurs changements. Le dire dans le rapport final, avec "à passer par tickets".
-   Preuve : le lot, dans l'ordre, et pour chaque ticket son changement en une phrase.
+2. **Lire le code, sans rien modifier.** Un sous-agent en lecture seule si possible.
+   Preuve : par ticket, `chemin:ligne` classés "existe déjà" et "manque".
 
-2. **Lire le code, sans rien modifier.**
-   Un sous-agent en lecture seule si l'agent sait en lancer un. Sinon soi-même.
-   Preuve : par ticket, une liste `chemin:ligne`, classée "existe déjà" et "manque".
+3. **Questions, en un seul message, seulement s'il en reste.** Numérotées, choix courts,
+   "Recommandé" en premier, "reco" pour tout prendre. Y joindre les tickets sensibles
+   (plan en trois lignes) et les tickets déjà faits ou contraires à une décision, avec
+   leur preuve. Rien à demander : continuer. Sur une carte Hermès : une question bloque
+   la carte, elle ne se devine pas. Preuve : les réponses, ou "aucune question".
 
-3. **Questions, en un seul message, seulement s'il en reste.**
-   Ne poser que ce qui n'est écrit ni dans les tickets ni dans les documents. Ne jamais deviner un arbitrage.
-   Toutes les questions du lot dans un message, numérotées, chacune avec des choix courts et "Recommandé" en premier.
-   L'utilisateur peut répondre "reco" : il prend toutes les recommandations.
-   Ajouter dans ce message les tickets sensibles (voir la porte 1) avec leur plan en trois lignes. Ils attendent un "go" écrit.
-   Y ajouter aussi les tickets déjà faits ou contraires à une décision, avec leur preuve `chemin:ligne`.
-   Pas de question et rien de sensible : ne pas s'arrêter. Le plan va dans `feature.md`.
-   Preuve : les réponses de l'utilisateur, ou "aucune question".
+4. **Pour chaque ticket, un worktree.**
+   Hermès relit le feu vert dans le coffre. Retrouver d’abord la branche de cette issue
+   et son worktree en cas de reprise. Exécuter la création suivante seulement pour un ticket neuf.
+   ```bash
+   git -C "$BASE" fetch origin
+   ARBRE="$HOME/.local/share/harness/worktrees/$NOM/<n>-<mots-courts>"
+   git -C "$BASE" worktree add -b "<n>-<mots-courts>" "$ARBRE" origin/preprod
+   ```
+   Sur carte Hermès, la note synchronisée indiquée dans la carte fait foi. Avant
+   d’ouvrir la branche, relire son numéro, son affectation et `execution: À exécuter`.
+   Une autorisation absente ou retirée arrête la carte. Hermès crée lui-même le
+   worktree du ticket. En reprise, retrouver celui de la même branche et de la même
+   issue avec `git worktree list`, sans créer une deuxième branche. Reporter la note
+   autorisée du coffre dans le même chemin relatif de l’arbre si la copie Git manque
+   ou est ancienne. Conserver tout journal de travail déjà présent lors d’une reprise.
+   Dans la note du ticket (dans `ARBRE`) : `branche`, et `statut: en-cours`.
+   Mettre la branche et le statut en cours dans la note de suivi du coffre
+   (champ `branche` : nom exact de la branche) et le statut En cours sur l’item de
+   l’issue dans GitHub Projects. À l’ouverture de la PR, reporter son lien et passer
+   en revue dans le coffre et le Project. Une mise à jour GitHub échouée est à réessayer
+   sur le même item ; elle ne donne jamais de feu vert à Hermès.
+   Preuve : `git -C "$ARBRE" branch --show-current`.
 
-4. **Pour chaque ticket, l'un après l'autre : créer la branche.**
-   Jamais deux tickets en même temps dans le même dossier.
-   `git status --short` vide. Sinon arrêt : des changements étrangers rendent le diff illisible.
-   `git switch preprod && git pull --ff-only && git switch -c <numéro>-<mots-courts>`.
-   Si l'agent sait lancer un sous-agent neuf, chaque ticket peut s'y faire, avec les réponses de l'étape 3. Le contexte reste propre.
-   Preuve : `git branch --show-current`.
+5. **Coder, dans un seul commit.** Avant de coder, remplir dans la note "## Plan" et
+   "## Décisions" (une ligne datée, avec la raison). Skill tdd pour la logique.
+   Chaque étape marquante : une ligne datée dans "## Journal de l'agent".
+   `git add <fichier>` un par un, jamais `-A`. Premier commit
+   `git commit -m "<phrase en français> (ticket #<n>)"`, puis `git commit --amend --no-edit`
+   tant que la branche n'est pas poussée. Après un push, faire un nouveau commit.
+   Une branche de ticket n'écrit pas dans le journal des décisions : la décision reste
+   dans la note du ticket, cloture-session la reporte.
+   Preuve avant le premier push : `git -C "$ARBRE" rev-list --count origin/preprod..HEAD` affiche 1.
 
-5. **Coder, dans un seul commit.** Skill tdd pour tout ce qui a de la logique.
-   Écrire `feature.md` (ticket, réponses, plan, décisions datées) et ouvrir `log.md`.
-   `git add <fichier>`, un par un, jamais `-A`.
-   Premier commit : `git commit -m "<phrase en français> (ticket #<numéro>)"`. Ensuite `git commit --amend --no-edit` à chaque ajout.
-   Jamais `Closes`, `Fixes` ni `Resolves` devant un numéro.
-   Hook qui refuse : corriger la cause.
-   Preuve : `git rev-list --count preprod..HEAD` affiche 1.
+6. **Vérifier.** Skill verifier. Preuve : le bloc de preuve.
 
-6. **Vérifier.** Skill verifier, après le dernier `--amend` de code.
-   Preuve : le bloc de preuve, avec le code du commit.
+7. **Relire.** Sur une carte Hermès avec `RELECTEUR_HERMES`, la revue séparée se fait à
+   l'étape 9. Dans les autres cas, skill revue, correction puis refaire l'étape 6.
 
-7. **Relire.** Skill revue. Corriger dans le même commit (`--amend`), puis refaire l'étape 6.
-   Preuve : le bilan de revue.
+8. **Fiche QA.** Skill qa-prep, dans la note du ticket. Puis `statut: en-revue`, et
+   `git add` de la note, `--amend` tant que la branche n'est pas poussée. Après un premier
+   push, ajouter un commit comme dans livrer. Preuve : l'identifiant du commit candidat.
 
-8. **Préparer la fiche QA.** Skill qa-prep. L'ajouter au commit avec `--amend`.
-   Ne pas relancer verifier ici : livrer le refait sur le commit final, à l'étape 9.
-   Preuve : le chemin de la fiche, et le compte toujours à 1.
+9. **Passer la main.** Sur une carte Hermès avec `RELECTEUR_HERMES`, suivre la section
+   « Demander la revue Kanban » ci-dessous. Sinon, skill livrer, mode ticket, étapes 1 à 5. Puis ticket
+   suivant à l'étape 4. Sur une carte Hermès : rendre le lien et l'état sur la carte.
 
-9. **Livrer jusqu'à la porte 2, sans s'arrêter.** Skill livrer, mode ticket, étapes 1 à 5 : contrôles, push, demande de fusion, CI verte.
-   Puis `git switch preprod` et ticket suivant, à l'étape 4.
-   Preuve : le lien de la demande de fusion et la CI verte.
+10. **Rapport unique. POINT D'ARRÊT : porte 2.** Un tableau : ticket, demande de fusion,
+    commit, CI, à tester à l'écran, point d'attention. Puis les cases "Porte 2" de
+    `_Méthode/Portes.md` que l'agent n'a pas pu cocher, et ce qui n'est pas fait ou pas
+    vérifié. Demander de tester les fiches marquées oui. Donner ensuite le prompt
+    de reprise pour livrer en mode ticket dans une nouvelle conversation. Y citer
+    les demandes de fusion, les commits testés et les fiches QA. Demander à livrer
+    de revoir la porte 2 et d'attendre le "go" écrit avant l'étape 7.
 
-10. **Rapport unique. POINT D'ARRÊT : porte 2.**
-    Un tableau : ticket, demande de fusion, commit, CI, à tester à l'écran (oui ou non), point d'attention.
-    Sous le tableau, seulement s'il y en a : ce qui n'est pas fait, ce qui n'est pas vérifié, les tickets écartés, les tickets en attente. Une ligne chacun.
-    Finir par : "Testez les fiches marquées oui. Dites go tout, go 2 4, ou ce qui ne va pas."
-    Ce rapport est le message de la porte 2. Le "go" fait reprendre livrer à l'étape 7, ticket par ticket, sans rien redemander.
-    Après les fusions, feature reprend seule à l'étape 4 pour les tickets en attente dont la dépendance vient d'arriver dans `preprod`.
-    Preuve : le tableau, chaque ligne reliée à un lien ou à une commande.
+## Demander la revue Kanban
+
+Sur la carte de code, lire les trois valeurs Hermès de `harness.conf`. Un profil absent,
+un fournisseur manquant ou deux fournisseurs identiques bloquent la carte.
+
+Avant la revue, faire les contrôles de préparation de livrer, étape 2, y compris toute
+mise à jour depuis `preprod`. Rejouer les tests après cette mise à jour. Vérifier que
+l'arbre est propre et relever le SHA entier avec `git -C "$ARBRE" rev-parse HEAD`.
+Inclure la fiche QA et la note du ticket dans ce candidat.
+
+Appeler l'outil `kanban_request_review` sur **la même carte**, avec `reviewer` égal à
+`RELECTEUR_HERMES`. Le résumé demande le skill revue, section « Verdict Kanban ».
+Dans `metadata`, transmettre `commit` (SHA entier), `worktree` (chemin absolu),
+`note`, `ticket`, `codeur` (profil actuel) et les preuves des tests. Arrêter la session à
+cet appel. Une erreur de revue laisse la carte bloquée. Aucun push depuis cette carte.
+
+Si Hermès rend la carte pour correction, retrouver le même worktree. Corriger les écarts
+signalés, commiter comme à l'étape 5 et rejouer les étapes 6 à 9. Tout nouveau SHA exige
+son propre verdict.
 
 ## Points d'arrêt
 
-- **Avant le code**, seulement dans les trois cas de la porte 1, et une seule fois pour tout le lot.
-- **Porte 2**, à l'étape 10. Une fois pour tout le lot.
-- **Mode délégation**, après le tableau. On ne suit pas les cartes dans cette conversation.
-- **Arrêt d'un ticket, le lot continue** : verifier rouge après trois tentatives, CI rouge après trois tentatives, conflit. Le noter dans le rapport.
-  Avant de passer au suivant : `git rebase --abort` ou `git merge --abort` si l'un est en cours, l'état reste commité sur la branche du ticket, rien de plus n'est poussé, `git status --short` est vide, puis `git switch preprod`.
-- **Arrêt de tout** : dossier pas propre, `preprod` absente, `AGENTS.md` encore à trous, `git fetch` en échec, push refusé par GitHub.
+- Avant le code : les cas de la porte 1, une fois pour le lot. Porte 2 : étape 10.
+- Arrêt d'un ticket, le lot continue : verifier ou CI rouge après trois tentatives,
+  conflit. `git rebase --abort` ou `git merge --abort` si besoin, rien de plus poussé,
+  worktree propre. Le noter dans la note et le rapport.
+- Arrêt de tout : pas de dépôt, `preprod` absente, `AGENTS.md` à trous, fetch en échec.
 
 ## Preuve attendue
 
-Le rapport de l'étape 10 contient, par ticket :
-
-- le numéro, la branche, le commit (celui que le "go" couvrira), le lien de la demande de fusion
-- la CI verte, et le bloc de verifier sur le même commit
-- le chemin de la fiche QA, et s'il y a quelque chose à tester à l'écran
-
-En mode délégation : le tableau de suivi, une ligne par ticket, et la carte déposée pour chacun.
+Par ticket : la branche, le commit, la demande de fusion, la CI verte, le bloc de
+verifier, et la note avec Plan, Décisions, Journal et Fiche QA dans le même commit.
 
 ## Interdits
 
 - Coder un ticket sensible sans "go" écrit.
-- Travailler sur `main` ou sur `preprod`, y commiter, y pousser.
-- Fusionner : c'est livrer, après le "go" de la porte 2.
-- Pousser en force (`--force`, `--force-with-lease`). `--no-verify`. `git add -A`.
-- Écrire `Closes`, `Fixes` ou `Resolves` devant un numéro de ticket.
-- Plus d'un commit par branche avant le push. `--amend` après le push.
-- Deux tickets en même temps dans le même dossier.
-- Ajouter une bibliothèque sans "go", origine et version exacte montrées.
-- Lire un fichier `.env` ou un secret. Écrire de vraies données de personnes.
-- Dire "ça passe" sans la sortie citée.
-- Modifier un ticket : c'est le skill tickets.
-- Deviner une décision produit.
-- En mode délégation : coder, créer une branche, écrire un diff ou un journal dans cette conversation.
-- Déposer deux fois la même demande le même jour. Laisser une carte toucher `main`.
+- Travailler dans le dossier du vault, sur `main` ou sur `preprod`. Deux tickets dans le
+  même worktree. Pousser en force, `--no-verify`, `git add -A`.
+- Écrire `Closes`, `Fixes` ou `Resolves` devant un numéro.
+- Plus d'un commit avant le push. `--amend` après le push.
+- Changer la rubrique "Le ticket" de la note ou l'issue : c'est le skill tickets.
+- Ajouter une bibliothèque sans "go", origine et version montrées.
+- Lire un `.env` ou un secret. Mettre de vraies données de personnes.
+- Dire "ça passe" sans la sortie citée. Deviner une décision produit.
+- Terminer une carte de code Hermès soumise à revue, ou appeler livrer depuis cette carte.
